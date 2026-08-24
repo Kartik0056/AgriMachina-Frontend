@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <g stroke="#0f172a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Party Hat -->
+    <polygon points="12,13 14,4 20,10" fill="#facc15" stroke="#0f172a" stroke-width="1.8" />
+    
+    <!-- Big Round Eyes Background -->
+    <circle cx="13.5" cy="15.5" r="5.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.8" />
+    <circle cx="23.5" cy="15.5" r="5.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.8" />
+
+    <!-- Happy Eyes (Arcs) -->
+    <path d="M 11,16 Q 13.5,13.5 16,16" fill="none" stroke="#0f172a" stroke-width="1.8" />
+    <path d="M 21,16 Q 23.5,13.5 26,16" fill="none" stroke="#0f172a" stroke-width="1.8" />
+
+    <!-- Frog Head -->
+    <path d="M 8.5,21 C 7.5,16.5 12,15.5 18.5,15.5 C 25,15.5 29.5,16.5 28.5,21 C 28.5,26 24.5,27.5 18.5,27.5 C 12.5,27.5 8.5,26 8.5,21 Z" fill="#9dd645" stroke="#0f172a" stroke-width="1.8" />
+
+    <!-- Cheeks -->
+    <circle cx="10.5" cy="22" r="1.8" fill="#fb7185" stroke="none" />
+    <circle cx="26.5" cy="22" r="1.8" fill="#fb7185" stroke="none" />
+
+    <!-- Open Happy Mouth (behind watermelon) -->
+    <ellipse cx="18.5" cy="23.5" rx="2.5" ry="3" fill="#0f172a" stroke="none" />
+    <ellipse cx="18.5" cy="24.5" rx="1.8" ry="1.5" fill="#f43f5e" stroke="none" />
+
+    <!-- Watermelon Slice (Green Rind) -->
+    <path d="M 9.5,23 C 12.5,30 24.5,30 27.5,23 Z" fill="#15803d" stroke="#0f172a" stroke-width="1.6" />
+    <!-- Juicy Red Flesh -->
+    <path d="M 11,23 C 13.2,28.5 23.8,28.5 26,23 Z" fill="#ef4444" stroke="none" />
+    <!-- Watermelon Seeds -->
+    <circle cx="15" cy="25" r="0.65" fill="#0f172a" stroke="none" />
+    <circle cx="18.5" cy="26" r="0.65" fill="#0f172a" stroke="none" />
+    <circle cx="22" cy="25" r="0.65" fill="#0f172a" stroke="none" />
+
+    <!-- Cute Green Hands holding watermelon -->
+    <circle cx="9.5" cy="25" r="1.8" fill="#9dd645" stroke="#0f172a" stroke-width="1.4" />
+    <circle cx="27.5" cy="25" r="1.8" fill="#9dd645" stroke="#0f172a" stroke-width="1.4" />
+
+    <!-- Striped Red & White Swim Trunks -->
+    <path d="M 12.5,29.5 L 11.5,34 L 25.5,34 L 24.5,29.5 Z" fill="#ef4444" stroke="#0f172a" stroke-width="1.6" />
+    <path d="M 15,30 L 14.5,33.5 L 17,33.5 L 17.5,30 Z" fill="#ffffff" stroke="none" />
+    <path d="M 19.5,30 L 19.3,33.5 L 21.5,33.5 L 21.8,30 Z" fill="#ffffff" stroke="none" />
+
+    <!-- Cute Frog Feet -->
+    <ellipse cx="12.5" cy="35.5" rx="2.2" ry="1.4" fill="#9dd645" stroke="#0f172a" stroke-width="1.4" />
+    <ellipse cx="24.5" cy="35.5" rx="2.2" ry="1.4" fill="#9dd645" stroke="#0f172a" stroke-width="1.4" />
+  </g>
+</svg>

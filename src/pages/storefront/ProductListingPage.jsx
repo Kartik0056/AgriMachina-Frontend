@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Filter, Search, RefreshCw, X, SlidersHorizontal } from 'lucide-react';
 import ProductCard from '../../components/storefront/ProductCard';
 import api from '../../services/api';
+import { useLiveRefresh } from '../../context/SyncContext';
 
 const ProductListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,38 +35,46 @@ const ProductListingPage = () => {
     'Gardening'
   ];
 
+  const fetchMetadata = async () => {
+    try {
+      const [catRes, brandRes] = await Promise.all([
+        api.get('/categories'),
+        api.get('/brands')
+      ]);
+      if (catRes.data.success) setCategories(catRes.data.categories || []);
+      if (brandRes.data.success) setBrands(brandRes.data.brands || []);
+    } catch (err) {}
+  };
+
+  const fetchFilteredProducts = async (isBackground = false) => {
+    if (!isBackground) setLoading(true);
+    try {
+      const queryParams = new URLSearchParams(searchParams);
+      const res = await api.get(`/products?${queryParams.toString()}`);
+      if (res.data.success) {
+        setProducts(res.data.products || []);
+        setTotal(res.data.total || 0);
+      }
+    } catch (error) {
+      console.error('Failed to load products', error);
+    } finally {
+      if (!isBackground) setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const [catRes, brandRes] = await Promise.all([
-          api.get('/categories'),
-          api.get('/brands')
-        ]);
-        if (catRes.data.success) setCategories(catRes.data.categories || []);
-        if (brandRes.data.success) setBrands(brandRes.data.brands || []);
-      } catch (err) {}
-    };
     fetchMetadata();
   }, []);
 
   useEffect(() => {
-    const fetchFilteredProducts = async () => {
-      setLoading(true);
-      try {
-        const queryParams = new URLSearchParams(searchParams);
-        const res = await api.get(`/products?${queryParams.toString()}`);
-        if (res.data.success) {
-          setProducts(res.data.products || []);
-          setTotal(res.data.total || 0);
-        }
-      } catch (error) {
-        console.error('Failed to load products', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFilteredProducts();
+    fetchFilteredProducts(false);
   }, [searchParams]);
+
+  // Live real-time sync when Admin updates catalog or stock
+  useLiveRefresh(() => {
+    fetchFilteredProducts(true);
+    fetchMetadata();
+  }, ['CATALOG_CHANGED', 'INVENTORY_UPDATED', 'CATEGORY_CHANGED']);
 
   const updateFilter = (key, value) => {
     const nextParams = new URLSearchParams(searchParams);

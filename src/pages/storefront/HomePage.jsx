@@ -21,32 +21,37 @@ import BrandStorefrontSection from '../../components/storefront/BrandStorefrontS
 import SubsidyBannerSection from '../../components/storefront/SubsidyBannerSection';
 import ProductCard from '../../components/storefront/ProductCard';
 import api from '../../services/api';
+import { useLiveRefresh } from '../../context/SyncContext';
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const loadHomeData = async () => {
+    try {
+      const [prodRes, catRes] = await Promise.all([
+        api.get('/products?limit=8'),
+        api.get('/categories')
+      ]);
+      if (prodRes.data.success) setFeaturedProducts(prodRes.data.products || []);
+      if (catRes.data.success) setCategories(catRes.data.categories || []);
+    } catch (err) {
+      console.error('Home data load error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadHomeData = async () => {
-      try {
-        const [prodRes, catRes] = await Promise.all([
-          api.get('/products?limit=8'),
-          api.get('/categories')
-        ]);
-        if (prodRes.data.success) setFeaturedProducts(prodRes.data.products || []);
-        if (catRes.data.success) setCategories(catRes.data.categories || []);
-      } catch (err) {
-        console.error('Home data load error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadHomeData();
   }, []);
 
+  // Real-time live synchronization without manual refresh
+  useLiveRefresh(loadHomeData, ['CATALOG_CHANGED', 'INVENTORY_UPDATED', 'CATEGORY_CHANGED', 'DEALS_UPDATED']);
+
   return (
-    <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '100vh' }}>
       {/* 1. Dynamic Hero Machinery Slider with Layered Details */}
       <HeroSlider />
 
@@ -57,7 +62,7 @@ const HomePage = () => {
       <LightningDealsSection />
 
       {/* 4. Key Trust & Services Bar */}
-      <section style={{ background: '#ffffff', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '1.5rem 0', marginBottom: '3.5rem' }}>
+      <section style={{ background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '1.5rem 0', marginBottom: '3.5rem' }}>
         <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           <div className="flex items-center gap-3">
             <div style={{ background: '#dcfce7', padding: '0.75rem', borderRadius: '12px', color: '#166534', flexShrink: 0 }}>

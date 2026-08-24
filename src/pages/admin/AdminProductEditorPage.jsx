@@ -41,6 +41,7 @@ import TabFAQPublish from '../../components/admin/ProductForm/TabFAQPublish';
 import adminApi from '../../services/adminApi';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useSync } from '../../context/SyncContext';
 
 const tabs = [
   { id: 'basic', label: '1. Basic Info', icon: <FileText size={15} /> },
@@ -66,12 +67,13 @@ const AdminProductEditorPage = () => {
   const navigate = useNavigate();
   const { adminPanelPath } = useAdminAuth();
   const { addToast } = useToast();
+  const { broadcastLocal } = useSync();
 
   const [activeTab, setActiveTab] = useState('basic');
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -166,12 +168,14 @@ const AdminProductEditorPage = () => {
         const res = await adminApi.put(`/products/${id}`, payload);
         if (res.data.success) {
           addToast(`Product ${res.data.product.name} updated successfully!`, 'success');
+          broadcastLocal('CATALOG_CHANGED', { productId: id, action: 'update' });
           navigate(`${adminPanelPath}/products`);
         }
       } else {
         const res = await adminApi.post('/products', payload);
         if (res.data.success) {
           addToast(`Product ${res.data.product.name} created successfully!`, 'success');
+          broadcastLocal('CATALOG_CHANGED', { productId: res.data.product._id, action: 'create' });
           navigate(`${adminPanelPath}/products`);
         }
       }

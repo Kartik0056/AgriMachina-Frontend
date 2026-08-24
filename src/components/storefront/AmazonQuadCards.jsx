@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const quadCardsData = [
   {
@@ -89,16 +90,16 @@ const quadCardsData = [
         link: '/products?category=Pumps+%26+Irrigation'
       },
       {
-        name: 'Solar Panel Array',
-        priceTag: 'Tier-1 Cells',
+        name: 'Solar Panel Array (4kW)',
+        priceTag: 'Available',
         image: '/images/machinery/solar_pump.jpg',
         link: '/products?category=Pumps+%26+Irrigation'
       }
     ]
   },
   {
-    title: 'Multi-Crop Harvesting & Brush Cutters',
-    ctaText: 'Browse Crop Harvesters',
+    title: 'Govt. Subsidy Approved | Multi-Crop Harvesters',
+    ctaText: 'View Harvesting Machinery',
     link: '/products?category=Harvesting+Machinery',
     items: [
       {
@@ -108,20 +109,20 @@ const quadCardsData = [
         link: '/products?category=Harvesting+Machinery'
       },
       {
-        name: '80T Crop Harvester',
-        priceTag: 'Free In Box',
+        name: 'Paddy Crop Reaper',
+        priceTag: '₹4,500',
         image: '/images/machinery/brush_cutter.jpg',
         link: '/products?category=Harvesting+Machinery'
       },
       {
-        name: 'Tap & Go Trimmer',
-        priceTag: 'Included',
+        name: '80T Alloy Blade',
+        priceTag: '₹899',
         image: '/images/machinery/brush_cutter.jpg',
         link: '/products?category=Harvesting+Machinery'
       },
       {
-        name: 'Paddy Harvesting Guard',
-        priceTag: 'Alloy Steel',
+        name: 'Chainsaw Attachment',
+        priceTag: '₹2,499',
         image: '/images/machinery/brush_cutter.jpg',
         link: '/products?category=Harvesting+Machinery'
       }
@@ -130,6 +131,8 @@ const quadCardsData = [
 ];
 
 const AmazonQuadCards = () => {
+  const { tr } = useLanguage();
+
   return (
     <div className="container" style={{ margin: '2.5rem auto 3rem auto', position: 'relative', zIndex: 10 }}>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -137,11 +140,11 @@ const AmazonQuadCards = () => {
           <div
             key={idx}
             style={{
-              background: '#ffffff',
+              background: 'var(--bg-surface)',
               borderRadius: '16px',
               padding: '1.25rem',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
-              border: '1px solid #e2e8f0',
+              boxShadow: 'var(--shadow-sm)',
+              border: '1px solid var(--border-color)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -150,8 +153,8 @@ const AmazonQuadCards = () => {
             }}
           >
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', lineHeight: 1.3, marginBottom: '1rem', minHeight: '2.8rem' }}>
-                {card.title}
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-main)', lineHeight: 1.3, marginBottom: '1rem', minHeight: '2.8rem' }}>
+                {tr(card.title)}
               </h3>
 
               {/* 4 Quadrants Grid */}
@@ -172,10 +175,10 @@ const AmazonQuadCards = () => {
                       style={{
                         width: '100%',
                         height: '105px',
-                        background: '#f8fafc',
+                        background: 'var(--bg-surface-alt)',
                         borderRadius: '8px',
                         overflow: 'hidden',
-                        border: '1px solid #f1f5f9',
+                        border: '1px solid var(--border-color)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -193,10 +196,10 @@ const AmazonQuadCards = () => {
                         }}
                       />
                     </div>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {item.name}
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {tr(item.name)}
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: '#166534', fontWeight: 800 }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--primary-600, #166534)', fontWeight: 800 }}>
                       {item.priceTag}
                     </div>
                   </Link>
@@ -211,13 +214,13 @@ const AmazonQuadCards = () => {
               style={{
                 fontSize: '0.825rem',
                 fontWeight: 700,
-                color: '#15803d',
-                borderTop: '1px solid #f1f5f9',
+                color: 'var(--primary-600, #166534)',
+                borderTop: '1px solid var(--border-color)',
                 paddingTop: '0.75rem',
                 textDecoration: 'none'
               }}
             >
-              <span>{card.ctaText}</span>
+              <span>{tr(card.ctaText)}</span>
               <ChevronRight size={15} />
             </Link>
           </div>

@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const MAX_PARTICLES = 24; // Hard ceiling to prevent any memory or frame drops
-const particleEmojis = ['🍃', '🌱', '🌸', '🌾', '🌼'];
+const particleEmojis = ['🍃', '🌱', '🌾', '✨', '🌼'];
 
 const FarmingCursorParticles = () => {
   const canvasRef = useRef(null);
-  const cursorRef = useRef(null);
-  const [isHoveringClickable, setIsHoveringClickable] = useState(false);
-  const [isMouseDown, setIsMouseDown] = useState(false);
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
+  const [isTextMode, setIsTextMode] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,8 +20,11 @@ const FarmingCursorParticles = () => {
     let height = (canvas.height = window.innerHeight);
 
     let particles = [];
-    let lastMoveTime = 0;
-    let lastPos = { x: -100, y: -100 };
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let lastParticleTime = 0;
     let animationFrameId;
 
     const handleResize = () => {
@@ -28,10 +33,9 @@ const FarmingCursorParticles = () => {
     };
     window.addEventListener('resize', handleResize);
 
-    // Optimized Particle Object
-    const createParticle = (x, y, isClick) => {
-      const angle = isClick ? Math.random() * Math.PI * 2 : (Math.random() - 0.5) * 1.2 - Math.PI / 2;
-      const speed = isClick ? Math.random() * 3 + 1.5 : Math.random() * 1.2 + 0.5;
+    const createParticle = (x, y, isClick = false) => {
+      const angle = isClick ? Math.random() * Math.PI * 2 : (Math.random() - 0.5) * 1.5 - Math.PI / 2;
+      const speed = isClick ? Math.random() * 3.5 + 2 : Math.random() * 1.2 + 0.6;
 
       return {
         x,
@@ -42,78 +46,81 @@ const FarmingCursorParticles = () => {
         emoji: particleEmojis[Math.floor(Math.random() * particleEmojis.length)],
         size: isClick ? Math.random() * 6 + 14 : Math.random() * 4 + 10,
         rotation: Math.random() * Math.PI * 2,
-        vRot: (Math.random() - 0.5) * 0.1,
+        vRot: (Math.random() - 0.5) * 0.12,
         life: 1.0,
-        decay: isClick ? 0.045 : 0.035 // Fades out in < 0.4s to maintain 60fps
+        decay: isClick ? 0.04 : 0.03
       };
     };
 
-    // Smooth Cursor Position update (hardware CSS transform)
     const handleMouseMove = (e) => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
 
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      // Update instant precision dot immediately
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
       }
 
-      // Check if hovering clickable elements
+      // Check hovering targets
       const target = e.target;
-      if (
-        target &&
-        (target.tagName === 'BUTTON' ||
+      if (target) {
+        const isInteractive =
+          target.tagName === 'BUTTON' ||
           target.tagName === 'A' ||
-          target.tagName === 'INPUT' ||
-          target.tagName === 'SELECT' ||
           target.closest('button') ||
           target.closest('a') ||
-          target.onclick ||
-          target.getAttribute('role') === 'button')
-      ) {
-        setIsHoveringClickable(true);
-      } else {
-        setIsHoveringClickable(false);
+          target.getAttribute('role') === 'button' ||
+          target.onclick;
+
+        const isInput =
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable;
+
+        setIsHovered(!!isInteractive);
+        setIsTextMode(!!isInput);
       }
 
-      // Throttle movement particles (min 60ms between spawns)
+      // Spawn subtle trailing particles on movement
       const now = performance.now();
-      const dist = Math.hypot(mouseX - lastPos.x, mouseY - lastPos.y);
-
-      if (now - lastMoveTime > 65 && dist > 20) {
-        lastMoveTime = now;
-        lastPos = { x: mouseX, y: mouseY };
-
-        if (particles.length >= MAX_PARTICLES) {
-          particles.shift(); // Evict oldest immediately
+      if (now - lastParticleTime > 90) {
+        lastParticleTime = now;
+        if (particles.length < 24) {
+          particles.push(createParticle(mouseX, mouseY, false));
         }
-        particles.push(createParticle(mouseX, mouseY, false));
       }
     };
 
-    // Rapid-click friendly burst (capped to 4 lightweight particles)
-    const handleMouseDownEvent = (e) => {
-      setIsMouseDown(true);
-      const burstCount = 4;
-      for (let i = 0; i < burstCount; i++) {
-        if (particles.length >= MAX_PARTICLES) {
-          particles.shift();
+    const handleMouseDown = (e) => {
+      setIsClicking(true);
+      for (let i = 0; i < 4; i++) {
+        if (particles.length < 24) {
+          particles.push(createParticle(e.clientX, e.clientY, true));
         }
-        particles.push(createParticle(e.clientX, e.clientY, true));
       }
     };
 
-    const handleMouseUpEvent = () => {
-      setIsMouseDown(false);
+    const handleMouseUp = () => {
+      setIsClicking(false);
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mousedown', handleMouseDownEvent, { passive: true });
-    window.addEventListener('mouseup', handleMouseUpEvent, { passive: true });
+    window.addEventListener('mousedown', handleMouseDown, { passive: true });
+    window.addEventListener('mouseup', handleMouseUp, { passive: true });
 
-    // High performance render loop
+    // Smooth Lerp Render Loop for Fluid Magnetic Ring
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
+      // Lerp ring position with smooth trailing
+      ringX += (mouseX - ringX) * 0.22;
+      ringY += (mouseY - ringY) * 0.22;
+
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      }
+
+      // Render floating leaf / harvest sparkle particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
@@ -128,8 +135,8 @@ const FarmingCursorParticles = () => {
           ctx.save();
           ctx.translate(p.x, p.y);
           ctx.rotate(p.rotation);
-          ctx.globalAlpha = p.life;
-          ctx.font = `${p.size}px serif`;
+          ctx.globalAlpha = p.life * 0.85;
+          ctx.font = `${p.size}px sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(p.emoji, 0, 0);
@@ -145,15 +152,15 @@ const FarmingCursorParticles = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDownEvent);
-      window.removeEventListener('mouseup', handleMouseUpEvent);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
     <>
-      {/* Particle Canvas */}
+      {/* Background Particle Canvas */}
       <canvas
         ref={canvasRef}
         style={{
@@ -163,71 +170,76 @@ const FarmingCursorParticles = () => {
           width: '100vw',
           height: '100vh',
           pointerEvents: 'none',
-          zIndex: 99998
+          zIndex: 2147483640
         }}
       />
 
-      {/* Bespoke Agricultural Sprout / Golden Wheat Custom Cursor */}
+      {/* Instant Precision Core Dot */}
       <div
-        ref={cursorRef}
+        ref={dotRef}
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           pointerEvents: 'none',
-          zIndex: 99999,
+          zIndex: 2147483647,
           willChange: 'transform',
           transform: 'translate3d(-100px, -100px, 0)'
         }}
       >
         <div
           style={{
-            position: 'relative',
-            transform: `translate(-6px, -4px) ${
-              isHoveringClickable
-                ? 'scale(1.3)'
-                : isMouseDown
-                ? 'scale(0.85)'
-                : 'scale(1)'
-            }`,
-            transformOrigin: '6px 4px',
-            transition: 'transform 0.12s cubic-bezier(0.16, 1, 0.3, 1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            width: isHovered ? '8px' : isTextMode ? '4px' : '6px',
+            height: isHovered ? '8px' : isTextMode ? '14px' : '6px',
+            borderRadius: isTextMode ? '2px' : '50%',
+            background: isHovered
+              ? '#f59e0b'
+              : 'linear-gradient(135deg, #10b981, #059669)',
+            boxShadow: isHovered
+              ? '0 0 10px #f59e0b, 0 0 4px #ffffff'
+              : '0 0 8px #10b981, 0 0 3px #ffffff',
+            transform: 'translate(-50%, -50%)',
+            transition: 'width 0.15s ease, height 0.15s ease, background 0.15s ease'
           }}
-        >
-          {/* Custom Styled Agricultural SVG Pointer (Emerald Sprout + Gold Core) */}
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{
-              filter: isHoveringClickable
-                ? 'drop-shadow(0 0 8px #34d399) drop-shadow(0 2px 5px rgba(0,0,0,0.4))'
-                : 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
-            }}
-          >
-            {/* Main Sprout Blade */}
-            <path
-              d="M6 4C6 4 10 12 18 14C24 15.5 28 12 28 12C28 12 26 22 17 24C10 25.5 6 20 6 20L6 4Z"
-              fill={isHoveringClickable ? '#10b981' : '#166534'}
-              stroke="#ffffff"
-              strokeWidth="1.75"
-            />
-            {/* Center Golden Vein */}
-            <path
-              d="M6 4C11 11 16 16 26 19"
-              stroke="#fef08a"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            {/* Sparkle / Sprout Bud */}
-            <circle cx="6" cy="4" r="2.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1" />
-          </svg>
-        </div>
+        />
+      </div>
+
+      {/* Smooth Magnetic Emerald Glowing Ring */}
+      <div
+        ref={ringRef}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          pointerEvents: 'none',
+          zIndex: 2147483646,
+          willChange: 'transform',
+          transform: 'translate3d(-100px, -100px, 0)'
+        }}
+      >
+        <div
+          style={{
+            width: isHovered ? '46px' : isClicking ? '22px' : isTextMode ? '0px' : '30px',
+            height: isHovered ? '46px' : isClicking ? '22px' : isTextMode ? '0px' : '30px',
+            borderRadius: '50%',
+            border: isHovered
+              ? '1.5px solid #34d399'
+              : isClicking
+              ? '2px solid #f59e0b'
+              : '1.5px solid rgba(16, 185, 129, 0.65)',
+            background: isHovered
+              ? 'rgba(16, 185, 129, 0.12)'
+              : isClicking
+              ? 'rgba(245, 158, 11, 0.2)'
+              : 'rgba(16, 185, 129, 0.04)',
+            boxShadow: isHovered
+              ? '0 0 16px rgba(52, 211, 153, 0.5), inset 0 0 8px rgba(52, 211, 153, 0.3)'
+              : '0 0 8px rgba(16, 185, 129, 0.2)',
+            transform: 'translate(-50%, -50%)',
+            transition: 'width 0.2s cubic-bezier(0.16, 1, 0.3, 1), height 0.2s cubic-bezier(0.16, 1, 0.3, 1), border 0.2s ease, background 0.2s ease, opacity 0.2s ease',
+            opacity: isTextMode ? 0 : 1
+          }}
+        />
       </div>
     </>
   );

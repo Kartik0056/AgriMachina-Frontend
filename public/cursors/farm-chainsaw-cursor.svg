@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38" fill="none">
+  <g filter="drop-shadow(0 2px 6px rgba(0,0,0,0.45))">
+    <!-- Chainsaw Guide Bar angled towards hotspot (2, 2) -->
+    <path d="M 2,2 C 4,1 7,2 18,13 L 14,17 L 3,6 C 1.5,4.5 1,3 2,2 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round" />
+    <path d="M 4,4 L 15,15" stroke="#e2e8f0" stroke-width="1" stroke-linecap="round" />
+
+    <!-- Sharp Chainsaw Cutting Teeth -->
+    <path d="M 4,1.5 L 6,3.5 M 8,5.5 L 10,7.5 M 12,9.5 L 14,11.5 M 16,13.5 L 18,15.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round" />
+    <!-- Active Precision Spark Tip at (2, 2) -->
+    <circle cx="2" cy="2" r="1.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.6"/>
+
+    <!-- Chainsaw Engine Housing & Handles -->
+    <g transform="translate(12, 11)">
+      <!-- Orange Motor Body -->
+      <path d="M 3,4 L 16,4 C 18,4 19,6 19,9 L 19,15 C 19,17 17,18 15,18 L 4,18 C 2,18 1,17 1,15 L 1,6 C 1,4 2,4 3,4 Z" fill="#ea580c" stroke="#0f172a" stroke-width="1.5" />
+      
+      <!-- Top Heavy Duty Handle (Forest Green) -->
+      <path d="M 3,4 C 3,-1 12,-1 13,4" fill="none" stroke="#166534" stroke-width="2.2" stroke-linecap="round" />
+      <!-- Handguard -->
+      <rect x="0" y="2" width="2" height="6" rx="1" fill="#0f172a" />
+
+      <!-- Engine Ventilation Grille -->
+      <rect x="4" y="8" width="9" height="7" rx="1" fill="#1e293b" />
+      <line x1="6" y1="10" x2="11" y2="10" stroke="#ea580c" stroke-width="1" stroke-linecap="round"/>
+      <line x1="6" y1="13" x2="11" y2="13" stroke="#ea580c" stroke-width="1" stroke-linecap="round"/>
+
+      <!-- Rear Throttle Trigger Grip -->
+      <path d="M 16,13 L 22,16 C 23,17 23,19 21,20 L 17,18" fill="none" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Safety Throttle Trigger -->
+      <circle cx="17" cy="15" r="1.2" fill="#facc15" />
+
+      <!-- Green Leaf Quality Emblem -->
+      <path d="M 14,7 C 16,5 18,6 18,6 C 18,6 18,8 15,9" fill="#22c55e" stroke="#052e16" stroke-width="0.7"/>
+    </g>
+  </g>
+</svg>

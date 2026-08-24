@@ -4,11 +4,13 @@ import { Flame, Timer, ShoppingCart, CreditCard, ChevronRight, Zap, Tag } from '
 import { formatINR } from '../../services/emiHelper';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
+import { useLanguage } from '../../context/LanguageContext';
 import api from '../../services/api';
 
 const LightningDealsSection = () => {
   const { addToCart } = useCart();
   const { addToast } = useToast();
+  const { t, tr } = useLanguage();
 
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,11 +75,11 @@ const LightningDealsSection = () => {
           </div>
           <div>
             <div style={{ fontSize: '1.4rem', fontWeight: 900, lineHeight: 1.1, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>Today's Super Deals & Hot Offers</span>
+              <span>{t('today_deals', "Today's Super Deals & Hot Offers")}</span>
               <span className="badge" style={{ background: '#ef4444', color: '#ffffff', fontSize: '0.7rem' }}>LIVE</span>
             </div>
             <div style={{ fontSize: '0.8rem', color: '#fecaca', marginTop: '0.2rem' }}>
-              Limited-quantity farmer discounts, subsidy rebates & 0% No-Cost EMI
+              {t('free_delivery_alert', 'Limited-quantity farmer discounts, subsidy rebates & 0% No-Cost EMI')}
             </div>
           </div>
         </div>
@@ -86,14 +88,14 @@ const LightningDealsSection = () => {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5" style={{ background: 'rgba(0,0,0,0.3)', padding: '0.4rem 0.85rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }}>
             <Timer size={16} color="#fef08a" />
-            <span style={{ fontSize: '0.8rem', color: '#fef08a', fontWeight: 700 }}>Ends in:</span>
+            <span style={{ fontSize: '0.8rem', color: '#fef08a', fontWeight: 700 }}>{t('deal_ends_in', 'Ends in')}:</span>
             <span style={{ fontSize: '1rem', fontWeight: 900, color: '#ffffff', letterSpacing: '0.05em' }}>
               {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
             </span>
           </div>
 
           <Link to="/products?dealsOnly=true" className="flex items-center gap-1" style={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 700 }}>
-            <span>See All Deals</span>
+            <span>{t('all_machinery_catalog', 'See All Deals')}</span>
             <ChevronRight size={16} />
           </Link>
         </div>
@@ -102,9 +104,9 @@ const LightningDealsSection = () => {
       {/* Deals Cards Grid */}
       <div
         style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '0 0 16px 16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           borderTop: 'none',
           padding: '1.5rem',
           boxShadow: 'var(--shadow-sm)'
@@ -120,13 +122,13 @@ const LightningDealsSection = () => {
               <div
                 key={deal._id}
                 style={{
-                  border: '1px solid #fed7aa',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '12px',
                   padding: '1rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  background: '#fffaf5',
+                  background: 'var(--bg-surface-alt)',
                   position: 'relative'
                 }}
               >
@@ -143,7 +145,7 @@ const LightningDealsSection = () => {
                 </div>
 
                 <div>
-                  <Link to={`/product/${deal.slug || deal._id}`} style={{ display: 'block', height: '180px', background: '#ffffff', borderRadius: '8px', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                  <Link to={`/product/${deal.slug || deal._id}`} style={{ display: 'block', height: '180px', background: 'var(--bg-surface)', borderRadius: '8px', overflow: 'hidden', marginBottom: '0.75rem' }}>
                     <img
                       src={deal.mainImage?.url || '/images/machinery/power_weeder.jpg'}
                       alt={deal.name}
@@ -151,23 +153,23 @@ const LightningDealsSection = () => {
                     />
                   </Link>
 
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9a3412', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
                     {deal.category} • {deal.brand}
                   </div>
 
-                  <Link to={`/product/${deal.slug || deal._id}`}>
-                    <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, minHeight: '2.4rem', marginBottom: '0.4rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {deal.name}
+                  <Link to={`/product/${deal.slug || deal._id}`} style={{ textDecoration: 'none' }}>
+                    <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.3, minHeight: '2.4rem', marginBottom: '0.4rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {tr(deal.name)}
                     </h4>
                   </Link>
 
                   {/* Price */}
                   <div className="flex items-baseline gap-2" style={{ marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#991b1b' }}>
+                    <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#dc2626' }}>
                       {formatINR(deal.sellingPrice)}
                     </span>
                     {deal.mrp > deal.sellingPrice && (
-                      <span style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'line-through' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
                         {formatINR(deal.mrp)}
                       </span>
                     )}
@@ -183,21 +185,21 @@ const LightningDealsSection = () => {
 
                   {/* EMI */}
                   {deal.emi?.enabled && deal.emi?.minMonthlyEmi > 0 && (
-                    <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--primary-600, #166534)', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                       <CreditCard size={13} color="#166534" />
-                      <span>EMI: <strong>{formatINR(deal.emi.minMonthlyEmi)}/mo</strong> (0% No Cost)</span>
+                      <span>{t('monthly_emi_text', 'EMI')}: <strong>{formatINR(deal.emi.minMonthlyEmi)}/mo</strong></span>
                     </div>
                   )}
 
                   {/* Claim Progress Bar */}
                   <div style={{ marginBottom: '1rem' }}>
-                    <div className="flex justify-between text-xs" style={{ marginBottom: '0.25rem', color: '#7c2d12', fontWeight: 600 }}>
-                      <span>{claimedPercent}% Claimed</span>
+                    <div className="flex justify-between text-xs" style={{ marginBottom: '0.25rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                      <span>{claimedPercent}% {t('claimed', 'Claimed')}</span>
                       <span style={{ color: '#dc2626', fontWeight: 700 }}>
-                        {isOutOfStock ? 'Sold Out' : `Only ${stockRemaining} left`}
+                        {isOutOfStock ? t('out_of_stock', 'Sold Out') : `Only ${stockRemaining} left`}
                       </span>
                     </div>
-                    <div style={{ width: '100%', height: '7px', background: '#fed7aa', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: '7px', background: 'var(--border-color)', borderRadius: '999px', overflow: 'hidden' }}>
                       <div
                         style={{
                           width: `${claimedPercent}%`,
@@ -223,7 +225,7 @@ const LightningDealsSection = () => {
                   }}
                 >
                   <ShoppingCart size={15} />
-                  <span>{isOutOfStock ? 'Sold Out' : 'Claim Deal & Add to Cart'}</span>
+                  <span>{isOutOfStock ? t('out_of_stock', 'Sold Out') : t('claim_deal_now', 'Claim Deal Now')}</span>
                 </button>
               </div>
             );

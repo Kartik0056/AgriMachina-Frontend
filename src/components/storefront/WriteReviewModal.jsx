@@ -3,16 +3,7 @@ import { Star, ShieldCheck, Camera, Video, Send, Plus, Trash2, Play, CheckCircle
 import Modal from '../common/Modal';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
-
-// Helper to convert YouTube URL to embed URL
-const getYouTubeEmbedUrl = (url) => {
-  if (!url) return null;
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  }
-  return null;
-};
+import { getYouTubeEmbedUrl } from '../../services/videoHelper';
 
 const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialReview = null, onReviewSubmitted }) => {
   const [rating, setRating] = useState(5);

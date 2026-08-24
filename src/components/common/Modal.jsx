@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
-const Modal = ({ isOpen, onClose, title, children, maxWidth = '650px', theme = 'light' }) => {
+const Modal = ({ isOpen, onClose, title, children, maxWidth = '650px' }) => {
+  const { isDark } = useTheme();
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -17,28 +20,49 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = '650px', theme = '
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
-        className={`modal-content ${theme === 'dark' ? 'dark-theme' : ''}`}
-        style={{ maxWidth }}
+        className={`modal-content ${isDark ? 'dark-theme' : ''}`}
+        style={{
+          maxWidth,
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-color)',
+          color: 'var(--text-main)',
+          borderRadius: '20px',
+          boxShadow: 'var(--shadow-xl)'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between" style={{ marginBottom: '1.25rem', borderBottom: theme === 'dark' ? '1px solid #1e2e4f' : '1px solid #e2e8f0', paddingBottom: '0.85rem' }}>
-          <h3 style={{ fontSize: '1.2rem', color: theme === 'dark' ? '#ffffff' : '#0f172a' }}>{title}</h3>
+        <div
+          className="flex items-center justify-between"
+          style={{
+            marginBottom: '1.25rem',
+            borderBottom: '1px solid var(--border-color)',
+            paddingBottom: '0.85rem'
+          }}
+        >
+          <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800 }}>{title}</h3>
           <button
+            type="button"
             onClick={onClose}
             style={{
-              background: 'transparent',
-              border: 'none',
+              background: 'var(--bg-surface-alt)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
               cursor: 'pointer',
-              color: theme === 'dark' ? '#94a3b8' : '#64748b',
+              color: 'var(--text-muted)',
               display: 'flex',
               alignItems: 'center',
-              padding: '0.25rem'
+              justifyContent: 'center',
+              transition: 'all 0.15s ease'
             }}
+            className="hover:scale-110"
+            title="Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
-        <div>{children}</div>
+        <div style={{ color: 'var(--text-main)' }}>{children}</div>
       </div>
     </div>
   );

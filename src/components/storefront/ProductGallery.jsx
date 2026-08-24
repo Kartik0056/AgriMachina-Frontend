@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Play, Image as ImageIcon, ZoomIn, Sparkles } from 'lucide-react';
-import { getYouTubeEmbedUrl } from '../admin/ProductForm/TabMedia';
+import { createPortal } from 'react-dom';
+import { Play, ZoomIn, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
 
 const ProductGallery = ({ mainImage, gallery = [], video }) => {
-  // Assemble full media list in order
   const allImages = [];
   if (mainImage?.url) {
     allImages.push({ url: mainImage.url, tag: '01 Main View', alt: mainImage.alt || 'Main Machinery View' });
@@ -13,8 +13,8 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
     if (item.url && !allImages.some(img => img.url === item.url)) {
       allImages.push({
         url: item.url,
-        tag: item.tag || `0${idx + 2} Angle View`,
-        alt: item.alt || 'Gallery Angle View'
+        tag: item.tag || `0${idx + 2} View`,
+        alt: item.alt || 'Gallery View'
       });
     }
   });
@@ -25,8 +25,9 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Amazon-style Image Magnification Zoom state
+  // Smooth Zoom Lens
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const containerRef = useRef(null);
@@ -44,12 +45,30 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
     });
   };
 
+  const handleNextImage = () => {
+    if (showVideo) {
+      setShowVideo(false);
+      setActiveIndex(0);
+    } else {
+      setActiveIndex((prev) => (prev + 1) % allImages.length);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (showVideo) {
+      setShowVideo(false);
+      setActiveIndex(allImages.length - 1);
+    } else {
+      setActiveIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+    }
+  };
+
   const videoEmbedUrl = video?.url ? getYouTubeEmbedUrl(video.url) : null;
-  const isDirectVideo = video?.url && (video.url.endsWith('.mp4') || video.url.endsWith('.webm') || video.url.includes('/uploads/'));
+  const isDirectVideo = isDirectVideoUrl(video?.url);
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Active Main Display Container with Hover Zoom Lens */}
+    <div className="flex flex-col gap-4" style={{ width: '100%' }}>
+      {/* Seamless Floating Machinery Showcase Frame */}
       <div
         ref={containerRef}
         onMouseEnter={() => !showVideo && setIsZoomed(true)}
@@ -58,16 +77,50 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
         style={{
           position: 'relative',
           width: '100%',
-          paddingTop: '75%',
-          background: '#f8fafc',
-          borderRadius: '16px',
+          minHeight: '420px',
+          height: '460px',
+          background: 'var(--bg-surface)',
+          borderRadius: '24px',
           overflow: 'hidden',
-          border: '1px solid #e2e8f0',
-          cursor: showVideo ? 'default' : 'crosshair'
+          border: '1.5px solid var(--border-color)',
+          boxShadow: '0 8px 30px -8px rgba(0, 0, 0, 0.08)',
+          cursor: showVideo ? 'default' : isZoomed ? 'zoom-out' : 'crosshair',
+          transition: 'all 0.25s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
         {showVideo && video?.url ? (
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#000000', zIndex: 10 }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#070d1a', zIndex: 10 }}>
+            {/* Close Video / Return to Photos Button */}
+            <button
+              type="button"
+              onClick={() => setShowVideo(false)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'rgba(15, 23, 42, 0.85)',
+                backdropFilter: 'blur(6px)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '50%',
+                width: '34px',
+                height: '34px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 15,
+                transition: 'transform 0.15s ease'
+              }}
+              className="hover:scale-110"
+              title="Return to Photos"
+            >
+              <X size={18} />
+            </button>
+
             {isDirectVideo ? (
               <video src={video.url} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             ) : videoEmbedUrl ? (
@@ -75,7 +128,7 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
                 src={`${videoEmbedUrl}${videoEmbedUrl.includes('?') ? '&' : '?'}autoplay=1`}
                 title={video.title || 'Product Working Video'}
                 style={{ width: '100%', height: '100%', border: 'none' }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               />
             ) : (
@@ -85,15 +138,13 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
         ) : (
           <div
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
               width: '100%',
               height: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              padding: '1.75rem'
             }}
           >
             <img
@@ -102,112 +153,220 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
               style={{
                 width: '100%',
                 height: '100%',
+                maxHeight: '400px',
                 objectFit: 'contain',
-                padding: '1rem',
                 transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                transform: isZoomed ? 'scale(2.4)' : 'scale(1)',
-                transition: isZoomed ? 'transform 0.08s ease-out' : 'transform 0.3s ease-out',
-                pointerEvents: 'none'
+                transform: isZoomed ? 'scale(2.2)' : 'scale(1)',
+                transition: isZoomed ? 'transform 0.06s ease-out' : 'transform 0.3s ease-out',
+                pointerEvents: 'none',
+                filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.12))'
               }}
             />
           </div>
         )}
 
-        {/* Hover Zoom Hint Badge */}
-        {!showVideo && !isZoomed && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '12px',
-              right: '12px',
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(4px)',
-              color: '#166534',
-              fontSize: '0.725rem',
-              fontWeight: 700,
-              padding: '0.3rem 0.6rem',
-              borderRadius: '6px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              pointerEvents: 'none',
-              zIndex: 5
-            }}
-          >
-            <ZoomIn size={13} color="#166534" />
-            <span>Hover to Zoom Lens</span>
-          </div>
-        )}
+        {/* Top Badges & Controls */}
+        <div style={{
+          position: 'absolute',
+          top: '16px',
+          left: '16px',
+          right: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          pointerEvents: 'none',
+          zIndex: 8
+        }}>
+          {/* Media Angle Tag */}
+          {!showVideo && activeMedia.tag && (
+            <span
+              style={{
+                background: 'rgba(15, 23, 42, 0.72)',
+                backdropFilter: 'blur(8px)',
+                color: '#f8fafc',
+                fontSize: '0.725rem',
+                padding: '0.3rem 0.7rem',
+                borderRadius: '8px',
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+              }}
+            >
+              📷 {activeMedia.tag}
+            </span>
+          )}
 
-        {/* Media Tag Indicator */}
-        {!showVideo && activeMedia.tag && (
-          <span
-            style={{
-              position: 'absolute',
-              bottom: '12px',
-              left: '12px',
-              background: 'rgba(0, 0, 0, 0.7)',
-              color: '#ffffff',
-              fontSize: '0.725rem',
-              padding: '0.25rem 0.6rem',
-              borderRadius: '6px',
-              fontWeight: 600,
-              zIndex: 5,
-              pointerEvents: 'none'
-            }}
-          >
-            {activeMedia.tag}
-          </span>
+          {/* Right Action Icons (Zoom & Fullscreen) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', pointerEvents: 'auto' }}>
+            {!showVideo && !isZoomed && (
+              <div
+                style={{
+                  background: 'rgba(22, 101, 52, 0.85)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#ffffff',
+                  fontSize: '0.7rem',
+                  fontWeight: 700,
+                  padding: '0.3rem 0.65rem',
+                  borderRadius: '8px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  border: '1px solid rgba(134, 239, 172, 0.3)'
+                }}
+              >
+                <ZoomIn size={13} color="#86efac" />
+                <span>Hover to Zoom</span>
+              </div>
+            )}
+
+            {!showVideo && (
+              <button
+                type="button"
+                onClick={() => setIsFullscreen(true)}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.72)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                  transition: 'transform 0.15s ease'
+                }}
+                className="hover:scale-110"
+                title="Fullscreen Image View"
+              >
+                <Maximize2 size={15} color="#f8fafc" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Carousel Arrow Navigation */}
+        {allImages.length > 1 && !isZoomed && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevImage();
+              }}
+              style={{
+                position: 'absolute',
+                left: '14px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(15, 23, 42, 0.65)',
+                backdropFilter: 'blur(6px)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 8,
+                transition: 'all 0.15s ease'
+              }}
+              className="hover:scale-110"
+              title="Previous Photo"
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNextImage();
+              }}
+              style={{
+                position: 'absolute',
+                right: '14px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(15, 23, 42, 0.65)',
+                backdropFilter: 'blur(6px)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 8,
+                transition: 'all 0.15s ease'
+              }}
+              className="hover:scale-110"
+              title="Next Photo"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
         )}
       </div>
 
-      {/* Thumbnails Bar & Video Selector */}
-      <div className="flex gap-2" style={{ overflowX: 'auto', padding: '0.35rem 0' }}>
-        {allImages.map((img, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => {
-              setActiveIndex(idx);
-              setShowVideo(false);
-            }}
-            style={{
-              width: '72px',
-              height: '72px',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              border: activeIndex === idx && !showVideo ? '2px solid #166534' : '1px solid #cbd5e1',
-              padding: '2px',
-              background: '#ffffff',
-              cursor: 'pointer',
-              flexShrink: 0,
-              position: 'relative',
-              boxShadow: activeIndex === idx && !showVideo ? '0 0 0 2px rgba(22, 101, 52, 0.2)' : 'none'
-            }}
-          >
-            <img src={img.url} alt={img.alt} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '6px' }} />
-            {img.tag && (
-              <span
+      {/* Thumbnails Row with Clean, Unobstructed Previews & No Clipping */}
+      <div
+        className="flex gap-3"
+        style={{
+          overflowX: 'auto',
+          padding: '6px 4px',
+          scrollbarWidth: 'thin'
+        }}
+      >
+        {allImages.map((img, idx) => {
+          const isSelected = activeIndex === idx && !showVideo;
+          return (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                setActiveIndex(idx);
+                setShowVideo(false);
+              }}
+              style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '12px',
+                border: isSelected ? '2px solid #16a34a' : '1.5px solid var(--border-color)',
+                padding: '5px',
+                background: 'var(--bg-surface)',
+                cursor: 'pointer',
+                flexShrink: 0,
+                boxShadow: isSelected ? '0 0 0 2.5px rgba(22, 163, 74, 0.3)' : 'var(--shadow-sm)',
+                transition: 'all 0.18s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              className="hover:scale-105"
+              title={img.tag || `View ${idx + 1}`}
+            >
+              <img
+                src={img.url}
+                alt={img.alt}
                 style={{
-                  position: 'absolute',
-                  bottom: '2px',
-                  left: '2px',
-                  right: '2px',
-                  fontSize: '0.55rem',
-                  background: 'rgba(0, 0, 0, 0.75)',
-                  color: '#ffffff',
-                  textAlign: 'center',
-                  borderRadius: '2px',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden'
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                  borderRadius: '6px'
                 }}
-              >
-                {img.tag.replace(/^\d+\s*/, '')}
-              </span>
-            )}
-          </button>
-        ))}
+              />
+            </button>
+          );
+        })}
 
         {/* Video Thumbnail Button */}
         {video?.url && (
@@ -217,25 +376,185 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
             style={{
               width: '72px',
               height: '72px',
-              borderRadius: '10px',
-              border: showVideo ? '2px solid #f59e0b' : '1px solid #cbd5e1',
-              background: '#070d1a',
+              borderRadius: '12px',
+              border: showVideo ? '2px solid #f59e0b' : '1.5px solid var(--border-color)',
+              background: 'linear-gradient(135deg, #0c3e27, #070d1a)',
               color: '#f59e0b',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '4px',
+              gap: '3px',
               cursor: 'pointer',
               flexShrink: 0,
-              boxShadow: showVideo ? '0 0 0 2px rgba(245, 158, 11, 0.3)' : 'none'
+              boxShadow: showVideo ? '0 0 0 2.5px rgba(245, 158, 11, 0.35)' : 'var(--shadow-sm)',
+              transition: 'all 0.18s ease'
             }}
+            className="hover:scale-105"
+            title="Field Working Video Demo"
           >
-            <Play size={22} fill="#f59e0b" color="#f59e0b" />
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#ffffff' }}>FIELD VIDEO</span>
+            <Play size={20} fill="#f59e0b" color="#f59e0b" />
+            <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#fef08a' }}>DEMO</span>
           </button>
         )}
       </div>
+
+      {/* Lightbox / Fullscreen High-Resolution Viewer Portal (Completely bypasses stacking context) */}
+      {isFullscreen && createPortal(
+        <div
+          onClick={() => setIsFullscreen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(3, 7, 18, 0.96)',
+            backdropFilter: 'blur(16px)',
+            zIndex: 99999999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.5rem',
+            animation: 'fadeIn 0.2s ease-out forwards'
+          }}
+        >
+          {/* Close Fullscreen Button */}
+          <button
+            type="button"
+            onClick={() => setIsFullscreen(false)}
+            style={{
+              position: 'absolute',
+              top: '24px',
+              right: '24px',
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '50%',
+              width: '46px',
+              height: '46px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              cursor: 'pointer',
+              zIndex: 100000000,
+              transition: 'all 0.15s ease'
+            }}
+            className="hover:scale-110 hover:bg-white/25"
+            title="Close Fullscreen View (Esc)"
+          >
+            <X size={26} />
+          </button>
+
+          {/* Left / Right Carousel Navigation in Fullscreen */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage();
+                }}
+                style={{
+                  position: 'absolute',
+                  left: '24px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  borderRadius: '50%',
+                  width: '52px',
+                  height: '52px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  cursor: 'pointer',
+                  zIndex: 100000000,
+                  transition: 'all 0.15s ease'
+                }}
+                className="hover:scale-110 hover:bg-white/25"
+                title="Previous Photo"
+              >
+                <ChevronLeft size={30} />
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage();
+                }}
+                style={{
+                  position: 'absolute',
+                  right: '24px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  borderRadius: '50%',
+                  width: '52px',
+                  height: '52px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  cursor: 'pointer',
+                  zIndex: 100000000,
+                  transition: 'all 0.15s ease'
+                }}
+                className="hover:scale-110 hover:bg-white/25"
+                title="Next Photo"
+              >
+                <ChevronRight size={30} />
+              </button>
+            </>
+          )}
+
+          {/* Fullscreen High-Res Image Container */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '1rem',
+              maxWidth: '92vw',
+              maxHeight: '90vh'
+            }}
+          >
+            <img
+              src={activeMedia.url}
+              alt={activeMedia.alt}
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '82vh',
+                objectFit: 'contain',
+                borderRadius: '16px',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.7)',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }}
+            />
+
+            {activeMedia.tag && (
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.12)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#ffffff',
+                  padding: '0.4rem 1rem',
+                  borderRadius: '999px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}
+              >
+                📷 {activeMedia.tag} ({activeIndex + 1} / {allImages.length})
+              </div>
+            )}
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

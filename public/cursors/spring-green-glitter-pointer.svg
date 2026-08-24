@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+  <defs>
+    <!-- Rich Spring Green Gradient -->
+    <linearGradient id="glitterHandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="35%" stop-color="#22c55e"/>
+      <stop offset="70%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+
+    <!-- Clip Path for Hand Shape (Finger pointing at 10, 2) -->
+    <clipPath id="handClip">
+      <path d="M 10,2 C 7.5,2 7.5,6 7.5,13 C 6,13.5 5,15 5,17 C 5,18 5.5,19 6,20 C 5.5,21 5.5,22.5 6,23.5 C 7,27 10,32 15,32 C 20,32 24,28 24,22 C 24,19 24,18 23,17 C 24,16 24,14 22.5,13.5 C 22.5,10 20,10 19,13 C 18,9.5 15.5,9.5 15,13 C 14.5,7 14,2 10,2 Z" />
+    </clipPath>
+
+    <!-- 4-point Star Sparkle Symbol -->
+    <g id="sparkleStarHand">
+      <path d="M 0,-3.5 Q 0,0 3.5,0 Q 0,0 0,3.5 Q 0,0 -3.5,0 Q 0,0 0,-3.5 Z" fill="#ffffff" />
+      <circle cx="0" cy="0" r="1" fill="#ffffff" />
+    </g>
+    <g id="smallStarHand">
+      <path d="M 0,-2 Q 0,0 2,0 Q 0,0 0,2 Q 0,0 -2,0 Q 0,0 0,-2 Z" fill="#ffffff" opacity="0.9" />
+    </g>
+  </defs>
+
+  <g filter="drop-shadow(0 3px 6px rgba(0,0,0,0.5))">
+    <!-- Outer Hand Path -->
+    <path d="M 10,2 C 7.5,2 7.5,6 7.5,13 C 6,13.5 5,15 5,17 C 5,18 5.5,19 6,20 C 5.5,21 5.5,22.5 6,23.5 C 7,27 10,32 15,32 C 20,32 24,28 24,22 C 24,19 24,18 23,17 C 24,16 24,14 22.5,13.5 C 22.5,10 20,10 19,13 C 18,9.5 15.5,9.5 15,13 C 14.5,7 14,2 10,2 Z" fill="url(#glitterHandGrad)" stroke="#052e16" stroke-width="2" stroke-linejoin="round" />
+
+    <!-- Glitter Pattern Clipped to Hand -->
+    <g clip-path="url(#handClip)">
+      <!-- Glitter Shimmer Speckles -->
+      <circle cx="10" cy="4" r="0.7" fill="#ffffff" opacity="0.9"/>
+      <circle cx="9" cy="7" r="0.8" fill="#bbf7d0" opacity="0.85"/>
+      <circle cx="12" cy="6" r="0.6" fill="#ffffff" opacity="0.8"/>
+      <circle cx="10" cy="10" r="0.9" fill="#dcfce7" opacity="0.9"/>
+      <circle cx="8" cy="12" r="0.7" fill="#ffffff" opacity="0.85"/>
+      <circle cx="13" cy="12" r="0.8" fill="#86efac" opacity="0.9"/>
+      <circle cx="6" cy="16" r="0.7" fill="#ffffff" opacity="0.85"/>
+      <circle cx="9" cy="16" r="0.9" fill="#bbf7d0" opacity="0.9"/>
+      <circle cx="13" cy="16" r="0.7" fill="#ffffff" opacity="0.8"/>
+      <circle cx="17" cy="15" r="0.8" fill="#dcfce7" opacity="0.85"/>
+      <circle cx="21" cy="15" r="0.7" fill="#ffffff" opacity="0.85"/>
+      <circle cx="7" cy="19" r="0.8" fill="#ffffff" opacity="0.9"/>
+      <circle cx="11" cy="19" r="0.7" fill="#bbf7d0" opacity="0.85"/>
+      <circle cx="15" cy="19" r="0.9" fill="#ffffff" opacity="0.9"/>
+      <circle cx="19" cy="19" r="0.7" fill="#86efac" opacity="0.85"/>
+      <circle cx="22" cy="19" r="0.8" fill="#ffffff" opacity="0.85"/>
+      <circle cx="8" cy="23" r="0.7" fill="#dcfce7" opacity="0.9"/>
+      <circle cx="12" cy="23" r="0.9" fill="#ffffff" opacity="0.9"/>
+      <circle cx="16" cy="23" r="0.7" fill="#bbf7d0" opacity="0.85"/>
+      <circle cx="20" cy="23" r="0.8" fill="#ffffff" opacity="0.85"/>
+      <circle cx="10" cy="27" r="0.8" fill="#ffffff" opacity="0.85"/>
+      <circle cx="14" cy="27" r="0.7" fill="#dcfce7" opacity="0.9"/>
+      <circle cx="18" cy="27" r="0.9" fill="#ffffff" opacity="0.9"/>
+      <circle cx="12" cy="30" r="0.7" fill="#bbf7d0" opacity="0.85"/>
+      <circle cx="16" cy="30" r="0.8" fill="#ffffff" opacity="0.8"/>
+
+      <!-- Glowing Star Glints (✦) as in screenshot -->
+      <use href="#sparkleStarHand" x="10" y="8"/>
+      <use href="#sparkleStarHand" x="14" y="18"/>
+      <use href="#sparkleStarHand" x="19" y="22"/>
+      <use href="#sparkleStarHand" x="13" y="27"/>
+      <use href="#smallStarHand" x="10" y="3"/>
+      <use href="#smallStarHand" x="6" y="17"/>
+      <use href="#smallStarHand" x="21" y="16"/>
+      <use href="#smallStarHand" x="17" y="29"/>
+    </g>
+  </g>
+</svg>

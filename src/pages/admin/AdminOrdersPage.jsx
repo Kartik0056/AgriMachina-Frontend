@@ -61,14 +61,6 @@ const AdminOrdersPage = () => {
     fetchOrders();
   }, [statusFilter, searchQuery]);
 
-  // Auto-poll every 8 seconds for new incoming farmer orders
-  useEffect(() => {
-    if (!autoRefresh) return;
-    const interval = setInterval(() => {
-      fetchOrders(true);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [autoRefresh, statusFilter, searchQuery]);
 
   const openOrderModal = (order) => {
     setSelectedOrder(order);

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Layers, AlertTriangle, RefreshCw, Plus, ArrowUpRight, ArrowDownRight, History } from 'lucide-react';
 import adminApi from '../../services/adminApi';
 import { useToast } from '../../context/ToastContext';
+import { useSync } from '../../context/SyncContext';
 import { formatINR } from '../../services/emiHelper';
 
 const AdminInventoryPage = () => {
+  const { broadcastLocal } = useSync();
   const [products, setProducts] = useState([]);
   const [inventoryLogs, setInventoryLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +53,7 @@ const AdminInventoryPage = () => {
       });
       if (res.data.success) {
         addToast(`Stock for ${restockProduct.name} updated to ${newQuantity} units!`, 'success');
+        broadcastLocal('INVENTORY_UPDATED', { productId: restockProduct._id, stockQuantity: Number(newQuantity) });
         setRestockProduct(null);
         fetchInventoryData();
       }

@@ -17,6 +17,7 @@ import {
 import { formatINR } from '../../services/emiHelper';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
+import { useLanguage } from '../../context/LanguageContext';
 import EMICalculatorModal from './EMICalculatorModal';
 
 const slides = [
@@ -118,6 +119,7 @@ const slides = [
 ];
 
 const HeroSlider = () => {
+  const { t, tr } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [selectedEmiProduct, setSelectedEmiProduct] = useState(null);
@@ -317,7 +319,7 @@ const HeroSlider = () => {
               >
                 <Timer size={13} color="#f59e0b" />
                 <span>
-                  Ends in {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
+                  {t('deal_ends_in', 'Ends in')} {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
                 </span>
               </div>
             </div>
@@ -335,7 +337,7 @@ const HeroSlider = () => {
                 textShadow: '0 2px 12px rgba(0,0,0,0.6)'
               }}
             >
-              {slide.name}
+              {tr(slide.name)}
             </h1>
 
             {/* Short Description */}
@@ -349,7 +351,7 @@ const HeroSlider = () => {
                 textShadow: '0 1px 4px rgba(0,0,0,0.4)'
               }}
             >
-              {slide.shortDesc}
+              {tr(slide.shortDesc)}
             </p>
 
             {/* Key Spec Chips Layer */}
@@ -373,7 +375,7 @@ const HeroSlider = () => {
                   }}
                 >
                   <CheckCircle2 size={13} color="#86efac" />
-                  <span>{spec}</span>
+                  <span>{tr(spec)}</span>
                 </span>
               ))}
             </div>
@@ -398,7 +400,7 @@ const HeroSlider = () => {
             >
               <div>
                 <div style={{ fontSize: '0.75rem', color: '#a7f3d0', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Special Direct Farm Price
+                  {t('special_farm_price', 'Special Direct Farm Price')}
                 </div>
                 <div className="flex items-baseline gap-2.5">
                   <span style={{ fontSize: '2rem', fontWeight: 900, color: '#fef08a' }}>
@@ -408,7 +410,7 @@ const HeroSlider = () => {
                     {formatINR(slide.mrp)}
                   </span>
                   <span className="badge badge-accent" style={{ background: '#f59e0b', color: '#ffffff', fontSize: '0.75rem' }}>
-                    Save {slide.discountPercent}%
+                    {t('save', 'Save')} {slide.discountPercent}%
                   </span>
                 </div>
               </div>
@@ -417,10 +419,10 @@ const HeroSlider = () => {
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
                   <Sparkles size={13} color="#f59e0b" />
-                  <span>0% No-Cost EMI via Razorpay</span>
+                  <span>{t('no_cost_emi_badge', '0% No-Cost EMI via Razorpay')}</span>
                 </div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff' }}>
-                  EMI from <span style={{ color: '#86efac' }}>{formatINR(slide.monthlyEmi)}</span>
+                  {t('monthly_emi_text', 'EMI from')} <span style={{ color: '#86efac' }}>{formatINR(slide.monthlyEmi)}</span>
                   <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#dcfce7' }}>/mo</span>
                 </div>
               </div>
@@ -429,7 +431,7 @@ const HeroSlider = () => {
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
               <Link to={`/product/${slide.slug}`} className="btn btn-accent btn-lg gsap-hero-btn">
-                <span>Explore Full Machine Details</span>
+                <span>{t('explore_machine', 'Explore Full Machine Details')}</span>
                 <ArrowRight size={18} />
               </Link>
 
@@ -440,7 +442,7 @@ const HeroSlider = () => {
                 style={{ background: 'rgba(255, 255, 255, 0.95)', color: '#062416', fontWeight: 700 }}
               >
                 <CreditCard size={18} color="#166534" />
-                <span>View Bank EMI Plans</span>
+                <span>{t('view_emi_plans_btn', 'View Bank EMI Plans')}</span>
               </button>
 
               <a
@@ -453,7 +455,7 @@ const HeroSlider = () => {
                 style={{ background: 'rgba(7, 94, 84, 0.85)', borderColor: '#075e54', color: '#ffffff' }}
               >
                 <PhoneCall size={18} color="#86efac" />
-                <span>Agronomy Advice</span>
+                <span>{t('agronomy_advice', 'Agronomy Advice')}</span>
               </a>
             </div>
           </div>

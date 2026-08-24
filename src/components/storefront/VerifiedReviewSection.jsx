@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Star, ShieldCheck, PenSquare, Edit, Trash2, Camera, Video, Play } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Star, ShieldCheck, PenSquare, Edit, Trash2, Camera, Video, Play, X } from 'lucide-react';
 import StarRating from '../common/StarRating';
 import WriteReviewModal from './WriteReviewModal';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-
-// Helper to convert YouTube URL to embed URL
-const getYouTubeEmbedUrl = (url) => {
-  if (!url) return null;
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  }
-  return null;
-};
+import { getYouTubeEmbedUrl } from '../../services/videoHelper';
 
 const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) => {
   const [reviews, setReviews] = useState([]);
@@ -26,6 +18,7 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
   });
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [editingReview, setEditingReview] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [userReview, setUserReview] = useState(null);
   const { user, isAuthenticated } = useAuth();
   const { addToast } = useToast();
@@ -282,14 +275,27 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                     </div>
                     <div className="flex gap-2" style={{ flexWrap: 'wrap' }}>
                       {rev.images.map((img, idx) => (
-                        <a key={idx} href={img} target="_blank" rel="noreferrer">
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setPreviewImage(img)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            overflow: 'hidden'
+                          }}
+                          title="Click to view full photo"
+                        >
                           <img
                             src={img}
                             alt="Field photo"
-                            style={{ width: '85px', height: '85px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #cbd5e1', cursor: 'pointer' }}
+                            style={{ width: '85px', height: '85px', objectFit: 'cover', borderRadius: '8px', border: '1.5px solid #cbd5e1' }}
                             className="hover:scale-105 transition-transform"
                           />
-                        </a>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -348,6 +354,68 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
           fetchReviews();
         }}
       />
+
+      {/* Fullscreen Review Photo Lightbox (React Portal to document.body) */}
+      {previewImage && createPortal(
+        <div
+          onClick={() => setPreviewImage(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(3, 7, 18, 0.96)',
+            backdropFilter: 'blur(16px)',
+            zIndex: 99999999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.5rem',
+            animation: 'fadeIn 0.2s ease-out forwards'
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewImage(null)}
+            style={{
+              position: 'absolute',
+              top: '24px',
+              right: '24px',
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '50%',
+              width: '46px',
+              height: '46px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              cursor: 'pointer',
+              zIndex: 100000000,
+              transition: 'all 0.15s ease'
+            }}
+            className="hover:scale-110 hover:bg-white/25"
+            title="Close Fullscreen View"
+          >
+            <X size={26} />
+          </button>
+
+          <img
+            src={previewImage}
+            alt="Customer Field Photo Fullscreen"
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '85vh',
+              objectFit: 'contain',
+              borderRadius: '16px',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

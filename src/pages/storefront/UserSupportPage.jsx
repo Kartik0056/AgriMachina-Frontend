@@ -8,39 +8,68 @@ import {
   Plus,
   RefreshCw,
   Clock,
-  CheckCircle2,
+  CheckCheck,
   ShieldCheck,
   Headphones,
   Tractor,
-  HelpCircle
+  HelpCircle,
+  PhoneCall,
+  MessageCircle,
+  Paperclip,
+  X,
+  Search,
+  ChevronDown,
+  Sparkles,
+  ArrowDown,
+  FileText,
+  Download,
+  UploadCloud,
+  Image as ImageIcon,
+  Minimize2,
+  Maximize2,
+  Minus,
+  ChevronUp,
+  ArrowUpRight
 } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useSync } from '../../context/SyncContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Link } from 'react-router-dom';
+import Modal from '../../components/common/Modal';
+import { getYouTubeEmbedUrl } from '../../services/videoHelper';
 
-const getYouTubeEmbedUrl = (url) => {
-  if (!url) return null;
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  }
-  return null;
-};
+const quickFarmerQuestions = [
+  'Is this machine suitable for heavy black cotton / clay soil?',
+  'What is the subsidy percentage under SMAM / DBT for this model?',
+  'How to apply for 0% No-Cost EMI via SBI Kisan / HDFC?',
+  'When will the spare parts and blade set be dispatched?',
+  'Please share full working demonstration video in field.'
+];
 
 const UserSupportPage = () => {
   const { user, isAuthenticated } = useAuth();
   const { addToast } = useToast();
+  const { subscribe } = useSync();
+  const { t, tr } = useLanguage();
 
   const [tickets, setTickets] = useState([]);
-  const [selectedTicket, setSelectedTicket] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // New Message Form State
+  // Active Popup Chat Widget State (Gmail Compose Style)
+  const [activeTicket, setActiveTicket] = useState(null);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  // Message input state inside popup
   const [replyText, setReplyText] = useState('');
   const [photoInput, setPhotoInput] = useState('');
-  const [photosList, setPhotosList] = useState([]);
   const [videoUrl, setVideoUrl] = useState('');
+  const [attachmentsList, setAttachmentsList] = useState([]);
+  const [showAttachmentDrawer, setShowAttachmentDrawer] = useState(false);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
   const [sending, setSending] = useState(false);
 
   // New Inquiry Modal State
@@ -48,8 +77,19 @@ const UserSupportPage = () => {
   const [newSubject, setNewSubject] = useState('');
   const [newTopic, setNewTopic] = useState('Technical Guidance');
   const [newMsg, setNewMsg] = useState('');
+  const [newModalFiles, setNewModalFiles] = useState([]);
 
-  const chatBottomRef = useRef(null);
+  // File Input Refs
+  const fileInputRef = useRef(null);
+  const modalFileInputRef = useRef(null);
+  const messagesScrollRef = useRef(null);
+  const prevMessagesCountRef = useRef(0);
+
+  const scrollToBottomInner = () => {
+    if (messagesScrollRef.current) {
+      messagesScrollRef.current.scrollTop = messagesScrollRef.current.scrollHeight;
+    }
+  };
 
   const fetchTickets = async (showLoading = false) => {
     if (!isAuthenticated) {
@@ -63,11 +103,15 @@ const UserSupportPage = () => {
         const fetched = res.data.tickets || [];
         setTickets(fetched);
 
-        if (selectedTicket) {
-          const updated = fetched.find(t => t._id === selectedTicket._id);
-          if (updated) setSelectedTicket(updated);
-        } else if (fetched.length > 0) {
-          setSelectedTicket(fetched[0]);
+        if (activeTicket) {
+          const updated = fetched.find(t => t._id === activeTicket._id);
+          if (updated) {
+            const newCount = updated.messages?.length || 0;
+            const oldCount = activeTicket.messages?.length || 0;
+            if (newCount !== oldCount || updated.status !== activeTicket.status) {
+              setActiveTicket(updated);
+            }
+          }
         }
       }
     } catch (error) {
@@ -79,54 +123,139 @@ const UserSupportPage = () => {
 
   useEffect(() => {
     fetchTickets(true);
-    const interval = setInterval(() => fetchTickets(false), 5000); // Live 5s auto-polling
-    return () => clearInterval(interval);
   }, [isAuthenticated]);
 
-  const handleSelectTicket = async (t) => {
-    try {
-      const res = await api.get(`/support/tickets/${t._id}`);
-      if (res.data.success) {
-        setSelectedTicket(res.data.ticket);
+  // Real-time update listener via SSE
+  useEffect(() => {
+    const unsubscribe = subscribe((event) => {
+      if (event.type === 'TICKET_UPDATED' || event.type === 'NEW_SUPPORT_QUERY') {
         fetchTickets(false);
       }
+    });
+    return unsubscribe;
+  }, [subscribe]);
+
+  // Scroll popup when new message arrives
+  useEffect(() => {
+    if (!activeTicket?.messages) return;
+    const currentCount = activeTicket.messages.length;
+    if (currentCount > prevMessagesCountRef.current) {
+      setTimeout(scrollToBottomInner, 50);
+      prevMessagesCountRef.current = currentCount;
+    }
+  }, [activeTicket?.messages]);
+
+  // Open Chat Popup
+  const handleOpenChatPopup = async (t) => {
+    try {
+      setIsMinimized(false);
+      prevMessagesCountRef.current = 0;
+      // Mark as read locally immediately so the NEW badge vanishes on click
+      setTickets(prev => prev.map(item => item._id === t._id ? { ...item, unreadByUser: 0 } : item));
+      const res = await api.get(`/support/tickets/${t._id}`);
+      if (res.data.success) {
+        setActiveTicket(res.data.ticket);
+        fetchTickets(false);
+        setTimeout(scrollToBottomInner, 60);
+      }
     } catch (error) {
-      setSelectedTicket(t);
+      setActiveTicket(t);
     }
   };
 
-  useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [selectedTicket?.messages]);
+const formatFileSize = (bytes) => {
+  if (!bytes || bytes === 0) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
-  const handleAddPhoto = (e) => {
-    e.preventDefault();
+  // Direct Device File Upload Handler (Max 5MB per file)
+  const handleFileUpload = async (e, isModal = false) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Validate 5MB maximum file size per file
+    const maxSizeBytes = 5 * 1024 * 1024;
+    for (const f of files) {
+      if (f.size > maxSizeBytes) {
+        addToast(`File "${f.name}" (${(f.size / (1024 * 1024)).toFixed(1)} MB) exceeds maximum allowed size of 5MB.`, 'error');
+        if (e.target) e.target.value = '';
+        return;
+      }
+    }
+
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+
+    setUploadingFiles(true);
+    try {
+      const res = await api.post('/support/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      if (res.data.success && res.data.files) {
+        if (isModal) {
+          setNewModalFiles(prev => [...prev, ...res.data.files]);
+        } else {
+          setAttachmentsList(prev => [...prev, ...res.data.files]);
+        }
+        addToast(`${files.length} document(s) / file(s) attached! (Max 5MB)`, 'success');
+      }
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Failed to upload files. Max allowed size is 5MB.', 'error');
+    } finally {
+      setUploadingFiles(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  const handleAddPhotoUrl = (e) => {
+    e?.preventDefault();
     if (!photoInput.trim()) return;
-    setPhotosList(prev => [...prev, photoInput.trim()]);
+    setAttachmentsList(prev => [
+      ...prev,
+      { url: photoInput.trim(), name: 'Web Photo Link', size: 0, fileType: 'image' }
+    ]);
     setPhotoInput('');
   };
 
+  const handleRemoveAttachment = (idx, isModal = false) => {
+    if (isModal) {
+      setNewModalFiles(prev => prev.filter((_, i) => i !== idx));
+    } else {
+      setAttachmentsList(prev => prev.filter((_, i) => i !== idx));
+    }
+  };
+
   const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if ((!replyText || !replyText.trim()) && photosList.length === 0 && !videoUrl) {
-      addToast('Please enter a message or attach photos/video.', 'warning');
+    e?.preventDefault();
+    if ((!replyText || !replyText.trim()) && attachmentsList.length === 0 && !videoUrl) {
+      addToast('Please type a message or attach photos/files.', 'warning');
       return;
     }
 
     setSending(true);
     try {
-      const res = await api.post(`/support/tickets/${selectedTicket._id}/message`, {
+      const images = attachmentsList.filter(a => a.fileType === 'image').map(a => a.url);
+
+      const res = await api.post(`/support/tickets/${activeTicket._id}/message`, {
         text: replyText.trim(),
-        images: photosList,
+        images,
+        attachments: attachmentsList,
         videoUrl: videoUrl.trim()
       });
 
       if (res.data.success) {
-        addToast('Message sent to AgriMachina support team.', 'success');
-        setSelectedTicket(res.data.ticket);
+        addToast('Message sent to AgriMachina specialists.', 'success');
+        setActiveTicket(res.data.ticket);
         setReplyText('');
-        setPhotosList([]);
+        setAttachmentsList([]);
         setVideoUrl('');
+        setShowAttachmentDrawer(false);
+        setTimeout(scrollToBottomInner, 50);
         fetchTickets(false);
       }
     } catch (error) {
@@ -139,215 +268,467 @@ const UserSupportPage = () => {
   const handleCreateNewInquiry = async (e) => {
     e.preventDefault();
     if (!newSubject.trim() || !newMsg.trim()) {
-      addToast('Please fill all fields.', 'warning');
+      addToast('Please fill all required fields.', 'warning');
       return;
     }
 
     try {
+      const images = newModalFiles.filter(a => a.fileType === 'image').map(a => a.url);
+
       const res = await api.post('/support/tickets', {
         name: user?.name || 'Farmer Friend',
         phone: user?.phone || '9027799171',
         email: user?.email || '',
         subject: newSubject.trim(),
         inquiryType: newTopic,
-        message: newMsg.trim()
+        message: newMsg.trim(),
+        images,
+        attachments: newModalFiles
       });
 
       if (res.data.success) {
-        addToast('Your new inquiry has been submitted! Support team will respond shortly.', 'success');
+        addToast('Your inquiry has been submitted! Support team will respond shortly.', 'success');
         setIsNewModalOpen(false);
         setNewSubject('');
         setNewMsg('');
+        setNewModalFiles([]);
         fetchTickets(true);
-        if (res.data.ticket) setSelectedTicket(res.data.ticket);
+        if (res.data.ticket) {
+          handleOpenChatPopup(res.data.ticket);
+        }
       }
     } catch (error) {
       addToast(error.response?.data?.message || 'Failed to create inquiry.', 'error');
     }
   };
 
+  const filteredTickets = tickets.filter(t => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      t.subject?.toLowerCase().includes(q) ||
+      t.productTitle?.toLowerCase().includes(q) ||
+      t.ticketNumber?.toLowerCase().includes(q)
+    );
+  });
+
   if (!isAuthenticated) {
     return (
-      <div className="container" style={{ padding: '4rem 1rem', textAlign: 'center' }}>
-        <Headphones size={48} color="#166534" style={{ margin: '0 auto 1rem auto' }} />
-        <h2 style={{ fontSize: '1.75rem', color: '#062416', fontWeight: 900, marginBottom: '0.5rem' }}>
-          Farmer Support & Technical Messages
+      <div className="container" style={{ padding: '5rem 1.5rem', textAlign: 'center' }}>
+        <Headphones size={52} color="#166534" style={{ margin: '0 auto 1.25rem auto' }} />
+        <h2 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900, marginBottom: '0.75rem' }}>
+          Farmer Support & Technical Advisory Chat
         </h2>
-        <p style={{ color: '#64748b', maxWidth: '480px', margin: '0 auto 1.5rem auto' }}>
-          Please login to view your support conversation history and chat directly with our certified agricultural engineers.
+        <p style={{ color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 2rem auto', fontSize: '1rem' }}>
+          Please login to view your support conversations, chat directly with certified agricultural engineers, and receive field advice.
         </p>
-        <Link to="/login" className="btn btn-primary btn-lg">
-          Login to Access Support Desk
+        <Link to="/login" className="btn btn-primary btn-lg" style={{ padding: '0.85rem 2rem', fontWeight: 800 }}>
+          Login to Access Support Chat
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="container" style={{ padding: '2.5rem 1.25rem 4rem 1.25rem' }}>
-      {/* Header */}
-      <div className="flex justify-between items-center" style={{ marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <span className="badge badge-primary" style={{ marginBottom: '0.4rem' }}>
-            🛠️ 24x7 Certified Agronomy & Technical Support
-          </span>
-          <h1 style={{ fontSize: '2rem', color: '#062416', fontWeight: 900 }}>
-            My Support Inquiries & Messages
-          </h1>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-            Chat live with AgriMachina technical specialists, get machinery advice, and share field videos.
-          </p>
+    <div className="container" style={{ padding: '1.5rem 1rem 4rem 1rem' }}>
+      {/* Top Banner & Heading with generous margin & responsive flex */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ marginBottom: '2rem' }}>
+        <div className="flex items-center gap-3.5">
+          <div style={{ width: '46px', height: '46px', borderRadius: '13px', background: 'linear-gradient(135deg, #166534, #059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', flexShrink: 0, boxShadow: '0 4px 12px rgba(22, 101, 52, 0.25)' }}>
+            <Headphones size={24} color="#86efac" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.75rem)', fontWeight: 900, color: 'var(--text-main)', margin: 0, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                My Support Inquiries & Advisory
+              </h1>
+              <span className="badge" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', fontWeight: 800, fontSize: '0.7rem', padding: '0.15rem 0.5rem', borderRadius: '999px' }}>
+                🟢 24x7 Active
+              </span>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0', lineHeight: 1.4 }}>
+              Chat directly with OEM Agricultural Engineers, request field demonstration videos, and track subsidy assistance.
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+          <a
+            href="tel:180024743276"
+            className="btn btn-secondary btn-sm"
+            style={{ fontWeight: 700, fontSize: '0.8rem', padding: '0.5rem 0.85rem', flex: '1 1 auto', justifyContent: 'center' }}
+          >
+            <PhoneCall size={14} color="#166534" />
+            <span>1800-AGRI-FARM</span>
+          </a>
+
           <button
             onClick={() => setIsNewModalOpen(true)}
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm"
+            style={{ fontWeight: 800, fontSize: '0.8rem', padding: '0.5rem 1rem', flex: '1 1 auto', justifyContent: 'center' }}
           >
-            <Plus size={16} />
-            <span>New Inquiry</span>
+            <Plus size={15} />
+            <span>Start Inquiry</span>
           </button>
         </div>
       </div>
 
-      {/* Main Split Layout: Inquiries List (4 Cols) & Active Chat (8 Cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" style={{ minHeight: '620px' }}>
-        {/* Left Column: My Tickets List */}
-        <div className="lg:col-span-4 flex flex-col gap-3" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem', height: '650px' }}>
-          <div className="flex justify-between items-center" style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-            <h3 style={{ fontSize: '1.05rem', color: '#062416', fontWeight: 800 }}>
-              All Conversations ({tickets.length})
-            </h3>
-            <button onClick={() => fetchTickets(true)} className="btn btn-secondary btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>
-              <RefreshCw size={12} />
-              <span>Refresh</span>
-            </button>
+      {/* Main Inquiries Cards Grid with generous breathing space */}
+      <div
+        style={{
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-color)',
+          borderRadius: '20px',
+          padding: '1.5rem',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.05)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.5rem'
+        }}
+      >
+        {/* Search Bar */}
+        <div className="flex justify-between items-center flex-wrap gap-3">
+          <div className="relative" style={{ flex: 1, minWidth: '260px', maxWidth: '420px' }}>
+            <input
+              type="text"
+              placeholder="Search your conversations or machinery..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="input-field"
+              style={{ paddingLeft: '2.5rem', fontSize: '0.85rem' }}
+            />
+            <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)' }} />
           </div>
 
-          <div className="flex flex-col gap-2 overflow-y-auto flex-1 pr-1">
-            {loading ? (
-              <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>Loading messages...</div>
-            ) : tickets.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
-                <HelpCircle size={32} color="#cbd5e1" style={{ margin: '0 auto 0.5rem auto' }} />
-                <div style={{ fontWeight: 700, color: '#0f172a' }}>No support conversations yet</div>
-                <p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
-                  Have questions about subsidies, 0% EMI, or spare parts? Start an inquiry below.
-                </p>
-                <button onClick={() => setIsNewModalOpen(true)} className="btn btn-primary btn-sm" style={{ marginTop: '1rem' }}>
-                  Start First Inquiry
-                </button>
-              </div>
-            ) : (
-              tickets.map((t) => {
-                const isSelected = selectedTicket && selectedTicket._id === t._id;
-                const lastMsg = t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1] : null;
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+            Showing {filteredTickets.length} conversation(s)
+          </div>
+        </div>
 
-                return (
-                  <div
-                    key={t._id}
-                    onClick={() => handleSelectTicket(t)}
-                    style={{
-                      padding: '0.85rem',
-                      borderRadius: '12px',
-                      border: isSelected ? '2px solid #166534' : '1px solid #e2e8f0',
-                      background: isSelected ? '#f0fdf4' : t.unreadByUser > 0 ? '#fefce8' : '#ffffff',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease'
-                    }}
-                    className="hover:border-green-600"
-                  >
-                    <div className="flex justify-between items-start" style={{ marginBottom: '0.25rem' }}>
-                      <div className="flex items-center gap-1.5">
-                        <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.875rem' }}>
-                          {t.subject}
+        {/* Tickets Cards Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+          {loading ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
+              <RefreshCw size={26} className="animate-spin" style={{ margin: '0 auto 0.75rem auto', color: '#166534' }} />
+              <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>Loading your conversations...</div>
+            </div>
+          ) : filteredTickets.length === 0 ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1.5rem', color: 'var(--text-muted)', background: 'var(--bg-surface-alt)', borderRadius: '16px' }}>
+              <HelpCircle size={44} color="var(--border-color)" style={{ margin: '0 auto 1rem auto' }} />
+              <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1.15rem' }}>No Support Conversations Yet</div>
+              <p style={{ fontSize: '0.875rem', marginTop: '0.35rem', maxWidth: '440px', margin: '0.35rem auto 1.5rem auto' }}>
+                Have questions regarding machine attachments, subsidy documents, or 0% EMI? Click below to chat with an expert.
+              </p>
+              <button
+                onClick={() => setIsNewModalOpen(true)}
+                className="btn btn-primary btn-md"
+                style={{ fontWeight: 800 }}
+              >
+                <Plus size={16} />
+                <span>Start Your First Inquiry</span>
+              </button>
+            </div>
+          ) : (
+            filteredTickets.map((t) => {
+              const lastMsg = t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1] : null;
+
+              return (
+                <div
+                  key={t._id}
+                  style={{
+                    background: 'var(--bg-surface-alt)',
+                    border: t.unreadByUser > 0 ? '1.5px solid #ef4444' : '1px solid var(--border-color)',
+                    borderRadius: '16px',
+                    padding: '1.35rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+                    transition: 'all 0.2s ease',
+                    position: 'relative'
+                  }}
+                  className="hover:border-green-600 hover:shadow-md"
+                >
+                  {/* Floating Notification Badge at Top Right Corner */}
+                  {t.unreadByUser > 0 && (
+                    <div
+                      className="animate-notif-badge"
+                      style={{
+                        position: 'absolute',
+                        top: '-8px',
+                        right: '-8px',
+                        background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                        color: '#ffffff',
+                        fontWeight: 900,
+                        fontSize: '0.7rem',
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '999px',
+                        boxShadow: '0 0 12px rgba(239, 68, 68, 0.8), 0 2px 6px rgba(0,0,0,0.2)',
+                        border: '2px solid var(--bg-surface)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        zIndex: 10
+                      }}
+                    >
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ffffff', display: 'inline-block' }} />
+                      <span>{t.unreadByUser} NEW</span>
+                    </div>
+                  )}
+
+                  <div>
+                    {/* Header Row */}
+                    <div className="flex justify-between items-start" style={{ marginBottom: '0.5rem' }}>
+                      <div className="flex items-center gap-2">
+                        <span style={{ fontWeight: 900, color: 'var(--text-main)', fontSize: '0.975rem', lineHeight: 1.3 }}>
+                          {t.subject?.replace(/&amp;/g, '&')}
                         </span>
-                        {t.unreadByUser > 0 && (
-                          <span className="badge badge-accent" style={{ fontSize: '0.65rem', background: '#dc2626', color: '#ffffff' }}>
-                            {t.unreadByUser} NEW
-                          </span>
-                        )}
                       </div>
 
-                      <span style={{
-                        fontSize: '0.65rem',
-                        fontWeight: 800,
-                        padding: '0.15rem 0.45rem',
-                        borderRadius: '4px',
-                        background: t.status === 'Open' ? '#fee2e2' : t.status === 'In Progress' ? '#e0f2fe' : '#dcfce7',
-                        color: t.status === 'Open' ? '#991b1b' : t.status === 'In Progress' ? '#0369a1' : '#166534'
-                      }}>
-                        {t.status}
-                      </span>
+                      <div>
+                        <span
+                          className={t.status === 'In Progress' ? 'animate-in-progress-badge' : ''}
+                          style={{
+                            fontSize: '0.725rem',
+                            fontWeight: 800,
+                            padding: '0.22rem 0.6rem',
+                            borderRadius: '8px',
+                            background: t.status === 'Open' ? '#fee2e2' : t.status === 'In Progress' ? '#e0f2fe' : '#dcfce7',
+                            color: t.status === 'Open' ? '#991b1b' : t.status === 'In Progress' ? '#0369a1' : '#166534',
+                            border: t.status === 'Open' ? '1px solid #f87171' : t.status === 'In Progress' ? '1px solid #38bdf8' : '1px solid #4ade80',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem'
+                          }}
+                        >
+                          {t.status === 'In Progress' && (
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#0284c7', display: 'inline-block' }} />
+                          )}
+                          <span>{t.status}</span>
+                        </span>
+                      </div>
                     </div>
 
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+                      Ticket #{t.ticketNumber || t._id.slice(-6).toUpperCase()} • {new Date(t.createdAt).toLocaleDateString()}
+                    </div>
+
+                    {/* Machinery tag if present */}
                     {t.productTitle && (
-                      <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700, marginBottom: '0.2rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#166534', background: '#dcfce7', border: '1px solid #86efac', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 700 }}>
                         🚜 {t.productTitle}
                       </div>
                     )}
 
+                    {/* Last message snippet */}
                     {lastMsg && (
-                      <div style={{ fontSize: '0.775rem', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        <strong>{lastMsg.sender === 'admin' ? 'Support Team: ' : 'You: '}</strong>
-                        {lastMsg.text || 'Attached media'}
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', background: 'var(--bg-surface)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '0.75rem', lineHeight: 1.4 }}>
+                        <strong style={{ color: lastMsg.sender === 'user' ? '#166534' : '#0284c7' }}>
+                          {lastMsg.sender === 'user' ? 'You: ' : 'Specialist: '}
+                        </strong>
+                        <span>{lastMsg.text || (lastMsg.attachments?.length > 0 ? '📎 File Attachment' : '📷 Media')}</span>
                       </div>
                     )}
-
-                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.35rem', textAlign: 'right' }}>
-                      {new Date(t.lastMessageAt || t.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
                   </div>
-                );
-              })
-            )}
-          </div>
-        </div>
 
-        {/* Right Column: Interactive Chat Panel */}
-        <div className="lg:col-span-8" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', display: 'flex', flexDirection: 'column', height: '650px', overflow: 'hidden' }}>
-          {selectedTicket ? (
-            <>
-              {/* Chat Header */}
-              <div style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 style={{ fontSize: '1.1rem', color: '#062416', fontWeight: 900 }}>
-                      {selectedTicket.subject}
-                    </h3>
-                    <span className="badge badge-secondary" style={{ fontSize: '0.7rem' }}>
-                      #{selectedTicket.ticketNumber}
+                  {/* Open Chat Button */}
+                  <div className="flex justify-between items-center" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                      Updated: {new Date(t.lastMessageAt || t.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenChatPopup(t)}
+                      className="btn btn-primary btn-sm"
+                      style={{
+                        background: '#166534',
+                        borderColor: '#166534',
+                        color: '#ffffff',
+                        fontWeight: 800,
+                        fontSize: '0.775rem',
+                        padding: '0.35rem 0.95rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.35rem'
+                      }}
+                    >
+                      <MessageSquare size={13} />
+                      <span>Open Chat</span>
+                      <ArrowUpRight size={13} />
+                    </button>
                   </div>
-                  {selectedTicket.productTitle && (
-                    <div style={{ fontSize: '0.775rem', color: '#166534', fontWeight: 700, marginTop: '0.2rem' }}>
-                      Inquiry for: {selectedTicket.productTitle} {selectedTicket.productSku ? `(SKU: ${selectedTicket.productSku})` : ''}
-                    </div>
-                  )}
                 </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* FLOATING DOCKED CHAT POP-UP WIDGET (Gmail Compose Style at Bottom Right) */}
+      {/* ========================================================================= */}
+      {activeTicket && (
+        <div
+          className="floating-chat-popup-widget custom-chat-scrollbar"
+          style={{
+            position: 'fixed',
+            bottom: isMinimized ? '0' : '20px',
+            right: isMinimized ? '20px' : isMaximized ? '20px' : '25px',
+            left: isMaximized ? '20px' : 'auto',
+            top: isMaximized ? '20px' : 'auto',
+            width: isMaximized ? 'calc(100vw - 40px)' : isMinimized ? '340px' : '490px',
+            height: isMaximized ? 'calc(100vh - 40px)' : isMinimized ? '48px' : '590px',
+            maxHeight: isMaximized ? 'none' : '85vh',
+            background: 'var(--bg-surface)',
+            border: '2px solid #16a34a',
+            borderRadius: isMinimized ? '14px 14px 0 0' : '18px',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.35), 0 0 20px rgba(22, 163, 74, 0.2)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            zIndex: 99999,
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}
+        >
+          {/* Pop-up Top Header (Always Visible) */}
+          <div
+            style={{
+              padding: '0.85rem 1.25rem',
+              background: 'linear-gradient(135deg, #14532d, #064e3b)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: isMinimized ? 'pointer' : 'default',
+              userSelect: 'none',
+              borderBottom: isMinimized ? 'none' : '1px solid rgba(255,255,255,0.15)'
+            }}
+            onClick={isMinimized ? () => setIsMinimized(false) : undefined}
+          >
+            <div className="flex items-center gap-3" style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  background: '#ffffff',
+                  color: '#166534',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 900,
+                  fontSize: '1rem',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  marginRight: '0.25rem'
+                }}
+              >
+                🛠️
+              </div>
+              <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  AgriMachina Specialist Desk
+                </div>
+                {!isMinimized && (
+                  <div style={{ fontSize: '0.725rem', color: '#dcfce7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '0.15rem' }}>
+                    #{activeTicket.ticketNumber || activeTicket._id.slice(-6).toUpperCase()} • {activeTicket.subject}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Window Controls (Minimize, Maximize, Close) */}
+            <div className="flex items-center gap-2" style={{ flexShrink: 0, marginLeft: '0.75rem' }} onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                onClick={() => setIsMinimized(!isMinimized)}
+                style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
+                className="hover:bg-white/30"
+                title={isMinimized ? 'Restore Window' : 'Minimize Window'}
+              >
+                {isMinimized ? <ChevronUp size={16} /> : <Minus size={16} strokeWidth={2.5} />}
+              </button>
+
+              {!isMinimized && (
+                <button
+                  type="button"
+                  onClick={() => setIsMaximized(!isMaximized)}
+                  style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
+                  className="hover:bg-white/30"
+                  title={isMaximized ? 'Restore Size' : 'Maximize Window'}
+                >
+                  <Maximize2 size={14} />
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setActiveTicket(null)}
+                style={{ background: 'rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.6)', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
+                className="hover:bg-red-600"
+                title="Close Chat Pop-up"
+              >
+                <X size={15} />
+              </button>
+            </div>
+          </div>
+
+          {/* Pop-up Body (Hidden when minimized) */}
+          {!isMinimized && (
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100% - 48px)', overflow: 'hidden', background: 'var(--bg-surface)' }}>
+              {/* Context Bar */}
+              <div
+                style={{
+                  padding: '0.65rem 1.25rem',
+                  background: 'var(--bg-surface-alt)',
+                  borderBottom: '1px solid var(--border-color)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  fontSize: '0.775rem'
+                }}
+              >
+                <span style={{ color: '#16a34a', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  ● Verified Support Line
+                  {activeTicket.productTitle && (
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 600, marginLeft: '0.35rem' }}>
+                      • 🚜 {activeTicket.productTitle}
+                    </span>
+                  )}
+                </span>
 
                 <span style={{
-                  fontSize: '0.75rem',
+                  fontSize: '0.7rem',
                   fontWeight: 800,
-                  padding: '0.25rem 0.65rem',
-                  borderRadius: '20px',
-                  background: selectedTicket.status === 'Open' ? '#fee2e2' : selectedTicket.status === 'In Progress' ? '#e0f2fe' : '#dcfce7',
-                  color: selectedTicket.status === 'Open' ? '#991b1b' : selectedTicket.status === 'In Progress' ? '#0369a1' : '#166534'
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '6px',
+                  background: activeTicket.status === 'Open' ? '#fee2e2' : activeTicket.status === 'In Progress' ? '#e0f2fe' : '#dcfce7',
+                  color: activeTicket.status === 'Open' ? '#991b1b' : activeTicket.status === 'In Progress' ? '#0369a1' : '#166534'
                 }}>
-                  ● {selectedTicket.status}
+                  {activeTicket.status}
                 </span>
               </div>
 
-              {/* Messages History List */}
-              <div style={{ flex: 1, padding: '1.25rem', overflowY: 'auto', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.775rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <ShieldCheck size={16} color="#16a34a" />
-                  <span>You are connected directly with AgriMachina's Certified Agricultural Engineering Desk.</span>
-                </div>
-
-                {selectedTicket.messages?.map((msg, idx) => {
-                  const isMine = msg.sender === 'user';
-                  const embedVid = getYouTubeEmbedUrl(msg.videoUrl);
+              {/* Messages Thread Stream (FULLY SCROLLABLE, 0 SCROLL BUG, SLEEK HOVER SCROLLBAR) */}
+              <div
+                ref={messagesScrollRef}
+                className="custom-chat-scrollbar"
+                style={{
+                  flex: 1,
+                  padding: '1.25rem 1.25rem',
+                  overflowY: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1.25rem',
+                  background: 'var(--bg-surface-alt)'
+                }}
+              >
+                {activeTicket.messages?.map((msg, idx) => {
+                  const isUser = msg.sender === 'user';
+                  const embedVid = msg.videoUrl ? getYouTubeEmbedUrl(msg.videoUrl) : null;
+                  const allAttachments = msg.attachments || [];
 
                   return (
                     <div
@@ -355,211 +736,373 @@ const UserSupportPage = () => {
                       style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: isMine ? 'flex-end' : 'flex-start'
+                        alignItems: isUser ? 'flex-end' : 'flex-start',
+                        maxWidth: '85%',
+                        alignSelf: isUser ? 'flex-end' : 'flex-start',
+                        marginBottom: '0.5rem'
                       }}
                     >
-                      <div className="flex items-center gap-1.5" style={{ fontSize: '0.725rem', color: '#64748b', marginBottom: '0.25rem' }}>
-                        <span>{isMine ? '🌾 You (Farmer)' : '🛠️ AgriMachina Support Specialist'}</span>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <strong style={{ color: isUser ? '#166534' : '#0284c7', fontWeight: 800 }}>
+                          {isUser ? '🌾 You' : '🛠️ Specialist'}
+                        </strong>
                         <span>•</span>
                         <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
 
                       <div
                         style={{
-                          maxWidth: '75%',
-                          padding: '0.85rem 1.1rem',
-                          borderRadius: isMine ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
-                          background: isMine ? '#166534' : '#ffffff',
-                          color: isMine ? '#ffffff' : '#0f172a',
-                          border: isMine ? 'none' : '1px solid #e2e8f0',
+                          background: isUser ? '#166534' : 'var(--bg-surface)',
+                          color: isUser ? '#ffffff' : 'var(--text-main)',
+                          border: isUser ? 'none' : '1px solid var(--border-color)',
+                          borderRadius: isUser ? '18px 18px 2px 18px' : '18px 18px 18px 2px',
+                          padding: '0.85rem 1.2rem',
                           fontSize: '0.875rem',
-                          lineHeight: 1.5,
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
-                          whiteSpace: 'pre-line'
+                          lineHeight: 1.55,
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-word'
                         }}
                       >
                         {msg.text}
 
-                        {/* Photos */}
-                        {msg.images && msg.images.length > 0 && (
-                          <div className="flex gap-2" style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
-                            {msg.images.map((img, i) => (
-                              <a key={i} href={img} target="_blank" rel="noreferrer">
+                        {/* Images */}
+                        {((msg.images && msg.images.length > 0) || allAttachments.some(a => a.fileType === 'image')) && (
+                          <div className="flex flex-wrap gap-2.5" style={{ marginTop: '0.65rem' }}>
+                            {msg.images?.map((img, i) => (
+                              <a key={`u-img-${i}`} href={img} target="_blank" rel="noreferrer">
                                 <img
                                   src={img}
                                   alt="Attached"
-                                  style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #cbd5e1' }}
+                                  style={{ width: '110px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}
+                                />
+                              </a>
+                            ))}
+                            {allAttachments.filter(a => a.fileType === 'image').map((att, i) => (
+                              <a key={`u-att-${i}`} href={att.url} target="_blank" rel="noreferrer">
+                                <img
+                                  src={att.url}
+                                  alt={att.name || 'Attachment'}
+                                  style={{ width: '110px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}
                                 />
                               </a>
                             ))}
                           </div>
                         )}
 
-                        {/* Video Player */}
+                        {/* Document & PDF Attachments */}
+                        {allAttachments.filter(a => a.fileType === 'document').map((att, i) => (
+                          <a
+                            key={`u-doc-${i}`}
+                            href={att.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              marginTop: '0.55rem',
+                              padding: '0.45rem 0.75rem',
+                              background: isUser ? 'rgba(255,255,255,0.15)' : 'var(--bg-surface-alt)',
+                              borderRadius: '8px',
+                              border: isUser ? '1px solid rgba(255,255,255,0.25)' : '1px solid var(--border-color)',
+                              color: isUser ? '#ffffff' : 'var(--text-main)',
+                              textDecoration: 'none',
+                              fontSize: '0.775rem',
+                              fontWeight: 700
+                            }}
+                          >
+                            <FileText size={15} color={isUser ? '#fef08a' : '#166534'} />
+                            <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {att.name || 'Document.pdf'}
+                            </span>
+                            <Download size={14} />
+                          </a>
+                        ))}
+
+                        {/* Video */}
                         {msg.videoUrl && (
-                          <div style={{ marginTop: '0.5rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+                          <div style={{ marginTop: '0.65rem', borderRadius: '8px', overflow: 'hidden' }}>
                             {embedVid ? (
                               <iframe
                                 src={embedVid}
-                                title="Video Demo"
-                                style={{ width: '100%', height: '180px', border: 'none' }}
+                                title="Video"
+                                style={{ width: '100%', height: '160px', border: 'none' }}
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                               />
-                            ) : msg.videoUrl.endsWith('.mp4') || msg.videoUrl.includes('mp4') ? (
-                              <video src={msg.videoUrl} controls style={{ width: '100%', height: '180px', objectFit: 'contain', background: '#000000' }} />
                             ) : (
-                              <a href={msg.videoUrl} target="_blank" rel="noreferrer" style={{ color: isMine ? '#fef08a' : '#166534', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                                <Play size={13} /> Watch Shared Video
+                              <a href={msg.videoUrl} target="_blank" rel="noreferrer" style={{ color: isUser ? '#fef08a' : '#166534', fontSize: '0.775rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <Play size={14} /> Watch Video Demo
                               </a>
                             )}
                           </div>
                         )}
+
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.25rem', marginTop: '0.35rem', fontSize: '0.65rem', color: isUser ? '#a7f3d0' : 'var(--text-muted)' }}>
+                          <CheckCheck size={13} color={isUser ? '#a7f3d0' : '#16a34a'} />
+                        </div>
                       </div>
                     </div>
                   );
                 })}
-                <div ref={chatBottomRef} />
               </div>
 
-              {/* Reply Form */}
-              <form onSubmit={handleSendMessage} style={{ padding: '1rem', background: '#ffffff', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <div className="flex gap-2">
-                  <textarea
-                    rows="2"
-                    className="textarea-field"
-                    style={{ flex: 1, fontSize: '0.85rem' }}
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    placeholder="Type your message, field questions, or reply to the support team..."
-                  />
+              {/* Suggestions Quick Bar */}
+              <div style={{ padding: '0.45rem 1rem', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '0.45rem', overflowX: 'auto', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.25rem', marginRight: '0.25rem' }}>
+                  <Sparkles size={12} color="#166534" />
+                  <span>Suggestions:</span>
+                </span>
+                {quickFarmerQuestions.map((q, idx) => (
                   <button
-                    type="submit"
-                    disabled={sending}
-                    className="btn btn-primary"
-                    style={{ height: 'auto', alignSelf: 'stretch', padding: '0 1.25rem' }}
+                    key={idx}
+                    type="button"
+                    onClick={() => setReplyText(prev => (prev ? `${prev} ${q}` : q))}
+                    style={{
+                      fontSize: '0.7rem',
+                      background: 'var(--bg-surface-alt)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '14px',
+                      padding: '0.25rem 0.65rem',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      color: 'var(--text-main)',
+                      fontWeight: 600,
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="hover:border-green-600"
                   >
-                    <Send size={16} />
-                    <span>{sending ? 'Sending...' : 'Send'}</span>
+                    {q.slice(0, 26)}...
                   </button>
-                </div>
+                ))}
+              </div>
 
-                {/* Media Attachment Inputs Strip */}
-                <div className="flex items-center gap-2" style={{ flexWrap: 'wrap' }}>
-                  <div className="flex items-center gap-1" style={{ flex: 1, minWidth: '220px' }}>
-                    <Camera size={15} color="#166534" />
+              {/* Drawer for photo link / video link / file upload */}
+              {showAttachmentDrawer && (
+                <div style={{ padding: '0.75rem 1rem', background: 'var(--bg-surface-alt)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                  {/* File size & format guideline badge */}
+                  <div style={{ width: '100%', fontSize: '0.7rem', color: '#15803d', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.2rem' }}>
+                    <Sparkles size={12} color="#16a34a" />
+                    <span>Max 5MB per file • Photos (JPG, PNG), PDFs, Word/Excel Docs & MP4 Field Videos</span>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={(e) => handleFileUpload(e, false)}
+                    multiple
+                    accept="image/*,application/pdf,video/mp4,.doc,.docx,.xls,.xlsx,.csv,.txt,.zip"
+                    style={{ display: 'none' }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingFiles}
+                    className="btn btn-secondary btn-sm"
+                    style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.35rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                  >
+                    <UploadCloud size={15} color="#166534" />
+                    <span>{uploadingFiles ? 'Uploading...' : '📎 Choose Device File (Max 5MB)'}</span>
+                  </button>
+
+                  <div className="flex items-center gap-1.5" style={{ flex: 1, minWidth: '140px' }}>
+                    <Camera size={14} color="#166534" />
                     <input
                       type="url"
-                      className="input-field"
-                      style={{ fontSize: '0.75rem', padding: '0.35rem 0.6rem' }}
+                      placeholder="Paste Image Link..."
                       value={photoInput}
                       onChange={(e) => setPhotoInput(e.target.value)}
-                      placeholder="Attach Photo URL"
+                      style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', border: '1px solid var(--border-color)', borderRadius: '8px', flex: 1 }}
                     />
-                    <button type="button" onClick={handleAddPhoto} className="btn btn-secondary btn-sm" style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}>
+                    <button type="button" onClick={handleAddPhotoUrl} className="btn btn-secondary btn-sm" style={{ padding: '0.3rem 0.6rem', fontSize: '0.7rem' }}>
                       Add
                     </button>
                   </div>
 
-                  <div className="flex items-center gap-1" style={{ flex: 1, minWidth: '220px' }}>
-                    <Video size={15} color="#166534" />
+                  <div className="flex items-center gap-1.5" style={{ flex: 1, minWidth: '140px' }}>
+                    <Video size={14} color="#0284c7" />
                     <input
                       type="url"
-                      className="input-field"
-                      style={{ fontSize: '0.75rem', padding: '0.35rem 0.6rem' }}
+                      placeholder="YouTube Demo Link..."
                       value={videoUrl}
                       onChange={(e) => setVideoUrl(e.target.value)}
-                      placeholder="Attach Video / YouTube Demo Link"
+                      style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', border: '1px solid var(--border-color)', borderRadius: '8px', flex: 1 }}
                     />
                   </div>
                 </div>
+              )}
 
-                {/* Attached Photo Tags */}
-                {photosList.length > 0 && (
-                  <div className="flex gap-1.5" style={{ flexWrap: 'wrap' }}>
-                    {photosList.map((p, idx) => (
-                      <span key={idx} style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.7rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        📷 Photo {idx + 1}
-                        <button type="button" onClick={() => setPhotosList(photosList.filter((_, i) => i !== idx))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626' }}>✕</button>
+              {/* Compose Bar */}
+              <form onSubmit={handleSendMessage} style={{ padding: '0.75rem 1rem', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)' }}>
+                {attachmentsList.length > 0 && (
+                  <div className="flex gap-2" style={{ marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                    {attachmentsList.map((att, idx) => (
+                      <span key={idx} style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', padding: '0.2rem 0.6rem', fontSize: '0.725rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
+                        <FileText size={13} color="#059669" />
+                        <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.name}</span>
+                        {att.size > 0 && <span style={{ fontSize: '0.68rem', color: '#15803d' }}>({formatFileSize(att.size)})</span>}
+                        <button type="button" onClick={() => handleRemoveAttachment(idx, false)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626', fontWeight: 900, padding: '0 2px' }}>✕</button>
                       </span>
                     ))}
                   </div>
                 )}
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowAttachmentDrawer(!showAttachmentDrawer)}
+                    style={{
+                      background: showAttachmentDrawer ? '#dcfce7' : 'var(--bg-surface-alt)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '50%',
+                      width: '38px',
+                      height: '38px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      color: '#166534',
+                      flexShrink: 0
+                    }}
+                    title="Attach File or Video Link"
+                  >
+                    <Paperclip size={17} />
+                  </button>
+
+                  <input
+                    type="text"
+                    placeholder="Type message to engineers... (Enter to send)"
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    style={{
+                      flex: 1,
+                      fontSize: '0.875rem',
+                      padding: '0.65rem 1rem',
+                      background: 'var(--bg-surface-alt)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '24px',
+                      outline: 'none',
+                      color: 'var(--text-main)'
+                    }}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={sending || uploadingFiles}
+                    style={{
+                      background: '#166534',
+                      border: 'none',
+                      color: '#ffffff',
+                      borderRadius: '50%',
+                      width: '38px',
+                      height: '38px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}
+                    title="Send Message"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
               </form>
-            </>
-          ) : (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#64748b', padding: '2rem' }}>
-              <MessageSquare size={48} color="#cbd5e1" style={{ marginBottom: '1rem' }} />
-              <h3 style={{ fontSize: '1.2rem', color: '#0f172a', fontWeight: 800 }}>
-                Select a Support Conversation
-              </h3>
-              <p style={{ fontSize: '0.85rem', maxWidth: '400px', textAlign: 'center', marginTop: '0.35rem' }}>
-                Click any inquiry on the left to review engineer answers and chat live.
-              </p>
             </div>
           )}
         </div>
-      </div>
+      )}
 
       {/* New Inquiry Modal */}
-      {isNewModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ background: '#ffffff', borderRadius: '16px', maxWidth: '520px', width: '100%', padding: '1.75rem', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ fontSize: '1.3rem', color: '#062416', fontWeight: 900, marginBottom: '0.5rem' }}>
-              Start a New Support Inquiry
-            </h3>
-            <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.25rem' }}>
-              Our agricultural engineers will review your question and respond in this chat.
-            </p>
+      <Modal
+        isOpen={isNewModalOpen}
+        onClose={() => setIsNewModalOpen(false)}
+        title="Start a New Support Inquiry"
+        maxWidth="540px"
+      >
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+          Our certified agricultural engineers will review your question and respond in this chat.
+        </p>
 
-            <form onSubmit={handleCreateNewInquiry} className="flex flex-col gap-3">
-              <div className="input-group">
-                <label className="input-label">Inquiry Subject *</label>
-                <input
-                  type="text"
-                  required
-                  className="input-field"
-                  value={newSubject}
-                  onChange={(e) => setNewSubject(e.target.value)}
-                  placeholder="e.g. Query regarding power weeder blade attachment"
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Topic</label>
-                <select className="select-field" value={newTopic} onChange={(e) => setNewTopic(e.target.value)}>
-                  <option value="Technical Guidance">Technical Guidance & Performance</option>
-                  <option value="Govt Subsidy Assistance">Govt. SMAM / DBT Subsidy Assistance</option>
-                  <option value="0% EMI Financing">0% No-Cost EMI & Bank Loan Support</option>
-                  <option value="Order & Delivery Tracking">Order Dispatch & Delivery Tracking</option>
-                  <option value="Spare Parts & Warranty">Spare Parts Replacement & Warranty</option>
-                </select>
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Your Message *</label>
-                <textarea
-                  rows="4"
-                  required
-                  className="textarea-field"
-                  value={newMsg}
-                  onChange={(e) => setNewMsg(e.target.value)}
-                  placeholder="Describe your question or requirement..."
-                />
-              </div>
-
-              <div className="flex justify-end gap-2" style={{ marginTop: '0.5rem' }}>
-                <button type="button" onClick={() => setIsNewModalOpen(false)} className="btn btn-secondary btn-sm">
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary btn-sm">
-                  Submit Inquiry
-                </button>
-              </div>
-            </form>
+        <form onSubmit={handleCreateNewInquiry} className="flex flex-col gap-3">
+          <div className="input-group">
+            <label className="input-label" style={{ color: 'var(--text-main)', fontWeight: 700 }}>Inquiry Subject *</label>
+            <input
+              type="text"
+              required
+              className="input-field"
+              value={newSubject}
+              onChange={(e) => setNewSubject(e.target.value)}
+              placeholder="e.g. Query regarding power weeder blade attachment"
+            />
           </div>
-        </div>
-      )}
+
+          <div className="input-group">
+            <label className="input-label" style={{ color: 'var(--text-main)', fontWeight: 700 }}>Topic</label>
+            <select className="select-field" value={newTopic} onChange={(e) => setNewTopic(e.target.value)}>
+              <option value="Technical Guidance">Technical Guidance & Performance</option>
+              <option value="Govt Subsidy Assistance">Govt. SMAM / DBT Subsidy Assistance</option>
+              <option value="0% EMI Financing">0% No-Cost EMI & Bank Loan Support</option>
+              <option value="Order & Delivery Tracking">Order Dispatch & Delivery Tracking</option>
+              <option value="Spare Parts & Warranty">Spare Parts Replacement & Warranty</option>
+            </select>
+          </div>
+
+          <div className="input-group">
+            <label className="input-label" style={{ color: 'var(--text-main)', fontWeight: 700 }}>Your Message *</label>
+            <textarea
+              rows="4"
+              required
+              className="textarea-field"
+              value={newMsg}
+              onChange={(e) => setNewMsg(e.target.value)}
+              placeholder="Describe your question or requirement..."
+            />
+          </div>
+
+          <div>
+            <input
+              type="file"
+              ref={modalFileInputRef}
+              onChange={(e) => handleFileUpload(e, true)}
+              multiple
+              accept="image/*,application/pdf,video/mp4"
+              style={{ display: 'none' }}
+            />
+            <button
+              type="button"
+              onClick={() => modalFileInputRef.current?.click()}
+              className="btn btn-secondary btn-sm"
+              style={{ fontSize: '0.75rem', fontWeight: 700 }}
+            >
+              <UploadCloud size={14} color="#166534" />
+              <span>Attach Photos / Field Documents (Optional)</span>
+            </button>
+
+            {newModalFiles.length > 0 && (
+              <div className="flex gap-1.5" style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                {newModalFiles.map((att, idx) => (
+                  <span key={idx} style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '4px', padding: '0.15rem 0.45rem', fontSize: '0.7rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    {att.name}
+                    <button type="button" onClick={() => handleRemoveAttachment(idx, true)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626' }}>✕</button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end gap-2" style={{ marginTop: '0.5rem' }}>
+            <button type="button" onClick={() => setIsNewModalOpen(false)} className="btn btn-secondary btn-sm">
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary btn-sm">
+              Submit Inquiry
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

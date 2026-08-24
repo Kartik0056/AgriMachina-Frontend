@@ -19,9 +19,11 @@ import {
 import adminApi from '../../services/adminApi';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useSync } from '../../context/SyncContext';
 import { formatINR } from '../../services/emiHelper';
 
 const AdminProductsPage = () => {
+  const { broadcastLocal } = useSync();
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -95,6 +97,7 @@ const AdminProductsPage = () => {
       const res = await adminApi.post(`/products/${productId}/duplicate`);
       if (res.data.success) {
         addToast('Product duplicated as Draft with unique SKU!', 'success');
+        broadcastLocal('CATALOG_CHANGED', { action: 'create', productId });
         fetchProducts();
       }
     } catch (err) {
@@ -107,6 +110,7 @@ const AdminProductsPage = () => {
       const res = await adminApi.post(`/products/${productId}/publish`);
       if (res.data.success) {
         addToast(`Product status updated to ${res.data.product.status}`, 'success');
+        broadcastLocal('CATALOG_CHANGED', { action: 'update', productId });
         fetchProducts();
       }
     } catch (err) {
@@ -121,6 +125,7 @@ const AdminProductsPage = () => {
       const res = await adminApi.delete(`/products/${productId}`);
       if (res.data.success) {
         addToast(res.data.message, 'success');
+        broadcastLocal('CATALOG_CHANGED', { action: 'delete', productId });
         fetchProducts();
       }
     } catch (err) {
@@ -349,14 +354,14 @@ const AdminProductsPage = () => {
                     </td>
                     <td>
                       <div style={{ fontWeight: 700, color: '#ffffff', maxWidth: '220px', lineHeight: 1.2 }}>
-                        {p.name}
+                        {p.name?.replace(/&amp;/g, '&')}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                        {p.brand} {p.modelNumber ? `(${p.modelNumber})` : ''}
+                        {p.brand?.replace(/&amp;/g, '&')} {p.modelNumber ? `(${p.modelNumber})` : ''}
                       </div>
                     </td>
                     <td><code>{p.sku}</code></td>
-                    <td><span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>{p.category}</span></td>
+                    <td><span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>{p.category?.replace(/&amp;/g, '&')}</span></td>
                     <td style={{ fontWeight: 700, color: '#34d399' }}>{formatINR(p.sellingPrice)}</td>
                     <td style={{ color: '#94a3b8' }}>{formatINR(p.mrp)}</td>
                     <td>

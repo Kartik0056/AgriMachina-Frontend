@@ -7,12 +7,14 @@ import { formatINR } from '../../services/emiHelper';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 const ProductCard = ({ product }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToast } = useToast();
+  const { t, tr } = useLanguage();
 
   const isFavorited = isInWishlist(product._id || product.id);
 
@@ -45,89 +47,113 @@ const ProductCard = ({ product }) => {
   return (
     <div
       style={{
-        background: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '16px',
+        background: 'var(--bg-surface)',
+        borderRadius: 'var(--radius-xl)',
         overflow: 'hidden',
+        boxShadow: 'var(--shadow-sm)',
+        border: '1px solid var(--border-color)',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: 'var(--shadow-sm)',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         position: 'relative',
-        height: '100%',
-        width: '100%',
-        minWidth: 0
+        transition: 'all var(--transition-normal)'
       }}
-      className="product-card"
+      className="hover-card group"
     >
-      {/* Top Floating Badges (Cleanly separated) */}
-      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 5, pointerEvents: 'none', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-start' }}>
+      {/* Floating Badges & Action Icons */}
+      <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 3, display: 'flex', flexDirection: 'column', gap: '4px', pointerEvents: 'none' }}>
+        {/* Deal Badge */}
         {product.isDealOfTheDay && (
           <span
             className="badge"
             style={{
-              background: 'linear-gradient(135deg, #e11d48, #be123c)',
-              color: '#ffffff',
-              fontWeight: 900,
-              fontSize: '0.68rem',
-              boxShadow: '0 2px 6px rgba(225, 29, 72, 0.4)',
-              letterSpacing: '0.02em',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '2px'
-            }}
-          >
-            {product.dealBadge || '🔥 HOT DEAL'}
-          </span>
-        )}
-
-        {product.discountPercent > 0 && (
-          <span
-            className="badge"
-            style={{
-              background: '#f59e0b',
+              background: 'linear-gradient(135deg, #dc2626, #991b1b)',
               color: '#ffffff',
               fontWeight: 800,
-              fontSize: '0.68rem',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
+              fontSize: '0.65rem',
+              boxShadow: '0 2px 6px rgba(220, 38, 38, 0.35)',
+              border: '1px solid rgba(255, 255, 255, 0.3)'
             }}
           >
-            {product.discountPercent}% OFF
+            🔥 {product.dealBadge || 'HOT DEAL'}
           </span>
         )}
 
+        {/* Extra Coupon / Discount Tag */}
         {product.hasExtraDiscount && product.extraDiscountValue > 0 && (
           <span
             className="badge"
             style={{
-              background: '#15803d',
+              background: 'linear-gradient(135deg, #16a34a, #15803d)',
               color: '#ffffff',
               fontWeight: 800,
               fontSize: '0.65rem',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
+              boxShadow: '0 2px 6px rgba(22, 163, 74, 0.35)'
             }}
           >
-            {product.extraDiscountType === 'PERCENT' ? `🎁 Extra ${product.extraDiscountValue}% OFF` : `🎁 Extra ₹${product.extraDiscountValue} OFF`}
+            🎁 {product.extraDiscountType === 'PERCENT' ? `Extra ${product.extraDiscountValue}% OFF` : `Extra ₹${product.extraDiscountValue} OFF`}
           </span>
         )}
+
+        {/* Stock Badges */}
+        {isOutOfStock ? (
+          <span className="badge badge-danger" style={{ fontSize: '0.65rem', fontWeight: 800 }}>
+            {t('out_of_stock', 'Sold Out')}
+          </span>
+        ) : isLowStock ? (
+          <span className="badge badge-warning" style={{ fontSize: '0.65rem', fontWeight: 800 }}>
+            ⚡ {t('low_stock', 'Low Stock')}
+          </span>
+        ) : null}
       </div>
 
-      <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 6, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-        {isOutOfStock ? (
-          <span className="badge badge-danger" style={{ fontSize: '0.7rem' }}>Out of Stock</span>
-        ) : isLowStock ? (
-          <span className="badge badge-warning" style={{ fontSize: '0.7rem' }}>Low Stock</span>
-        ) : (
-          <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>In Stock</span>
-        )}
+      {/* Top Right Floating Action Badges (Wishlist & Share) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '12px',
+          right: '12px',
+          zIndex: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px'
+        }}
+      >
+        {/* Wishlist Button */}
+        <button
+          type="button"
+          onClick={handleWishlistToggle}
+          style={{
+            background: isFavorited ? '#fee2e2' : 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(6px)',
+            border: isFavorited ? '1px solid #fecdd3' : '1px solid rgba(0,0,0,0.08)',
+            borderRadius: '50%',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+            transition: 'all 0.15s ease'
+          }}
+          className="hover:scale-110 active:scale-95"
+          title={isFavorited ? 'Remove from Saved Wishlist' : 'Save to Wishlist'}
+        >
+          <Heart
+            size={16}
+            color={isFavorited ? '#dc2626' : '#64748b'}
+            fill={isFavorited ? '#dc2626' : 'none'}
+          />
+        </button>
 
+        {/* Share Button */}
         <button
           type="button"
           onClick={handleShareClick}
           style={{
             background: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(4px)',
-            border: '1px solid #e2e8f0',
+            backdropFilter: 'blur(6px)',
+            border: '1px solid rgba(0,0,0,0.08)',
             borderRadius: '50%',
             width: '32px',
             height: '32px',
@@ -135,79 +161,56 @@ const ProductCard = ({ product }) => {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-            transition: 'transform 0.15s ease'
+            boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+            color: '#166534',
+            transition: 'all 0.15s ease'
           }}
-          className="hover:scale-110"
-          title="Share this Machine"
+          className="hover:scale-110 active:scale-95"
+          title="Share Equipment / WhatsApp / Link"
         >
           <Share2 size={15} color="#166534" />
         </button>
-
-        <button
-          type="button"
-          onClick={handleWishlistToggle}
-          style={{
-            background: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(4px)',
-            border: '1px solid #e2e8f0',
-            borderRadius: '50%',
-            width: '32px',
-            height: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-            transition: 'transform 0.15s ease'
-          }}
-          className="hover:scale-110"
-          title={isFavorited ? 'Remove from Wishlist' : 'Add to Wishlist'}
-        >
-          <Heart
-            size={16}
-            color={isFavorited ? '#ef4444' : '#64748b'}
-            fill={isFavorited ? '#ef4444' : 'none'}
-          />
-        </button>
       </div>
 
-      {/* Product Image */}
+      {/* Product Image Stage */}
       <Link
         to={`/product/${product.slug || product._id}`}
         style={{
-          display: 'block',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           width: '100%',
-          height: '210px',
-          backgroundColor: '#f8fafc',
+          height: '215px',
+          backgroundColor: 'var(--bg-surface-alt)',
           overflow: 'hidden',
-          position: 'relative'
+          position: 'relative',
+          padding: '1rem'
         }}
       >
         <img
           src={product.mainImage?.url || 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=600&q=80'}
           alt={product.name}
           style={{
-            width: '100%',
-            height: '100%',
+            maxWidth: '100%',
+            maxHeight: '100%',
             objectFit: 'contain',
-            padding: '0.75rem',
-            transition: 'transform 0.3s ease'
+            transition: 'transform 0.3s ease',
+            filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.08))'
           }}
           loading="lazy"
         />
       </Link>
 
       {/* Product Info & Actions */}
-      <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', gap: '0.75rem' }}>
+      <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', gap: '0.85rem' }}>
         <div>
           {/* Brand & Category */}
           <div className="flex items-center justify-between" style={{ marginBottom: '0.35rem', fontSize: '0.75rem' }}>
-            <span style={{ fontWeight: 800, color: '#166534', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <span style={{ fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               {product.brand || 'AgriMachina'}
             </span>
-            <span style={{ color: '#64748b' }}>
-              {product.modelNumber ? `Model: ${product.modelNumber}` : ''}
+            <span style={{ color: 'var(--text-muted)' }}>
+              {product.modelNumber ? `${t('model', 'Model')}: ${product.modelNumber}` : ''}
             </span>
           </div>
 
@@ -217,7 +220,7 @@ const ProductCard = ({ product }) => {
               style={{
                 fontSize: '0.95rem',
                 fontWeight: 700,
-                color: '#0f172a',
+                color: 'var(--text-main)',
                 lineHeight: 1.35,
                 marginBottom: '0.4rem',
                 minHeight: '2.7em',
@@ -228,7 +231,7 @@ const ProductCard = ({ product }) => {
               }}
               title={product.name}
             >
-              {product.name}
+              {tr(product.name)}
             </h4>
           </Link>
 
@@ -245,16 +248,16 @@ const ProductCard = ({ product }) => {
         <div>
           {/* Price */}
           <div className="flex items-baseline gap-2" style={{ marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#062416' }}>
+            <span style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-main)' }}>
               {formatINR(product.sellingPrice)}
             </span>
             {product.mrp > product.sellingPrice && (
-              <span style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'line-through' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
                 {formatINR(product.mrp)}
               </span>
             )}
-            <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
-              (Incl. GST)
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+              ({t('incl_gst', 'Incl. GST')})
             </span>
           </div>
 
@@ -263,52 +266,54 @@ const ProductCard = ({ product }) => {
             <div
               style={{
                 fontSize: '0.75rem',
-                color: '#166534',
+                color: 'var(--primary-600, #166534)',
                 fontWeight: 700,
-                background: '#f0fdf4',
+                background: 'var(--primary-50)',
                 padding: '0.3rem 0.6rem',
                 borderRadius: '6px',
                 marginBottom: '0.75rem',
-                border: '1px solid #bbf7d0',
+                border: '1px solid var(--border-color)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.35rem'
               }}
             >
               <CreditCard size={13} color="#166534" />
-              <span>EMI from <strong>{formatINR(product.emi.minMonthlyEmi)}/mo</strong></span>
+              <span>{t('monthly_emi_text', 'EMI from')} {formatINR(product.emi.minMonthlyEmi)}/mo</span>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className="btn btn-primary btn-sm flex-1"
-              style={{
-                opacity: isOutOfStock ? 0.6 : 1,
-                fontSize: '0.85rem',
-                padding: '0.5rem 0.75rem'
-              }}
-            >
-              <ShoppingCart size={15} />
-              <span>{isOutOfStock ? 'Sold Out' : 'Add to Cart'}</span>
-            </button>
-
+          <div className="flex gap-2">
             <Link
               to={`/product/${product.slug || product._id}`}
               className="btn btn-secondary btn-sm"
-              style={{ padding: '0.5rem 0.75rem' }}
-              title="View Specifications"
+              style={{ flex: 1, textAlign: 'center', justifyContent: 'center' }}
             >
-              <Eye size={15} />
+              <Eye size={14} />
+              <span>{t('view_details', 'View')}</span>
             </Link>
+
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+              className="btn btn-primary btn-sm"
+              style={{
+                flex: 1.2,
+                justifyContent: 'center',
+                background: isOutOfStock ? '#94a3b8' : 'var(--primary-600, #166534)',
+                cursor: isOutOfStock ? 'not-allowed' : 'pointer'
+              }}
+            >
+              <ShoppingCart size={14} />
+              <span>{isOutOfStock ? t('out_of_stock', 'Sold Out') : t('add_to_cart', 'Add to Cart')}</span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Share Modal */}
+      {/* Share Modal Dialog */}
       <ShareProductModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}

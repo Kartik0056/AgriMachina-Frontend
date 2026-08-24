@@ -2,19 +2,11 @@ import React, { useState } from 'react';
 import { Image, Video, FileText, ArrowUp, ArrowDown, Trash2, Plus, Upload, Play, CheckCircle2 } from 'lucide-react';
 import adminApi from '../../../services/adminApi';
 import { useToast } from '../../../context/ToastContext';
+import { getYouTubeEmbedUrl, extractYouTubeId, isDirectVideoUrl } from '../../../services/videoHelper';
+
+export { getYouTubeEmbedUrl, extractYouTubeId, isDirectVideoUrl };
 
 const standardTags = ['01 Main', '02 Front', '03 Side', '04 Back', '05 Detail', '06 Engine', '07 Application', '08 Accessories'];
-
-// Helper to convert any YouTube link into a clean embed URL
-export const getYouTubeEmbedUrl = (url) => {
-  if (!url) return null;
-  const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const match = url.match(ytRegex);
-  if (match && match[1]) {
-    return `https://www.youtube-nocookie.com/embed/${match[1]}?rel=0&modestbranding=1`;
-  }
-  return url;
-};
 
 const TabMedia = ({ formData, updateField }) => {
   const { addToast } = useToast();
@@ -109,7 +101,7 @@ const TabMedia = ({ formData, updateField }) => {
   };
 
   const videoEmbedUrl = getYouTubeEmbedUrl(formData.video?.url);
-  const isDirectVideo = formData.video?.url && (formData.video.url.endsWith('.mp4') || formData.video.url.endsWith('.webm') || formData.video.url.includes('/uploads/'));
+  const isDirectVideo = isDirectVideoUrl(formData.video?.url);
 
   return (
     <div className="flex flex-col gap-6">
