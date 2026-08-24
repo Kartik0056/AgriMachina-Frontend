@@ -35,6 +35,7 @@ import AdminAuditLogsPage from './pages/admin/AdminAuditLogsPage';
 import AdminUsersRolesPage from './pages/admin/AdminUsersRolesPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
+import AdminHeroBannersPage from './pages/admin/AdminHeroBannersPage';
 import AdminEMIPage from './pages/admin/AdminEMIPage';
 import AdminSEOPage from './pages/admin/AdminSEOPage';
 import AdminRecommendationsPage from './pages/admin/AdminRecommendationsPage';
@@ -98,6 +99,8 @@ function App() {
             <Route path="inventory" element={<AdminInventoryPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
             <Route path="support" element={<AdminSupportPage />} />
+            <Route path="banners" element={<AdminHeroBannersPage />} />
+            <Route path="hero-slides" element={<AdminHeroBannersPage />} />
             <Route path="reviews" element={<AdminReviewsPage />} />
             <Route path="coupons" element={<AdminCouponsPage />} />
             <Route path="emi" element={<AdminEMIPage />} />

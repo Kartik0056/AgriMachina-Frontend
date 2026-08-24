@@ -29,6 +29,7 @@ const AdminSidebar = ({ pendingReviewsCount = 0, pendingOrdersCount = 0 }) => {
     { to: `${adminPanelPath}/inventory`, label: 'Inventory & Stock Logs', icon: <Layers size={18} />, perm: 'INVENTORY_UPDATE' },
     { to: `${adminPanelPath}/orders`, label: 'Orders & Shipments', icon: <ShoppingBag size={18} />, perm: 'ORDER_VIEW', badge: pendingOrdersCount },
     { to: `${adminPanelPath}/support`, label: 'Support & Inquiries Desk', icon: <MessageSquare size={18} /> },
+    { to: `${adminPanelPath}/banners`, label: 'Hero Slides & Banners', icon: <Sparkles size={18} />, perm: 'PRODUCT_CREATE' },
     { to: `${adminPanelPath}/reviews`, label: 'Reviews Moderation', icon: <Star size={18} />, perm: 'REVIEW_MODERATE', badge: pendingReviewsCount },
     { to: `${adminPanelPath}/coupons`, label: 'Coupons & Promos', icon: <Tag size={18} />, perm: 'COUPON_MANAGE' },
     { to: `${adminPanelPath}/emi`, label: 'EMI Financing Plans', icon: <CreditCard size={18} />, perm: 'PRODUCT_CREATE' },
