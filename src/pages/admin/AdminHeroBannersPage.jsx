@@ -642,17 +642,63 @@ const AdminHeroBannersPage = () => {
                 </div>
               </div>
 
-              {/* Media Settings: Background Image, Preset Picker & Video Demo */}
+              {/* Media Settings: Background Image / Live Background Video */}
               <div style={{ borderTop: '1px solid #1e2e4f', paddingTop: '1rem' }}>
                 <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#34d399', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <ImageIcon size={16} />
-                  <span>Media & Demonstration Video Settings</span>
+                  <Video size={16} />
+                  <span>Hero Background Media (Live Video or High-Res Image)</span>
                 </h4>
 
+                {/* Media Type Selector */}
+                <div className="flex gap-4" style={{ marginBottom: '1rem', background: 'rgba(255,255,255,0.04)', padding: '0.75rem 1rem', borderRadius: '10px' }}>
+                  <label className="flex items-center gap-2" style={{ color: '#ffffff', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    <input
+                      type="radio"
+                      name="bgMediaType"
+                      checked={!formData.videoUrl}
+                      onChange={() => setFormData({ ...formData, videoUrl: '' })}
+                      style={{ accentColor: '#22c55e' }}
+                    />
+                    <span style={{ fontWeight: 700 }}>📸 Static Image Background</span>
+                  </label>
+
+                  <label className="flex items-center gap-2" style={{ color: '#ffffff', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    <input
+                      type="radio"
+                      name="bgMediaType"
+                      checked={Boolean(formData.videoUrl)}
+                      onChange={() => {
+                        if (!formData.videoUrl) setFormData({ ...formData, videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' });
+                      }}
+                      style={{ accentColor: '#38bdf8' }}
+                    />
+                    <span style={{ fontWeight: 700, color: '#38bdf8' }}>🎥 Live Background Video (Plays behind text)</span>
+                  </label>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Background Image URL */}
+                  {/* Live Background Video URL */}
                   <div className="input-group">
-                    <label className="input-label" style={{ color: '#cbd5e1' }}>Banner Image URL</label>
+                    <label className="input-label" style={{ color: '#38bdf8', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <Video size={14} color="#38bdf8" />
+                      <span>Background Video URL (YouTube or Direct MP4)</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="input-field"
+                      style={{ background: '#070d1a', borderColor: formData.videoUrl ? '#0284c7' : '#1e2e4f', color: '#ffffff' }}
+                      value={formData.videoUrl}
+                      onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                      placeholder="e.g. https://www.youtube.com/watch?v=... or https://...demo.mp4"
+                    />
+                    <div style={{ fontSize: '0.725rem', color: '#94a3b8', marginTop: '0.35rem', lineHeight: 1.4 }}>
+                      ⚡ <strong>Live Background Video</strong>: Automatically loops in the background with cinematic overlay and volume control.
+                    </div>
+                  </div>
+
+                  {/* Fallback / Banner Image URL */}
+                  <div className="input-group">
+                    <label className="input-label" style={{ color: '#cbd5e1' }}>Fallback / Static Image URL</label>
                     <input
                       type="text"
                       className="input-field"
@@ -674,25 +720,6 @@ const AdminHeroBannersPage = () => {
                           {p.label}
                         </button>
                       ))}
-                    </div>
-                  </div>
-
-                  {/* Video Demonstration URL */}
-                  <div className="input-group">
-                    <label className="input-label" style={{ color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                      <Video size={14} color="#f59e0b" />
-                      <span>Demonstration Video URL (YouTube / MP4)</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="input-field"
-                      style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
-                      value={formData.videoUrl}
-                      onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-                      placeholder="e.g. https://www.youtube.com/watch?v=... or https://...video.mp4"
-                    />
-                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem' }}>
-                      Provides a <strong>"▶ Watch Field Demonstration"</strong> popup button directly in the slide.
                     </div>
                   </div>
                 </div>

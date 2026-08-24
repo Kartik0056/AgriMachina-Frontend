@@ -15,13 +15,17 @@ import {
   Timer,
   Tractor,
   Play,
-  X
+  X,
+  Volume2,
+  VolumeX,
+  Video,
+  Maximize2
 } from 'lucide-react';
 import api from '../../services/api';
 import { formatINR } from '../../services/emiHelper';
 import { useLanguage } from '../../context/LanguageContext';
 import { useLiveRefresh } from '../../context/SyncContext';
-import { getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
+import { extractYouTubeId, getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
 import EMICalculatorModal from './EMICalculatorModal';
 
 const FALLBACK_SLIDES = [
@@ -101,6 +105,7 @@ const HeroSlider = () => {
   const [slides, setSlides] = useState(FALLBACK_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [selectedEmiProduct, setSelectedEmiProduct] = useState(null);
   const [isEmiModalOpen, setIsEmiModalOpen] = useState(false);
   const [activeVideoModal, setActiveVideoModal] = useState(null);
@@ -110,12 +115,13 @@ const HeroSlider = () => {
 
   // DOM Refs for GSAP
   const sliderContainerRef = useRef(null);
-  const bgImageRef = useRef(null);
+  const contentBoxRef = useRef(null);
   const badgeRef = useRef(null);
   const titleRef = useRef(null);
   const descRef = useRef(null);
   const priceCardRef = useRef(null);
   const progressBarRef = useRef(null);
+  const videoRef = useRef(null);
 
   const fetchDynamicSlides = async () => {
     try {
@@ -138,6 +144,9 @@ const HeroSlider = () => {
   }, ['BANNER_CHANGED', 'CATALOG_CHANGED']);
 
   const slide = slides[currentSlide] || slides[0] || FALLBACK_SLIDES[0];
+  const ytVideoId = extractYouTubeId(slide.videoUrl);
+  const isDirectVideo = isDirectVideoUrl(slide.videoUrl);
+  const hasBackgroundVideo = Boolean(slide.videoUrl && (isDirectVideo || ytVideoId));
 
   // Deal Countdown Timer
   useEffect(() => {
@@ -155,16 +164,7 @@ const HeroSlider = () => {
   // GSAP Entrance Animations triggered on currentSlide change
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Background image zoom & fade
-      if (bgImageRef.current) {
-        gsap.fromTo(
-          bgImageRef.current,
-          { scale: 1.12, opacity: 0.7 },
-          { scale: 1, opacity: 1, duration: 1.2, ease: 'power2.out' }
-        );
-      }
-
-      // 2. Badge pop
+      // 1. Badge pop
       if (badgeRef.current) {
         gsap.fromTo(
           badgeRef.current,
@@ -173,7 +173,7 @@ const HeroSlider = () => {
         );
       }
 
-      // 3. Title slide up
+      // 2. Title slide up
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
@@ -182,7 +182,7 @@ const HeroSlider = () => {
         );
       }
 
-      // 4. Description slide up
+      // 3. Description slide up
       if (descRef.current) {
         gsap.fromTo(
           descRef.current,
@@ -191,14 +191,14 @@ const HeroSlider = () => {
         );
       }
 
-      // 5. Spec chips stagger
+      // 4. Spec chips stagger
       gsap.fromTo(
         '.gsap-spec-chip',
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, stagger: 0.07, duration: 0.45, ease: 'power2.out', delay: 0.25 }
       );
 
-      // 6. Price card entrance
+      // 5. Price card entrance
       if (priceCardRef.current) {
         gsap.fromTo(
           priceCardRef.current,
@@ -207,19 +207,19 @@ const HeroSlider = () => {
         );
       }
 
-      // 7. Buttons stagger
+      // 6. Buttons stagger
       gsap.fromTo(
         '.gsap-hero-btn',
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, stagger: 0.08, duration: 0.45, ease: 'power2.out', delay: 0.35 }
       );
 
-      // 8. Progress Bar animation for current slide duration (6000ms)
+      // 7. Progress Bar animation for current slide duration (6500ms)
       if (progressBarRef.current) {
         gsap.fromTo(
           progressBarRef.current,
           { width: '0%' },
-          { width: '100%', duration: 6.0, ease: 'none' }
+          { width: '100%', duration: 6.5, ease: 'none' }
         );
       }
     }, sliderContainerRef);
@@ -235,7 +235,7 @@ const HeroSlider = () => {
     }
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, 6500);
     return () => clearInterval(interval);
   }, [isPaused, slides.length, activeVideoModal]);
 
@@ -265,33 +265,106 @@ const HeroSlider = () => {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Image Layer with Gradient Overlay */}
+      {/* Background Media Container (Live Background Video OR High-Res Image) */}
       <div
-        ref={bgImageRef}
         style={{
           position: 'relative',
-          minHeight: '640px',
+          minHeight: '650px',
           display: 'flex',
           alignItems: 'center',
-          backgroundImage: `url(${slideImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          willChange: 'transform, opacity'
+          backgroundColor: '#062416',
+          overflow: 'hidden'
         }}
       >
-        {/* Dark Cinematic Gradient Overlay for crisp text legibility */}
+        {/* Layer 1: Background Video OR Static Image */}
+        {hasBackgroundVideo ? (
+          isDirectVideo ? (
+            <video
+              key={slide.videoUrl}
+              ref={videoRef}
+              src={slide.videoUrl}
+              autoPlay
+              loop
+              muted={isMuted}
+              playsInline
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                minWidth: '100%',
+                minHeight: '100%',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'cover',
+                zIndex: 1
+              }}
+            />
+          ) : ytVideoId ? (
+            <div
+              key={slide.videoUrl}
+              style={{
+                position: 'absolute',
+                top: '-20%',
+                left: '-20%',
+                width: '140%',
+                height: '140%',
+                zIndex: 1,
+                pointerEvents: 'none',
+                overflow: 'hidden'
+              }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&loop=1&playlist=${ytVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&enablejsapi=1`}
+                title="Machinery Background Video"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  pointerEvents: 'none'
+                }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${slideImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                zIndex: 1
+              }}
+            />
+          )
+        ) : (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url(${slideImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              zIndex: 1
+            }}
+          />
+        )}
+
+        {/* Layer 2: Dark Cinematic Gradient Overlay for crisp text legibility */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(90deg, rgba(6, 36, 22, 0.96) 0%, rgba(6, 36, 22, 0.88) 48%, rgba(6, 36, 22, 0.45) 80%, rgba(0, 0, 0, 0.25) 100%)',
-            backdropFilter: 'blur(1px)'
+            background: 'linear-gradient(90deg, rgba(6, 36, 22, 0.95) 0%, rgba(6, 36, 22, 0.86) 48%, rgba(6, 36, 22, 0.45) 80%, rgba(0, 0, 0, 0.3) 100%)',
+            backdropFilter: 'blur(1px)',
+            zIndex: 3
           }}
         />
 
         {/* Content Container Layer */}
         <div className="container" style={{ position: 'relative', zIndex: 10, padding: '3.5rem 1.25rem 7.5rem 1.25rem' }}>
-          <div style={{ maxWidth: '680px' }}>
+          <div ref={contentBoxRef} style={{ maxWidth: '680px' }}>
             {/* Top Deal & Countdown Badge */}
             <div ref={badgeRef} className="flex items-center gap-2" style={{ marginBottom: '0.85rem', flexWrap: 'wrap' }}>
               <span
@@ -453,26 +526,6 @@ const HeroSlider = () => {
                 <ArrowRight size={18} />
               </Link>
 
-              {/* Video Demo Button if video URL exists */}
-              {slide.videoUrl && (
-                <button
-                  type="button"
-                  onClick={() => setActiveVideoModal(slide.videoUrl)}
-                  className="btn btn-lg gsap-hero-btn"
-                  style={{
-                    background: 'linear-gradient(135deg, #0284c7, #0369a1)',
-                    borderColor: '#38bdf8',
-                    color: '#ffffff',
-                    fontWeight: 800,
-                    boxShadow: '0 4px 14px rgba(2, 132, 199, 0.4)'
-                  }}
-                  title="Watch Field Working Video"
-                >
-                  <Play size={18} fill="#ffffff" />
-                  <span>{t('watch_video_demo', 'Watch Video Demo')}</span>
-                </button>
-              )}
-
               {slide.price > 0 && (
                 <button
                   type="button"
@@ -624,84 +677,6 @@ const HeroSlider = () => {
             })}
           </div>
         </div>
-      )}
-
-      {/* Video Demonstration Modal (via React Portal) */}
-      {activeVideoModal && createPortal(
-        <div
-          onClick={() => setActiveVideoModal(null)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(3, 7, 18, 0.96)',
-            backdropFilter: 'blur(16px)',
-            zIndex: 99999999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-            animation: 'fadeIn 0.2s ease-out forwards'
-          }}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '100%',
-              maxWidth: '850px',
-              background: '#000000',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.8)'
-            }}
-          >
-            <div style={{ padding: '0.85rem 1.25rem', background: '#0b1324', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b' }}>
-              <div style={{ color: '#ffffff', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}>
-                <Play size={17} color="#f59e0b" fill="#f59e0b" />
-                <span>Customer Farm Demonstration Video</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveVideoModal(null)}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  cursor: 'pointer'
-                }}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div style={{ width: '100%', height: '460px' }}>
-              {isDirectVideoUrl(activeVideoModal) ? (
-                <video src={activeVideoModal} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-              ) : getYouTubeEmbedUrl(activeVideoModal) ? (
-                <iframe
-                  src={`${getYouTubeEmbedUrl(activeVideoModal)}?autoplay=1`}
-                  title="Field Video Demo"
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <div style={{ padding: '4rem', textAlign: 'center', color: '#ffffff' }}>
-                  Video could not be loaded. Please check URL.
-                </div>
-              )}
-            </div>
-          </div>
-        </div>,
-        document.body
       )}
 
       {/* EMI Calculator Modal */}
