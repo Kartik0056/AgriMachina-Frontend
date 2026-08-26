@@ -17,7 +17,7 @@ const TabInventory = ({ formData, updateField, isEdit = false }) => {
             type="number"
             required
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.stockQuantity ?? ''}
             onChange={(e) => updateField('stockQuantity', Number(e.target.value))}
             placeholder="e.g. 25"
@@ -29,7 +29,7 @@ const TabInventory = ({ formData, updateField, isEdit = false }) => {
           <input
             type="number"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.lowStockThreshold ?? 5}
             onChange={(e) => updateField('lowStockThreshold', Number(e.target.value))}
             placeholder="e.g. 5"
@@ -41,7 +41,7 @@ const TabInventory = ({ formData, updateField, isEdit = false }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.warehouse || 'Central Agro Hub'}
             onChange={(e) => updateField('warehouse', e.target.value)}
           />
@@ -54,7 +54,7 @@ const TabInventory = ({ formData, updateField, isEdit = false }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#f59e0b', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: '#f59e0b', color: '#ffffff' }}
             value={formData.stockChangeReason || ''}
             onChange={(e) => updateField('stockChangeReason', e.target.value)}
             placeholder="e.g. Received shipment batch #9 from OEM factory"
@@ -62,7 +62,7 @@ const TabInventory = ({ formData, updateField, isEdit = false }) => {
         </div>
       )}
 
-      <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <div style={{ color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase' }}>Computed Stock Status:</div>
           <div style={{ fontSize: '1.25rem', fontWeight: 800, color: computedStatus === 'OUT OF STOCK' ? '#ef4444' : computedStatus === 'LOW STOCK' ? '#f59e0b' : '#34d399' }}>

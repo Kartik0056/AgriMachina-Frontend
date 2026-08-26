@@ -5,10 +5,10 @@ const IdealForChips = ({ idealFor = [] }) => {
   if (!idealFor || idealFor.length === 0) return null;
 
   return (
-    <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
+    <div style={{ background: 'var(--primary-50)', padding: '1.25rem', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
       <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
         <Sprout size={20} color="#166534" />
-        <h4 style={{ fontSize: '1rem', color: '#062416', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Ideal For Farm Types & Crops
         </h4>
       </div>
@@ -19,7 +19,7 @@ const IdealForChips = ({ idealFor = [] }) => {
             key={idx}
             className="chip active"
             style={{
-              background: '#ffffff',
+              background: 'var(--bg-surface)',
               border: '1px solid #86efac',
               color: '#14532d',
               fontWeight: 600,

@@ -63,7 +63,7 @@ const AdminRecommendationsPage = () => {
             <input
               type="number"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={globalAlgoConfig.categoryMatchWeight}
               onChange={(e) => setGlobalAlgoConfig({ ...globalAlgoConfig, categoryMatchWeight: Number(e.target.value) })}
             />
@@ -74,7 +74,7 @@ const AdminRecommendationsPage = () => {
             <input
               type="number"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={globalAlgoConfig.idealCropMatchWeight}
               onChange={(e) => setGlobalAlgoConfig({ ...globalAlgoConfig, idealCropMatchWeight: Number(e.target.value) })}
             />
@@ -85,7 +85,7 @@ const AdminRecommendationsPage = () => {
             <input
               type="number"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={globalAlgoConfig.priceProximityWeight}
               onChange={(e) => setGlobalAlgoConfig({ ...globalAlgoConfig, priceProximityWeight: Number(e.target.value) })}
             />
@@ -96,7 +96,7 @@ const AdminRecommendationsPage = () => {
             <input
               type="number"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={globalAlgoConfig.maxCrossSellItems}
               onChange={(e) => setGlobalAlgoConfig({ ...globalAlgoConfig, maxCrossSellItems: Number(e.target.value) })}
             />

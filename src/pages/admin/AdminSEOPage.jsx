@@ -24,11 +24,11 @@ const AdminSEOPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.6rem', color: '#ffffff', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Search size={24} color="#34d399" />
+          <h1 style={{ fontSize: '1.6rem', color: 'var(--admin-text-main)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Search size={24} color="var(--admin-accent, #34d399)" />
             <span>Search Engine Optimization (SEO) & Rich Meta Suite</span>
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+          <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
             Manage global SERP titles, Google Product Schema.org structured data, and search crawler settings.
           </p>
         </div>
@@ -60,22 +60,22 @@ const AdminSEOPage = () => {
       {/* Form Settings */}
       <div className="admin-card flex flex-col gap-5">
         <div className="input-group">
-          <label className="input-label" style={{ color: '#cbd5e1' }}>Default Global Meta Title (Recommended 55-65 characters)</label>
+          <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Default Global Meta Title (Recommended 55-65 characters)</label>
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
             value={seoConfig.siteTitle}
             onChange={(e) => setSeoConfig({ ...seoConfig, siteTitle: e.target.value })}
           />
         </div>
 
         <div className="input-group">
-          <label className="input-label" style={{ color: '#cbd5e1' }}>Default Meta Description (Recommended 150-160 characters)</label>
+          <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Default Meta Description (Recommended 150-160 characters)</label>
           <textarea
             rows="3"
             className="textarea-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
             value={seoConfig.metaDescription}
             onChange={(e) => setSeoConfig({ ...seoConfig, metaDescription: e.target.value })}
           />
@@ -83,22 +83,22 @@ const AdminSEOPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="input-group">
-            <label className="input-label" style={{ color: '#cbd5e1' }}>Canonical Base Domain</label>
+            <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Canonical Base Domain</label>
             <input
               type="text"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
               value={seoConfig.canonicalBase}
               onChange={(e) => setSeoConfig({ ...seoConfig, canonicalBase: e.target.value })}
             />
           </div>
 
           <div className="input-group">
-            <label className="input-label" style={{ color: '#cbd5e1' }}>Google Analytics 4 Measurement ID</label>
+            <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Google Analytics 4 Measurement ID</label>
             <input
               type="text"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
               value={seoConfig.googleAnalyticsId}
               onChange={(e) => setSeoConfig({ ...seoConfig, googleAnalyticsId: e.target.value })}
             />
@@ -106,15 +106,23 @@ const AdminSEOPage = () => {
         </div>
 
         {/* Schema.org Rich Snippet Preview */}
-        <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: '0.5rem', color: '#34d399', fontWeight: 700, fontSize: '0.85rem' }}>
-            <Code size={16} />
-            <span>Automatic Schema.org / JSON-LD Product Rich Snippets</span>
+        <div style={{ background: 'var(--admin-bg-card-alt)', border: '1px solid var(--admin-border, #1e2e4f)', borderRadius: '12px', padding: '1.25rem' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: '0.5rem', color: 'var(--admin-accent, #34d399)', fontWeight: 700, fontSize: '0.85rem' }}>
+            <Sparkles size={16} />
+            <span>Google Rich Results & Microdata Validation</span>
           </div>
-          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.75rem' }}>
-            Every product detail page automatically emits Google Structured Data with aggregateRating, offers (price & currency), availability, and brand parameters for rich Google Shopping stars.
-          </p>
-          <div className="flex items-center gap-4">
+          <pre style={{ color: 'var(--admin-accent, #34d399)', fontSize: '0.75rem', overflowX: 'auto', backgroundColor: 'var(--admin-input-bg)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--admin-border, #1e2e4f)' }}>
+{JSON.stringify({
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "Power Weeder 7HP Petrol 4-Stroke",
+  "image": "https://agrimachina.in/images/weeder.jpg",
+  "description": seoConfig.metaDescription,
+  "brand": { "@type": "Brand", "name": "AgriPro Machinery" },
+  "offers": { "@type": "Offer", "priceCurrency": "INR", "price": "38499", "availability": "https://schema.org/InStock" }
+}, null, 2)}
+          </pre>
+          <div className="flex items-center gap-4 mt-4">
             <label className="flex items-center gap-2" style={{ fontSize: '0.85rem', color: '#cbd5e1', cursor: 'pointer' }}>
               <input
                 type="checkbox"

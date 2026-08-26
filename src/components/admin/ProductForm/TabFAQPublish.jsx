@@ -22,7 +22,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
   return (
     <div className="flex flex-col gap-6">
       {/* Product Specific FAQs */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <HelpCircle size={18} color="#34d399" />
           <span>Product-Specific Technical FAQ</span>
@@ -33,7 +33,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newQ}
             onChange={(e) => setNewQ(e.target.value)}
             placeholder="Farmer Question (e.g. Can this run on wet clay soil?)"
@@ -41,7 +41,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
           <textarea
             className="textarea-field"
             rows="2"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newA}
             onChange={(e) => setNewA(e.target.value)}
             placeholder="Agronomy Technical Answer"
@@ -58,7 +58,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
             <div
               key={idx}
               style={{
-                background: '#070d1a',
+                background: 'var(--admin-bg-sidebar)',
                 border: '1px solid #1e2e4f',
                 borderRadius: '8px',
                 padding: '0.85rem 1rem',
@@ -82,7 +82,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
 
       {/* Status Workflow & Publishing Card */}
       <div style={{
-        background: '#070d1a',
+        background: 'var(--admin-bg-sidebar)',
         border: '1px solid #1e2e4f',
         borderRadius: '16px',
         padding: '1.75rem',
@@ -102,7 +102,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
             <label className="input-label" style={{ color: '#cbd5e1' }}>Catalog Publication Status</label>
             <select
               className="select-field"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={formData.status || 'Draft'}
               onChange={(e) => updateField('status', e.target.value)}
             >
@@ -118,7 +118,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
               type="button"
               onClick={onPreview}
               className="btn btn-secondary"
-              style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             >
               <Eye size={16} />
               <span>Preview Product Page</span>
@@ -130,7 +130,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
             disabled={isSaving}
             onClick={() => onSave('Draft')}
             className="btn btn-secondary"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
           >
             <Save size={16} />
             <span>Save as Draft</span>

@@ -34,7 +34,7 @@ const TabApplications = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Quick Add Presets */}
-      <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
         <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 600 }}>
           🌾 Click to Quickly Add Standard Farm Applications:
         </div>
@@ -48,7 +48,7 @@ const TabApplications = ({ formData, updateField }) => {
                 updateField('applications', updated);
               }}
               className="btn btn-secondary btn-sm"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#cbd5e1', fontSize: '0.75rem' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#cbd5e1', fontSize: '0.75rem' }}
             >
               + {app}
             </button>
@@ -57,13 +57,13 @@ const TabApplications = ({ formData, updateField }) => {
       </div>
 
       {/* Add Custom Application Row */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
         <h4 style={{ fontSize: '0.95rem', color: '#ffffff', marginBottom: '0.75rem' }}>Add Custom Farm Application Card</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Application (e.g. Sugarcane Weeding)"
@@ -72,7 +72,7 @@ const TabApplications = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Short Description"
@@ -82,7 +82,7 @@ const TabApplications = ({ formData, updateField }) => {
             <input
               type="text"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff', flex: 1 }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', flex: 1 }}
               value={image}
               onChange={(e) => setImage(e.target.value)}
               placeholder="Image URL (optional)"
@@ -101,7 +101,7 @@ const TabApplications = ({ formData, updateField }) => {
           <div
             key={idx}
             style={{
-              background: '#070d1a',
+              background: 'var(--admin-bg-sidebar)',
               border: '1px solid #1e2e4f',
               borderRadius: '10px',
               padding: '0.85rem',

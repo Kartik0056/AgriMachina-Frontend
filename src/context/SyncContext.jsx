@@ -89,7 +89,10 @@ export const SyncProvider = ({ children }) => {
           'CATEGORY_CHANGED',
           'DEALS_UPDATED',
           'NEW_SUPPORT_QUERY',
-          'TICKET_UPDATED'
+          'TICKET_UPDATED',
+          'ORDER_CREATED',
+          'ORDER_UPDATED',
+          'ORDER_STATUS_CHANGED'
         ];
 
         eventTypes.forEach(evt => {

@@ -205,7 +205,7 @@ const AdminCouponsPage = () => {
               {coupons.map((c) => (
                 <tr key={c._id}>
                   <td>
-                    <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '0.95rem', color: '#86efac', background: '#070d1a', padding: '0.35rem 0.65rem', borderRadius: '6px', border: '1px solid #1e2e4f' }}>
+                    <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '0.95rem', color: '#86efac', background: 'var(--admin-bg-sidebar)', padding: '0.35rem 0.65rem', borderRadius: '6px', border: '1px solid #1e2e4f' }}>
                       {c.code}
                     </span>
                   </td>
@@ -241,7 +241,7 @@ const AdminCouponsPage = () => {
                       <button
                         onClick={() => handleOpenEdit(c)}
                         className="btn btn-secondary btn-sm"
-                        style={{ padding: '0.3rem 0.6rem', background: '#1e293b', borderColor: '#334155' }}
+                        style={{ padding: '0.3rem 0.6rem', background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)' }}
                         title="Edit"
                       >
                         <Edit2 size={13} />

@@ -290,17 +290,17 @@ const AdminHeroBannersPage = () => {
   return (
     <div className="flex flex-col gap-6" style={{ paddingBottom: '3rem' }}>
       {/* Header Banner */}
-      <div className="admin-card" style={{ background: 'linear-gradient(135deg, #0b1e13 0%, #062416 100%)', border: '1px solid #166534' }}>
+      <div className="admin-card">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="flex items-center gap-2" style={{ color: '#34d399', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="flex items-center gap-2" style={{ color: 'var(--admin-accent)', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               <Sparkles size={16} />
               <span>Storefront Hero CMS</span>
             </div>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff', marginTop: '0.25rem' }}>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--admin-text-main)', marginTop: '0.25rem' }}>
               Home Page Hero Slides & Banner Manager
             </h1>
-            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '0.35rem', maxWidth: '650px' }}>
+            <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem', maxWidth: '650px', marginTop: '0.35rem' }}>
               Select which agricultural machines are featured on the home page slider, embed field demonstration videos, configure special offer badges, and adjust display order.
             </p>
           </div>
@@ -544,7 +544,7 @@ const AdminHeroBannersPage = () => {
               maxWidth: '850px',
               maxHeight: '90vh',
               overflowY: 'auto',
-              background: '#0b1324',
+              background: 'var(--admin-bg-main)',
               border: '1.5px solid #1e2e4f',
               padding: '2rem',
               borderRadius: '20px',
@@ -579,7 +579,7 @@ const AdminHeroBannersPage = () => {
                   value={formData.productId}
                   onChange={(e) => handleSelectProduct(e.target.value)}
                   className="select-field"
-                  style={{ background: '#070d1a', borderColor: '#166534', color: '#ffffff', marginTop: '0.35rem' }}
+                  style={{ background: 'var(--admin-bg-sidebar)', borderColor: '#166534', color: '#ffffff', marginTop: '0.35rem' }}
                 >
                   <option value="">-- Or enter custom machinery details below --</option>
                   {products.map((p) => (
@@ -598,7 +598,7 @@ const AdminHeroBannersPage = () => {
                     type="text"
                     required
                     className="input-field"
-                    style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g. Power Weeder 7HP Petrol 4-Stroke (AV-708)"
@@ -610,7 +610,7 @@ const AdminHeroBannersPage = () => {
                   <textarea
                     rows="2"
                     className="textarea-field"
-                    style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.tagline}
                     onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
                     placeholder="e.g. High-torque 208cc power weeder engineered for deep inter-row soil cultivation..."
@@ -622,7 +622,7 @@ const AdminHeroBannersPage = () => {
                   <input
                     type="text"
                     className="input-field"
-                    style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.badge}
                     onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
                     placeholder="e.g. 🔥 DEAL OF THE DAY • 20% OFF"
@@ -634,7 +634,7 @@ const AdminHeroBannersPage = () => {
                   <input
                     type="text"
                     className="input-field"
-                    style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     placeholder="e.g. Power Weeder & Tiller"
@@ -686,7 +686,7 @@ const AdminHeroBannersPage = () => {
                     <input
                       type="text"
                       className="input-field"
-                      style={{ background: '#070d1a', borderColor: formData.videoUrl ? '#0284c7' : '#1e2e4f', color: '#ffffff' }}
+                      style={{ background: 'var(--admin-bg-sidebar)', borderColor: formData.videoUrl ? '#0284c7' : '#1e2e4f', color: '#ffffff' }}
                       value={formData.videoUrl}
                       onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
                       placeholder="e.g. https://www.youtube.com/watch?v=... or https://...demo.mp4"
@@ -702,7 +702,7 @@ const AdminHeroBannersPage = () => {
                     <input
                       type="text"
                       className="input-field"
-                      style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                      style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                       value={formData.bgImage}
                       onChange={(e) => setFormData({ ...formData, bgImage: e.target.value, productImage: e.target.value })}
                       placeholder="/images/machinery/power_weeder.jpg or https://..."
@@ -738,7 +738,7 @@ const AdminHeroBannersPage = () => {
                     <input
                       type="number"
                       className="input-field"
-                      style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                      style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                       value={formData.price}
                       onChange={(e) => {
                         const price = Number(e.target.value);
@@ -754,7 +754,7 @@ const AdminHeroBannersPage = () => {
                     <input
                       type="number"
                       className="input-field"
-                      style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                      style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                       value={formData.mrp}
                       onChange={(e) => {
                         const mrp = Number(e.target.value);
@@ -769,7 +769,7 @@ const AdminHeroBannersPage = () => {
                     <input
                       type="number"
                       className="input-field"
-                      style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                      style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                       value={formData.discountPercent}
                       onChange={(e) => setFormData({ ...formData, discountPercent: Number(e.target.value) })}
                     />
@@ -780,7 +780,7 @@ const AdminHeroBannersPage = () => {
                     <input
                       type="number"
                       className="input-field"
-                      style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                      style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                       value={formData.monthlyEmi}
                       onChange={(e) => setFormData({ ...formData, monthlyEmi: Number(e.target.value) })}
                     />
@@ -797,7 +797,7 @@ const AdminHeroBannersPage = () => {
                   <input
                     type="text"
                     className="input-field"
-                    style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={newSpecInput}
                     onChange={(e) => setNewSpecInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSpec(); } }}
@@ -850,7 +850,7 @@ const AdminHeroBannersPage = () => {
                   <input
                     type="text"
                     className="input-field"
-                    style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.ctaLink}
                     onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
                     placeholder="/product/power-weeder-7hp-petrol-av-708"
@@ -923,7 +923,7 @@ const AdminHeroBannersPage = () => {
               position: 'relative'
             }}
           >
-            <div style={{ padding: '0.75rem 1.25rem', background: '#0b1324', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '0.75rem 1.25rem', background: 'var(--admin-bg-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ color: '#ffffff', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Play size={16} color="#f59e0b" fill="#f59e0b" />
                 <span>Field Video Demonstration Preview</span>

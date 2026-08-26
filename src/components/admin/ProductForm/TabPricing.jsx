@@ -32,7 +32,7 @@ const TabPricing = ({ formData, updateField }) => {
             type="number"
             required
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.mrp || ''}
             onChange={(e) => updateField('mrp', Number(e.target.value))}
             placeholder="e.g. 48500"
@@ -45,7 +45,7 @@ const TabPricing = ({ formData, updateField }) => {
             type="number"
             required
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.sellingPrice || ''}
             onChange={(e) => updateField('sellingPrice', Number(e.target.value))}
             placeholder="e.g. 39999"
@@ -57,7 +57,7 @@ const TabPricing = ({ formData, updateField }) => {
           <input
             type="number"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.costPrice || ''}
             onChange={(e) => updateField('costPrice', Number(e.target.value))}
             placeholder="e.g. 28000"
@@ -68,7 +68,7 @@ const TabPricing = ({ formData, updateField }) => {
           <label className="input-label" style={{ color: '#cbd5e1' }}>GST Rate (%) *</label>
           <select
             className="select-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.gstPercent || 12}
             onChange={(e) => updateField('gstPercent', Number(e.target.value))}
           >
@@ -85,7 +85,7 @@ const TabPricing = ({ formData, updateField }) => {
           <input
             type="number"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.specialPrice || ''}
             onChange={(e) => updateField('specialPrice', Number(e.target.value))}
             placeholder="Optional festival price"
@@ -94,7 +94,7 @@ const TabPricing = ({ formData, updateField }) => {
       </div>
 
       {/* 2. Deals of the Day & Hot Deal Campaign */}
-      <div style={{ background: '#0b1324', border: '1px solid #e11d48', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #e11d48', borderRadius: '12px', padding: '1.25rem' }}>
         <div className="flex items-center gap-2" style={{ marginBottom: '1rem' }}>
           <Flame size={20} color="#f43f5e" />
           <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
@@ -117,13 +117,13 @@ const TabPricing = ({ formData, updateField }) => {
           </label>
 
           {formData.isDealOfTheDay && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ marginTop: '0.5rem', background: '#070d1a', padding: '1rem', borderRadius: '10px', border: '1px solid #2e1065' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ marginTop: '0.5rem', background: 'var(--admin-bg-sidebar)', padding: '1rem', borderRadius: '10px', border: '1px solid #2e1065' }}>
               <div className="input-group">
                 <label className="input-label" style={{ color: '#cbd5e1' }}>Deal Badge Text (Shown on Product Card)</label>
                 <input
                   type="text"
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                   value={formData.dealBadge || ''}
                   onChange={(e) => updateField('dealBadge', e.target.value)}
                   placeholder="e.g. 🔥 HOT DEAL • 48H ONLY"
@@ -135,7 +135,7 @@ const TabPricing = ({ formData, updateField }) => {
                 <input
                   type="date"
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                   value={formData.dealEndsAt ? new Date(formData.dealEndsAt).toISOString().slice(0, 10) : ''}
                   onChange={(e) => updateField('dealEndsAt', e.target.value)}
                 />
@@ -146,7 +146,7 @@ const TabPricing = ({ formData, updateField }) => {
       </div>
 
       {/* 3. Extra Discount / Farmer Cash Rebate */}
-      <div style={{ background: '#0b1324', border: '1px solid #16a34a', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #16a34a', borderRadius: '12px', padding: '1.25rem' }}>
         <div className="flex items-center gap-2" style={{ marginBottom: '1rem' }}>
           <Tag size={20} color="#34d399" />
           <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
@@ -169,12 +169,12 @@ const TabPricing = ({ formData, updateField }) => {
           </label>
 
           {formData.hasExtraDiscount && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4" style={{ marginTop: '0.5rem', background: '#070d1a', padding: '1rem', borderRadius: '10px', border: '1px solid #064e3b' }}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4" style={{ marginTop: '0.5rem', background: 'var(--admin-bg-sidebar)', padding: '1rem', borderRadius: '10px', border: '1px solid #064e3b' }}>
               <div className="input-group">
                 <label className="input-label" style={{ color: '#cbd5e1' }}>Extra Discount Type</label>
                 <select
                   className="select-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                   value={formData.extraDiscountType || 'FLAT'}
                   onChange={(e) => updateField('extraDiscountType', e.target.value)}
                 >
@@ -189,7 +189,7 @@ const TabPricing = ({ formData, updateField }) => {
                   type="number"
                   min="0"
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                   value={formData.extraDiscountValue || ''}
                   onChange={(e) => updateField('extraDiscountValue', Number(e.target.value))}
                   placeholder={formData.extraDiscountType === 'PERCENT' ? 'e.g. 5 (%)' : 'e.g. 2000 (₹)'}
@@ -201,7 +201,7 @@ const TabPricing = ({ formData, updateField }) => {
                 <input
                   type="text"
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                   value={formData.extraDiscountLabel || ''}
                   onChange={(e) => updateField('extraDiscountLabel', e.target.value)}
                   placeholder="e.g. Extra ₹2,000 Off on SBI Kisan Card"
@@ -213,7 +213,7 @@ const TabPricing = ({ formData, updateField }) => {
       </div>
 
       {/* 4. Live Calculated Pricing Summary */}
-      <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
         <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#34d399', marginBottom: '0.75rem', textTransform: 'uppercase' }}>
           Authoritative Real-Time Pricing Summary
         </div>

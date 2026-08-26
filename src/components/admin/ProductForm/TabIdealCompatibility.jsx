@@ -61,7 +61,7 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* SECTION 1: IDEAL FOR (REQUIRED) */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Sprout size={18} color="#34d399" />
           <span>"Ideal For" Farm Holdings & Crops (Required)</span>
@@ -99,7 +99,7 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={customIdeal}
             onChange={(e) => setCustomIdeal(e.target.value)}
             placeholder="Add custom crop (e.g. Chilli, Turmeric)"
@@ -112,7 +112,7 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
       </div>
 
       {/* SECTION 2: COMPATIBILITY ATTACHMENTS & BRANDS */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Wrench size={18} color="#34d399" />
           <span>Compatibility Attachments & Implements</span>
@@ -127,7 +127,7 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
               <input
                 type="text"
                 className="input-field"
-                style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                 value={newAttachment}
                 onChange={(e) => setNewAttachment(e.target.value)}
                 placeholder="e.g. Adjustable Ridger, Iron Wheels"

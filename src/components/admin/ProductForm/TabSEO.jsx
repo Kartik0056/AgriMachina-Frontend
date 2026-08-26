@@ -36,7 +36,7 @@ const TabSEO = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Auto-generate button */}
-      <div className="flex justify-between items-center" style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
+      <div className="flex justify-between items-center" style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
         <div>
           <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '0.95rem' }}>
             Smart SEO Metadata Auto-Generation
@@ -76,7 +76,7 @@ const TabSEO = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={seo.seoTitle || ''}
             onChange={(e) => updateSEO('seoTitle', e.target.value)}
             placeholder="e.g. Power Weeder 7HP Petrol 4-Stroke | AgriPro Master"
@@ -88,7 +88,7 @@ const TabSEO = ({ formData, updateField }) => {
           <textarea
             className="textarea-field"
             rows="3"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={seo.metaDescription || ''}
             onChange={(e) => updateSEO('metaDescription', e.target.value)}
             placeholder="Meta summary shown in search engine results snippets..."
@@ -101,7 +101,7 @@ const TabSEO = ({ formData, updateField }) => {
             <input
               type="text"
               className="input-field"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={seo.focusKeyword || ''}
               onChange={(e) => updateSEO('focusKeyword', e.target.value)}
               placeholder="e.g. power weeder 7hp petrol"
@@ -113,7 +113,7 @@ const TabSEO = ({ formData, updateField }) => {
             <input
               type="text"
               className="input-field"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={seo.canonicalUrl || ''}
               onChange={(e) => updateSEO('canonicalUrl', e.target.value)}
               placeholder="https://agrimachina.in/product/..."

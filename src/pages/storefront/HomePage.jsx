@@ -69,8 +69,8 @@ const HomePage = () => {
               <ShieldCheck size={26} />
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>100% Genuine OEM Warranty</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Authorized Factory Direct Machinery</div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-main)' }}>100% Genuine OEM Warranty</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Authorized Factory Direct Machinery</div>
             </div>
           </div>
 
@@ -79,8 +79,8 @@ const HomePage = () => {
               <CreditCard size={26} />
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>0% No-Cost Kisan EMI</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Powered by Razorpay & Leading Banks</div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-main)' }}>0% No-Cost Kisan EMI</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Powered by Razorpay & Leading Banks</div>
             </div>
           </div>
 
@@ -89,8 +89,8 @@ const HomePage = () => {
               <Truck size={26} />
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>Pan-India Farm Gate Delivery</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Safe Palletized Transport to Village</div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-main)' }}>Pan-India Farm Gate Delivery</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Safe Palletized Transport to Village</div>
             </div>
           </div>
 
@@ -99,8 +99,8 @@ const HomePage = () => {
               <PhoneCall size={26} />
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>Agronomy Field Advice</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Free WhatsApp / Phone Consultation</div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-main)' }}>Agronomy Field Advice</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Free WhatsApp / Phone Consultation</div>
             </div>
           </div>
         </div>
@@ -110,8 +110,8 @@ const HomePage = () => {
       <section className="container" style={{ marginBottom: '4rem' }}>
         <div className="flex justify-between items-center" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem', color: '#062416' }}>Popular Equipment Categories</h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Select machinery tailored for your crops and land area</p>
+            <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)' }}>Popular Equipment Categories</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Select machinery tailored for your crops and land area</p>
           </div>
           <Link to="/products" className="flex items-center gap-1" style={{ color: '#166534', fontWeight: 700, fontSize: '0.9rem' }}>
             <span>View All Catalog</span>
@@ -132,8 +132,8 @@ const HomePage = () => {
               key={idx}
               to={`/products?category=${encodeURIComponent(cat.name)}`}
               style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '16px',
                 padding: '0.85rem',
                 textAlign: 'center',
@@ -147,14 +147,14 @@ const HomePage = () => {
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease'
               }}
             >
-              <div style={{ width: '100%', height: '100px', background: '#f8fafc', borderRadius: '10px', overflow: 'hidden' }}>
+              <div style={{ width: '100%', height: '100px', background: 'var(--bg-surface-alt)', borderRadius: '10px', overflow: 'hidden' }}>
                 <img
                   src={cat.image || '/images/machinery/power_weeder.jpg'}
                   alt={cat.name}
                   style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.4rem' }}
                 />
               </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>{cat.name}</div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-main)' }}>{cat.name}</div>
             </Link>
           ))}
         </div>
@@ -168,8 +168,8 @@ const HomePage = () => {
               <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>TOP RANKED</span>
               <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700 }}>VERIFIED QUALITY</span>
             </div>
-            <h2 style={{ fontSize: '1.75rem', color: '#062416' }}>Best Sellers in Agricultural Mechanization</h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem' }}>High-performance cultivators, solar pumps, and crop harvesters in stock</p>
+            <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)' }}>Best Sellers in Agricultural Mechanization</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>High-performance cultivators, solar pumps, and crop harvesters in stock</p>
           </div>
           <Link to="/products" className="btn btn-secondary btn-sm">
             <span>Explore All Products</span>
@@ -177,7 +177,7 @@ const HomePage = () => {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Loading farm machinery...</div>
+          <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Loading farm machinery...</div>
         ) : (
           <div
             style={{
@@ -201,11 +201,11 @@ const HomePage = () => {
 
       {/* 9. Farm Solutions By Crop Type */}
       <section className="container" style={{ marginBottom: '4.5rem' }}>
-        <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '24px', padding: '2.5rem' }}>
+        <div style={{ background: 'var(--primary-50)', border: '1px solid #bbf7d0', borderRadius: '24px', padding: '2.5rem' }}>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
               <span className="badge badge-success" style={{ marginBottom: '0.5rem' }}>Machinery By Crop</span>
-              <h2 style={{ fontSize: '1.75rem', color: '#062416' }}>Mechanization Solutions for Every Crop</h2>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)' }}>Mechanization Solutions for Every Crop</h2>
               <p style={{ color: '#166534', fontSize: '0.95rem', maxWidth: '600px', marginTop: '0.5rem' }}>
                 Whether you cultivate Cotton, Sugarcane, Paddy, Wheat, Vegetables, or Horticulture Orchards, discover tailored machinery that reduces labor costs by up to 60%.
               </p>

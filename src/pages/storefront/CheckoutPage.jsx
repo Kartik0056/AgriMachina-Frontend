@@ -332,7 +332,7 @@ const CheckoutPage = () => {
         <span className="badge badge-primary" style={{ marginBottom: '0.4rem' }}>
           🚜 Secure Farm Equipment Checkout
         </span>
-        <h1 style={{ fontSize: '2rem', color: '#062416', fontWeight: 900 }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900 }}>
           Machinery Order & Delivery Confirmation
         </h1>
       </div>
@@ -344,7 +344,7 @@ const CheckoutPage = () => {
           {/* STEP 1: AUTHENTICATION CHECK */}
           {!isAuthenticated ? (
             <div style={{
-              background: '#ffffff',
+              background: 'var(--bg-surface)',
               borderRadius: '16px',
               border: '2px solid #86efac',
               padding: '2rem',
@@ -355,7 +355,7 @@ const CheckoutPage = () => {
                   width: '44px',
                   height: '44px',
                   borderRadius: '10px',
-                  background: '#f0fdf4',
+                  background: 'var(--primary-50)',
                   color: '#166534',
                   display: 'flex',
                   alignItems: 'center',
@@ -364,10 +364,10 @@ const CheckoutPage = () => {
                   <Lock size={22} color="#166534" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', color: '#062416', fontWeight: 800, margin: 0 }}>
+                  <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
                     Step 1: Farmer Sign In Required to Confirm Order
                   </h3>
-                  <p style={{ color: '#64748b', fontSize: '0.85rem', margin: '0.2rem 0 0 0' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.2rem 0 0 0' }}>
                     An authenticated farmer account is required to generate warranty cards, GST tax invoices, and live tracking.
                   </p>
                 </div>
@@ -376,7 +376,7 @@ const CheckoutPage = () => {
               {/* Tab Switcher */}
               <div style={{
                 display: 'flex',
-                background: '#f1f5f9',
+                background: 'var(--bg-surface-alt)',
                 padding: '4px',
                 borderRadius: '10px',
                 marginBottom: '1.5rem',
@@ -512,7 +512,7 @@ const CheckoutPage = () => {
                 </button>
               </form>
 
-              <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#64748b' }}>
+              <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck size={16} color="#16a34a" />
                   <span>1-Year OEM Warranty & GST Invoice Linked</span>
@@ -525,8 +525,8 @@ const CheckoutPage = () => {
           ) : (
             /* Logged-In User Banner */
             <div style={{
-              background: '#f0fdf4',
-              border: '1px solid #86efac',
+              background: 'var(--primary-50)',
+              border: '1px solid var(--primary-400, #86efac)',
               borderRadius: '14px',
               padding: '1rem 1.25rem',
               display: 'flex',
@@ -552,7 +552,7 @@ const CheckoutPage = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span style={{ fontWeight: 800, color: '#062416', fontSize: '0.95rem' }}>{user?.name}</span>
+                    <span style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '0.95rem' }}>{user?.name}</span>
                     <span className="badge badge-success" style={{ fontSize: '0.65rem' }}>LOGGED IN</span>
                   </div>
                   <div style={{ fontSize: '0.8rem', color: '#15803d' }}>
@@ -579,14 +579,14 @@ const CheckoutPage = () => {
           <form onSubmit={handlePlaceOrder} className="flex flex-col gap-6">
             {/* Shipping Address */}
             <div style={{
-              background: '#ffffff',
+              background: 'var(--bg-surface)',
               borderRadius: '16px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--border-color)',
               padding: '1.75rem',
               opacity: !isAuthenticated ? 0.6 : 1,
               pointerEvents: !isAuthenticated ? 'none' : 'auto'
             }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#062416', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Truck size={20} color="#166534" />
                 <span>Farm Delivery Address</span>
               </h3>
@@ -697,15 +697,15 @@ const CheckoutPage = () => {
 
             {/* Payment Method with Razorpay */}
             <div style={{
-              background: '#ffffff',
+              background: 'var(--bg-surface)',
               borderRadius: '16px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--border-color)',
               padding: '1.75rem',
               opacity: !isAuthenticated ? 0.6 : 1,
               pointerEvents: !isAuthenticated ? 'none' : 'auto'
             }}>
               <div className="flex justify-between items-center" style={{ marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1.25rem', color: '#062416', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <CreditCard size={20} color="#166534" />
                   <span>Select Payment Mode</span>
                 </h3>
@@ -736,12 +736,12 @@ const CheckoutPage = () => {
                   />
                   <div style={{ flex: 1 }}>
                     <div className="flex justify-between items-center">
-                      <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1rem' }}>
                         Instant Online Payment (UPI / QR / Cards / NetBanking)
                       </div>
                       <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Fast & Secure</span>
                     </div>
-                    <div style={{ fontSize: '0.825rem', color: '#475569', marginTop: '0.2rem' }}>
+                    <div style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
                       Google Pay, PhonePe, Paytm, BHIM UPI, RuPay / Visa / MasterCard, and 50+ NetBanking accounts.
                     </div>
                   </div>
@@ -768,14 +768,14 @@ const CheckoutPage = () => {
                   />
                   <div style={{ flex: 1 }}>
                     <div className="flex justify-between items-center">
-                      <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1rem' }}>
                         Kisan Equipment EMI & No-Cost Financing (Razorpay)
                       </div>
                       <span className="badge" style={{ background: '#f59e0b', color: '#ffffff', fontSize: '0.7rem', fontWeight: 700 }}>
                         0% No-Cost EMI
                       </span>
                     </div>
-                    <div style={{ fontSize: '0.825rem', color: '#475569', marginTop: '0.2rem' }}>
+                    <div style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
                       Avail 3 to 24 months installments via HDFC, SBI, ICICI, Axis, or Bajaj Finserv EMI card.
                     </div>
                   </div>
@@ -783,7 +783,7 @@ const CheckoutPage = () => {
 
                 {/* EMI Tenure Options inside Checkout */}
                 {paymentMethod === 'RAZORPAY_EMI' && (
-                  <div style={{ padding: '1.25rem', background: '#ffffff', borderRadius: '10px', border: '1px solid #86efac', marginLeft: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ padding: '1.25rem', background: 'var(--bg-surface)', borderRadius: '10px', border: '1px solid var(--primary-400, #86efac)', marginLeft: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     <div className="flex justify-between items-center">
                       <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#166534' }}>Select Bank / Partner:</span>
                       <select
@@ -861,10 +861,10 @@ const CheckoutPage = () => {
                     onChange={() => setPaymentMethod('COD')}
                   />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
+                    <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1rem' }}>
                       Cash on Farm Delivery (COD)
                     </div>
-                    <div style={{ fontSize: '0.825rem', color: '#475569', marginTop: '0.2rem' }}>
+                    <div style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
                       Pay in cash or UPI when machinery arrives at your farm gate.
                     </div>
                   </div>
@@ -897,27 +897,27 @@ const CheckoutPage = () => {
 
         {/* Right Side: Order Summary Confirmation & Coupon Box */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '1.75rem',
           height: 'fit-content'
         }}>
-          <h3 style={{ fontSize: '1.25rem', color: '#062416', marginBottom: '1.25rem', fontWeight: 800 }}>
+          <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1.25rem', fontWeight: 800 }}>
             Order Items ({cartItems.length})
           </h3>
 
-          <div className="flex flex-col gap-3" style={{ maxHeight: '220px', overflowY: 'auto', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+          <div className="flex flex-col gap-3" style={{ maxHeight: '220px', overflowY: 'auto', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
             {cartItems.map(({ product, quantity }) => (
               <div key={product._id} className="flex items-center gap-3">
                 <img
                   src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
                   alt={product.name}
-                  style={{ width: '48px', height: '48px', objectFit: 'contain', background: '#f8fafc', borderRadius: '6px', padding: '2px' }}
+                  style={{ width: '48px', height: '48px', objectFit: 'contain', background: 'var(--bg-surface-alt)', borderRadius: '6px', padding: '2px' }}
                 />
                 <div className="flex-1" style={{ fontSize: '0.85rem' }}>
-                  <div style={{ fontWeight: 700, color: '#0f172a', lineHeight: 1.2 }}>{product.name}</div>
-                  <div style={{ color: '#64748b', fontSize: '0.75rem' }}>Qty: {quantity} x {formatINR(product.sellingPrice)}</div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.2 }}>{product.name}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Qty: {quantity} x {formatINR(product.sellingPrice)}</div>
                 </div>
                 <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>
                   {formatINR(product.sellingPrice * quantity)}
@@ -927,8 +927,8 @@ const CheckoutPage = () => {
           </div>
 
           {/* Promotional Coupon Application Box */}
-          <div style={{ marginBottom: '1.25rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1.25rem' }}>
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <div style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <Tag size={15} color="#166534" />
               <span>Promotional Coupon</span>
             </div>
@@ -936,8 +936,8 @@ const CheckoutPage = () => {
             {appliedCoupon ? (
               <div
                 style={{
-                  background: '#f0fdf4',
-                  border: '1px solid #86efac',
+                  background: 'var(--primary-50)',
+                  border: '1px solid var(--primary-400, #86efac)',
                   borderRadius: '10px',
                   padding: '0.65rem 0.85rem',
                   display: 'flex',
@@ -995,7 +995,7 @@ const CheckoutPage = () => {
                 {/* Available Database Coupons Suggestions */}
                 {activeCoupons.length > 0 && (
                   <div style={{ marginTop: '0.65rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '0.35rem', fontWeight: 600 }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.35rem', fontWeight: 600 }}>
                       Available Active Coupons:
                     </div>
                     <div className="flex flex-wrap gap-1.5">
@@ -1005,7 +1005,7 @@ const CheckoutPage = () => {
                           type="button"
                           onClick={() => handleApplyCoupon(ac.code)}
                           style={{
-                            background: '#f1f5f9',
+                            background: 'var(--bg-surface-alt)',
                             border: '1px dashed #94a3b8',
                             borderRadius: '6px',
                             padding: '0.2rem 0.45rem',
@@ -1027,17 +1027,17 @@ const CheckoutPage = () => {
           </div>
 
           {/* Pricing Calculation Summary */}
-          <div className="flex flex-col gap-2" style={{ fontSize: '0.9rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1rem' }}>
+          <div className="flex flex-col gap-2" style={{ fontSize: '0.9rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1rem' }}>
             <div className="flex justify-between">
-              <span style={{ color: '#64748b' }}>Subtotal:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Subtotal:</span>
               <span style={{ fontWeight: 600 }}>{formatINR(cartSubtotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: '#64748b' }}>GST (Included):</span>
+              <span style={{ color: 'var(--text-muted)' }}>GST (Included):</span>
               <span style={{ fontWeight: 600 }}>{formatINR(gstTotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: '#64748b' }}>Delivery Charge:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Delivery Charge:</span>
               <span style={{ fontWeight: 700, color: shippingFee === 0 ? '#166534' : '#0f172a' }}>
                 {shippingFee === 0 ? 'FREE' : formatINR(shippingFee)}
               </span>
@@ -1053,7 +1053,7 @@ const CheckoutPage = () => {
 
           <div className="flex justify-between items-baseline" style={{ marginBottom: '1.5rem' }}>
             <span style={{ fontSize: '1.1rem', fontWeight: 800 }}>Total Payable:</span>
-            <span style={{ fontSize: '1.75rem', fontWeight: 900, color: '#062416' }}>{formatINR(grandTotal)}</span>
+            <span style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-main)' }}>{formatINR(grandTotal)}</span>
           </div>
 
           {!isAuthenticated && (
@@ -1074,7 +1074,7 @@ const CheckoutPage = () => {
             </div>
           )}
 
-          <div style={{ textAlign: 'center', marginTop: '0.85rem', fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
+          <div style={{ textAlign: 'center', marginTop: '0.85rem', fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
             <ShieldCheck size={14} color="#166534" />
             <span>256-Bit SSL Encrypted by Razorpay Technologies</span>
           </div>

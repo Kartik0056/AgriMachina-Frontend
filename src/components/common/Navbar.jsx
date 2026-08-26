@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ShoppingCart,
@@ -19,6 +19,9 @@ import {
   Flame,
   Sun,
   Moon,
+  Trees,
+  Palette,
+  Check,
   Globe,
   Award,
   MessageSquare,
@@ -28,7 +31,7 @@ import {
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme, THEMES } from '../../context/ThemeContext';
 import { useLanguage, LANGUAGES } from '../../context/LanguageContext';
 import { useSync } from '../../context/SyncContext';
 import api from '../../services/api';
@@ -241,10 +244,11 @@ const Navbar = () => {
   const { totalItemsCount } = useCart();
   const { wishlistCount } = useWishlist();
   const { user, logout, isAuthenticated } = useAuth();
-  const { theme, isDark, toggleTheme } = useTheme();
+  const { theme, isDark, toggleTheme, setTheme } = useTheme();
   const { language, setLanguage, t, currentLangMeta } = useLanguage();
   const { subscribe } = useSync();
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
@@ -254,6 +258,22 @@ const Navbar = () => {
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   const [tickerIndex, setTickerIndex] = useState(0);
   const navigate = useNavigate();
+
+  const themeDropdownRef = useRef(null);
+  const langDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(e.target)) {
+        setThemeDropdownOpen(false);
+      }
+      if (langDropdownRef.current && !langDropdownRef.current.contains(e.target)) {
+        setLangDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -281,6 +301,20 @@ const Navbar = () => {
   useEffect(() => {
     checkUnreadMessages();
   }, [isAuthenticated]);
+
+  // Local window event sync for instant optimistic read updates
+  useEffect(() => {
+    const handleLocalUserRead = (e) => {
+      const { count } = e.detail || {};
+      if (count !== undefined) {
+        setUnreadSupportCount(prev => Math.max(0, prev - count));
+      } else {
+        checkUnreadMessages();
+      }
+    };
+    window.addEventListener('user_ticket_read', handleLocalUserRead);
+    return () => window.removeEventListener('user_ticket_read', handleLocalUserRead);
+  }, []);
 
   // Real-time update on live SSE events (Zero polling, Zero spam)
   useEffect(() => {
@@ -354,7 +388,7 @@ const Navbar = () => {
           {/* Right Direct Helpline, Language & Theme Controls */}
           <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
             {/* Language Selector Dropdown */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} ref={langDropdownRef}>
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -381,19 +415,22 @@ const Navbar = () => {
               </button>
 
               {langDropdownOpen && (
-                <div style={{
-                  position: 'absolute',
-                  top: 'calc(100% + 6px)',
-                  right: 0,
-                  background: 'var(--bg-surface, #ffffff)',
-                  border: '1px solid var(--border-color, #cbd5e1)',
-                  borderRadius: '10px',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
-                  zIndex: 1200,
-                  minWidth: '165px',
-                  overflow: 'hidden',
-                  padding: '5px'
-                }}>
+                <div
+                  className="top-dropdown-menu"
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    right: 0,
+                    background: 'var(--bg-surface, #ffffff)',
+                    border: '1px solid var(--border-color, #cbd5e1)',
+                    borderRadius: '10px',
+                    boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
+                    zIndex: 1200,
+                    minWidth: '165px',
+                    overflow: 'hidden',
+                    padding: '5px'
+                  }}
+                >
                   {LANGUAGES.map(lang => (
                     <button
                       key={lang.code}
@@ -420,9 +457,9 @@ const Navbar = () => {
                       }}
                       className="hover:bg-green-50 dark:hover:bg-slate-800"
                     >
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2" style={{ color: language === lang.code ? '#166534' : 'var(--text-main, #1e293b)' }}>
                         <span>{lang.flag}</span>
-                        <span>{lang.native}</span>
+                        <span style={{ color: language === lang.code ? '#166534' : 'var(--text-main, #1e293b)' }}>{lang.native}</span>
                       </span>
                       {language === lang.code && <CheckCircle2 size={14} color="#166534" />}
                     </button>
@@ -431,7 +468,115 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Top Bar Circular Theme Logo Button */}
+            {/* Store Multi-Theme Selector Dropdown */}
+            <div style={{ position: 'relative' }} ref={themeDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.3rem',
+                  background: 'rgba(255,255,255,0.12)',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  color: '#ffffff',
+                  padding: '0.2rem 0.5rem',
+                  borderRadius: '7px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                className="hover:bg-green-900"
+                title="Select Theme / थीम बदलें"
+              >
+                <span>{THEMES.find(t => t.id === theme)?.icon || '🎨'}</span>
+                <span className="hide-on-mobile">{THEMES.find(t => t.id === theme)?.name.split(' ')[0] || 'Theme'}</span>
+                <ChevronDown size={10} />
+              </button>
+
+              {themeDropdownOpen && (
+                <div
+                  className="top-dropdown-menu"
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    right: 0,
+                    background: 'var(--bg-surface, #ffffff)',
+                    border: '1px solid var(--border-color, #cbd5e1)',
+                    borderRadius: '12px',
+                    boxShadow: '0 16px 36px rgba(0,0,0,0.35)',
+                    zIndex: 1200,
+                    minWidth: '220px',
+                    overflow: 'hidden',
+                    padding: '6px'
+                  }}
+                >
+                  <div style={{
+                    padding: '0.4rem 0.6rem',
+                    borderBottom: '1px solid var(--border-color, #e2e8f0)',
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    color: 'var(--text-muted, #64748b)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}>
+                    Select Store Theme
+                  </div>
+                  {THEMES.map(thm => {
+                    const isCur = theme === thm.id;
+                    return (
+                      <button
+                        key={thm.id}
+                        type="button"
+                        onClick={() => {
+                          setTheme(thm.id);
+                          setThemeDropdownOpen(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '0.5rem 0.75rem',
+                          border: 'none',
+                          background: isCur ? 'var(--primary-50, rgba(22, 101, 52, 0.15))' : 'transparent',
+                          color: isCur ? 'var(--primary-600, #166534)' : 'var(--text-main, #1e293b)',
+                          fontWeight: isCur ? 800 : 600,
+                          fontSize: '0.8rem',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          margin: '2px 0',
+                          transition: 'background 0.12s ease'
+                        }}
+                        className="hover:bg-slate-100 dark:hover:bg-slate-800"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            background: thm.bgPreview,
+                            border: `2px solid ${thm.primaryColor}`,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.7rem'
+                          }}>
+                            {thm.icon}
+                          </span>
+                          <span style={{ color: isCur ? 'var(--primary-600, #166534)' : 'var(--text-main, #1e293b)' }}>{thm.name}</span>
+                        </div>
+                        {isCur && <Check size={14} color={thm.primaryColor} />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Quick 1-Click Toggle between Day Light and Midnight Dark */}
             <button
               type="button"
               onClick={toggleTheme}
@@ -522,7 +667,7 @@ const Navbar = () => {
                 <div style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--text-main, #062416)', lineHeight: 1.1 }}>
                   AGRI<span style={{ color: '#16a34a' }}>MACHINA</span>
                 </div>
-                <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Farmer Direct Equipment
                 </div>
               </div>
@@ -606,10 +751,10 @@ const Navbar = () => {
                       right: 0,
                       top: '105%',
                       width: '220px',
-                      background: '#ffffff',
+                      background: 'var(--bg-surface)',
                       borderRadius: '12px',
                       boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid var(--border-color)',
                       padding: '0.5rem',
                       zIndex: 100,
                       display: 'flex',
@@ -627,8 +772,8 @@ const Navbar = () => {
                         </div>
                       )}
                       <div style={{ overflow: 'hidden' }}>
-                        <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.name}</div>
-                        <div style={{ fontSize: '0.7rem', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</div>
+                        <div style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.name}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</div>
                       </div>
                     </div>
 
@@ -640,7 +785,7 @@ const Navbar = () => {
                         borderRadius: '6px',
                         fontSize: '0.85rem',
                         fontWeight: 600,
-                        color: '#0f172a',
+                        color: 'var(--text-main)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem',
@@ -944,13 +1089,13 @@ const Navbar = () => {
                   <div
                     style={{
                       width: '270px',
-                      background: '#f8fafc',
+                      background: 'var(--bg-surface-alt)',
                       borderRight: '1px solid #e2e8f0',
                       padding: '0.75rem',
                       overflowY: 'auto'
                     }}
                   >
-                    <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.5rem 0.5rem 0.5rem' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.5rem 0.5rem 0.5rem' }}>
                       Machinery Categories
                     </div>
 
@@ -1005,7 +1150,7 @@ const Navbar = () => {
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
-                      background: '#ffffff'
+                      background: 'var(--bg-surface)'
                     }}
                   >
                     <div>
@@ -1013,10 +1158,10 @@ const Navbar = () => {
                         <div className="flex items-center gap-2">
                           <span style={{ fontSize: '1.35rem' }}>{activeCategory.icon}</span>
                           <div>
-                            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>
+                            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-main)' }}>
                               {activeCategory.name}
                             </h3>
-                            <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748b' }}>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                               {activeCategory.tagline}
                             </p>
                           </div>
@@ -1038,8 +1183,8 @@ const Navbar = () => {
                               alignItems: 'center',
                               gap: '0.4rem',
                               padding: '0.45rem 0.65rem',
-                              background: '#f8fafc',
-                              border: '1px solid #e2e8f0',
+                              background: 'var(--bg-surface-alt)',
+                              border: '1px solid var(--border-color)',
                               borderRadius: '6px',
                               fontSize: '0.775rem',
                               fontWeight: 600,
@@ -1092,7 +1237,7 @@ const Navbar = () => {
                           style={{
                             width: '48px',
                             height: '48px',
-                            background: '#ffffff',
+                            background: 'var(--bg-surface)',
                             borderRadius: '6px',
                             overflow: 'hidden',
                             padding: '2px',
@@ -1421,15 +1566,46 @@ const Navbar = () => {
                 <span>1800-AGRI-FARM (Toll-Free)</span>
               </a>
 
-              <div className="flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'none', border: 'none', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', cursor: 'pointer' }}
-                >
-                  {isDark ? <Sun size={16} color="#f59e0b" /> : <Moon size={16} color="#166534" />}
-                  <span>{isDark ? 'Day Light Mode' : 'Dark Farm Mode'}</span>
-                </button>
+              {/* Mobile 4-Theme Selector */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted, #64748b)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Select Storefront Theme:
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.4rem' }}>
+                  {THEMES.map(thm => {
+                    const isCur = theme === thm.id;
+                    return (
+                      <button
+                        key={thm.id}
+                        type="button"
+                        onClick={() => setTheme(thm.id)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                          padding: '0.45rem 0.6rem',
+                          borderRadius: '8px',
+                          border: isCur ? `2px solid ${thm.primaryColor}` : '1px solid var(--border-color, #cbd5e1)',
+                          background: isCur ? 'var(--primary-50, rgba(22, 101, 52, 0.15))' : 'var(--bg-surface, #ffffff)',
+                          color: isCur ? 'var(--primary-600, #166534)' : 'var(--text-main, #0f172a)',
+                          fontSize: '0.75rem',
+                          fontWeight: isCur ? 800 : 600,
+                          cursor: 'pointer',
+                          textAlign: 'left'
+                        }}
+                      >
+                        <span>{thm.icon}</span>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thm.name.split(' ')[0]}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between" style={{ borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '0.5rem' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  Active: <strong style={{ color: 'var(--text-main)' }}>{THEMES.find(t => t.id === theme)?.name}</strong>
+                </span>
 
                 <span style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700 }}>
                   SMAM Approved ✓

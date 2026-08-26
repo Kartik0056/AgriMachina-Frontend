@@ -42,6 +42,7 @@ import {
   ChevronDown,
   ArrowUpRight
 } from 'lucide-react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import adminApi from '../../services/adminApi';
 import { useToast } from '../../context/ToastContext';
 import { useSync } from '../../context/SyncContext';
@@ -78,6 +79,17 @@ const playChime = () => {
   } catch (e) { }
 };
 
+const decodeText = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+};
+
 const quickCannedReplies = [
   'Namaste Kisan Bhai! Yeh machine cotton aur sugarcane kheti ke liye 100% suitable hai.',
   'Aapka DBT / SMAM Govt. Subsidy invoice generate kar diya gaya hai.',
@@ -88,6 +100,10 @@ const quickCannedReplies = [
 ];
 
 const AdminSupportPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const openTicketParam = searchParams.get('ticket') || location.state?.openTicketId;
+
   const [tickets, setTickets] = useState([]);
   const [stats, setStats] = useState({ openCount: 0, inProgressCount: 0, unreadCount: 0 });
   const [loading, setLoading] = useState(true);
@@ -121,6 +137,9 @@ const AdminSupportPage = () => {
   const prevMessagesCountRef = useRef(0);
   const activeTicketIdRef = useRef(null);
   activeTicketIdRef.current = activeTicket?._id;
+
+  const isMinimizedRef = useRef(isMinimized);
+  isMinimizedRef.current = isMinimized;
 
   const scrollToBottomInner = () => {
     if (messagesScrollRef.current) {
@@ -167,31 +186,102 @@ const AdminSupportPage = () => {
     fetchTickets(true);
   }, [fetchTickets]);
 
+  // Listen to external window events for all tickets marked read
+  useEffect(() => {
+    const handleAllRead = () => {
+      setTickets(prev => prev.map(t => ({ ...t, unreadByAdmin: 0 })));
+      setStats(prev => ({ ...prev, unreadCount: 0 }));
+    };
+    window.addEventListener('admin_all_tickets_read', handleAllRead);
+    return () => window.removeEventListener('admin_all_tickets_read', handleAllRead);
+  }, []);
+
   // Real-time SSE listener (handles instant live updates without continuous polling)
   useEffect(() => {
     const unsubscribe = subscribe((event) => {
       if (event.type === 'NEW_SUPPORT_QUERY') {
-        if (soundEnabled) playChime();
         const payload = event.payload || {};
 
-        setLiveBanner({
-          ticketId: payload.ticketId,
-          userName: payload.userName || 'A farmer',
-          subject: payload.subject || 'Equipment inquiry',
-          phone: payload.userPhone || '',
-          product: payload.productTitle || '',
-          preview: payload.preview || 'Customer sent a new query message.',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        });
+        // If admin is currently looking at this active ticket, immediately mark as read
+        if (activeTicketIdRef.current === payload.ticketId && !isMinimizedRef.current) {
+          adminApi.put(`/support/admin/tickets/${payload.ticketId}/read`).catch(() => {});
+        } else {
+          if (soundEnabled) playChime();
+          setLiveBanner({
+            ticketId: payload.ticketId,
+            userName: payload.userName || 'A farmer',
+            subject: payload.subject || 'Equipment inquiry',
+            phone: payload.userPhone || '',
+            product: payload.productTitle || '',
+            preview: payload.preview || 'Customer sent a new query message.',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+        }
 
         fetchTickets(false);
       } else if (event.type === 'TICKET_UPDATED') {
+        const payload = event.payload || {};
+        if (payload.type === 'ticket_read_by_admin') {
+          setTickets(prev => prev.map(t => t._id === payload.ticketId ? { ...t, unreadByAdmin: 0 } : t));
+        }
+        if (activeTicketIdRef.current === payload.ticketId && !isMinimizedRef.current && payload.type === 'user_reply') {
+          adminApi.put(`/support/admin/tickets/${payload.ticketId}/read`).catch(() => {});
+        }
         fetchTickets(false);
       }
     });
 
     return unsubscribe;
   }, [subscribe, soundEnabled, fetchTickets]);
+
+  // Open Chat Popup Window (Gmail Style) & Auto-Clear Unread Notification
+  const handleOpenChatPopup = useCallback(async (ticket) => {
+    try {
+      setIsMinimized(false);
+      prevMessagesCountRef.current = 0;
+      activeTicketIdRef.current = ticket._id;
+      const unreadAmount = ticket.unreadByAdmin || 0;
+
+      // Mark as read locally immediately so the NEW badge and notification count vanishes on click
+      setTickets(prev => prev.map(t => t._id === ticket._id ? { ...t, unreadByAdmin: 0 } : t));
+      if (unreadAmount > 0) {
+        setStats(prev => ({
+          ...prev,
+          unreadCount: Math.max(0, (prev.unreadCount || 0) - unreadAmount)
+        }));
+      }
+
+      // Dispatch local event so AdminTopBar bell instantly updates
+      window.dispatchEvent(new CustomEvent('admin_ticket_read', { detail: { ticketId: ticket._id, count: unreadAmount } }));
+
+      // Fetch latest ticket details and persist read status in backend
+      const res = await adminApi.get(`/support/admin/tickets/${ticket._id}`);
+      if (res.data.success) {
+        setActiveTicket(res.data.ticket);
+        setNewStatus(res.data.ticket.status);
+        setTimeout(scrollToBottomInner, 60);
+      }
+    } catch (error) {
+      setActiveTicket(ticket);
+    }
+  }, []);
+
+  // Auto-open ticket if specified in URL query param ?ticket=... or location.state
+  useEffect(() => {
+    if (openTicketParam && tickets.length > 0) {
+      const found = tickets.find(t => t._id === openTicketParam || t.ticketNumber === openTicketParam);
+      if (found) {
+        handleOpenChatPopup(found);
+        if (searchParams.has('ticket')) {
+          setSearchParams(prev => {
+            const next = new URLSearchParams(prev);
+            next.delete('ticket');
+            return next;
+          }, { replace: true });
+        }
+      }
+    }
+  }, [openTicketParam, tickets, handleOpenChatPopup, searchParams, setSearchParams]);
 
   // Scroll popup message list when messages change
   useEffect(() => {
@@ -202,24 +292,6 @@ const AdminSupportPage = () => {
       prevMessagesCountRef.current = count;
     }
   }, [activeTicket?.messages]);
-
-  // Open Chat Popup Window (Gmail Style)
-  const handleOpenChatPopup = async (ticket) => {
-    try {
-      setIsMinimized(false);
-      prevMessagesCountRef.current = 0;
-      // Mark as read locally immediately so the NEW badge vanishes on click
-      setTickets(prev => prev.map(t => t._id === ticket._id ? { ...t, unreadByAdmin: 0 } : t));
-      const res = await adminApi.get(`/support/admin/tickets/${ticket._id}`);
-      if (res.data.success) {
-        setActiveTicket(res.data.ticket);
-        setNewStatus(res.data.ticket.status);
-        setTimeout(scrollToBottomInner, 60);
-      }
-    } catch (error) {
-      setActiveTicket(ticket);
-    }
-  };
 
   const formatFileSize = (bytes) => {
     if (!bytes || bytes === 0) return '';
@@ -415,14 +487,14 @@ const AdminSupportPage = () => {
         <div>
           <div className="flex items-center gap-3">
             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 10px #22c55e' }} />
-            <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em', margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
+            <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: 'var(--admin-text-main)', letterSpacing: '-0.02em', margin: 0 }}>
               Farmer Advisory & Machinery Inquiries Desk
             </h1>
             <span className="badge" style={{ background: '#064e3b', color: '#6ee7b7', border: '1px solid #059669', fontWeight: 800, fontSize: '0.75rem', padding: '0.25rem 0.65rem' }}>
               ● LIVE STREAM ACTIVE
             </span>
           </div>
-          <p style={{ fontSize: '0.9rem', color: '#94a3b8', marginTop: '0.4rem' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--admin-text-muted)', marginTop: '0.4rem' }}>
             Omnichannel agricultural advisory CRM. Click any inquiry to launch an interactive floating resolution chat popup.
           </p>
         </div>
@@ -434,14 +506,14 @@ const AdminSupportPage = () => {
             onClick={() => setSoundEnabled(!soundEnabled)}
             className="btn btn-secondary btn-sm"
             style={{
-              background: soundEnabled ? '#064e3b' : 'rgba(30, 41, 59, 0.8)',
-              borderColor: soundEnabled ? '#059669' : 'rgba(255,255,255,0.15)',
-              color: soundEnabled ? '#6ee7b7' : '#94a3b8',
+              background: soundEnabled ? 'var(--admin-accent, #064e3b)' : 'var(--admin-bg-card, #1e293b)',
+              borderColor: soundEnabled ? 'var(--admin-accent, #059669)' : 'var(--admin-border, #334155)',
+              color: soundEnabled ? '#ffffff' : 'var(--admin-text-muted, #94a3b8)',
               fontWeight: 700,
               padding: '0.5rem 0.9rem'
             }}
           >
-            {soundEnabled ? <Volume2 size={15} color="#6ee7b7" /> : <VolumeX size={15} color="#94a3b8" />}
+            {soundEnabled ? <Volume2 size={15} color="#ffffff" /> : <VolumeX size={15} color="var(--admin-text-muted, #94a3b8)" />}
             <span>Sound {soundEnabled ? 'ON' : 'OFF'}</span>
           </button>
 
@@ -450,7 +522,13 @@ const AdminSupportPage = () => {
             type="button"
             onClick={() => fetchTickets(true)}
             className="btn btn-secondary btn-sm"
-            style={{ background: 'rgba(30, 41, 59, 0.8)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.15)', fontWeight: 700, padding: '0.5rem 0.9rem' }}
+            style={{
+              background: 'var(--admin-bg-card)',
+              color: 'var(--admin-text-main)',
+              borderColor: 'var(--admin-border)',
+              fontWeight: 700,
+              padding: '0.5rem 0.9rem'
+            }}
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
             <span>Sync Inbox</span>
@@ -460,18 +538,18 @@ const AdminSupportPage = () => {
 
       {/* KPI Metrics Dashboard Cards with Generous Margins & 1.5rem Gaps */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem', marginTop: '1.5rem' }}>
-        <div style={{ background: 'linear-gradient(145deg, #1e293b, #0f172a)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(0,0,0,0.25)' }}>
+        <div style={{ background: 'var(--admin-bg-card)', border: '1px solid var(--admin-border, rgba(255,255,255,0.1))', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
           <div className="flex justify-between items-center">
-            <span style={{ fontSize: '0.775rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Total Inquiries</span>
-            <MessageSquare size={18} color="#38bdf8" />
+            <span style={{ fontSize: '0.775rem', color: 'var(--admin-text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Total Inquiries</span>
+            <MessageSquare size={18} color="var(--admin-accent, #38bdf8)" />
           </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--admin-text-main)', marginTop: '0.5rem' }}>
             {tickets.length}
           </div>
-          <div style={{ fontSize: '0.775rem', color: '#64748b', marginTop: '0.25rem' }}>All historical records</div>
+          <div style={{ fontSize: '0.775rem', color: 'var(--admin-text-muted)', marginTop: '0.25rem' }}>All historical records</div>
         </div>
 
-        <div style={{ background: 'linear-gradient(145deg, #451a03, #1e293b)', border: '1px solid #d97706', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(217, 119, 6, 0.15)' }}>
+        <div style={{ background: 'var(--admin-bg-card)', border: '1px solid #d97706', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(217, 119, 6, 0.15)' }}>
           <div className="flex justify-between items-center">
             <span style={{ fontSize: '0.775rem', color: '#fbbf24', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Open / Needs Reply</span>
             <Clock size={18} color="#fbbf24" />
@@ -482,26 +560,26 @@ const AdminSupportPage = () => {
           <div style={{ fontSize: '0.775rem', color: '#f59e0b', marginTop: '0.25rem' }}>Awaiting initial advisory</div>
         </div>
 
-        <div style={{ background: 'linear-gradient(145deg, #064e3b, #1e293b)', border: '1px solid #059669', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(5, 150, 105, 0.15)' }}>
+        <div style={{ background: 'var(--admin-bg-card)', border: '1px solid #059669', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(5, 150, 105, 0.15)' }}>
           <div className="flex justify-between items-center">
-            <span style={{ fontSize: '0.775rem', color: '#6ee7b7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>In Resolution</span>
+            <span style={{ fontSize: '0.775rem', color: '#34d399', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>In Resolution</span>
             <Tractor size={18} color="#34d399" />
           </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#6ee7b7', marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34d399', marginTop: '0.5rem' }}>
             {stats.inProgressCount}
           </div>
-          <div style={{ fontSize: '0.775rem', color: '#34d399', marginTop: '0.25rem' }}>Agronomist discussing</div>
+          <div style={{ fontSize: '0.775rem', color: '#10b981', marginTop: '0.25rem' }}>Agronomist discussing</div>
         </div>
 
-        <div style={{ background: stats.unreadCount > 0 ? 'linear-gradient(145deg, #450a0a, #1e293b)' : 'linear-gradient(145deg, #1e293b, #0f172a)', border: stats.unreadCount > 0 ? '1.5px solid #ef4444' : '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(0,0,0,0.25)' }}>
+        <div style={{ background: 'var(--admin-bg-card)', border: stats.unreadCount > 0 ? '1.5px solid #ef4444' : '1px solid var(--admin-border, rgba(255,255,255,0.1))', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
           <div className="flex justify-between items-center">
-            <span style={{ fontSize: '0.775rem', color: stats.unreadCount > 0 ? '#fca5a5' : '#94a3b8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Unread Farmer Messages</span>
-            <AlertCircle size={18} color={stats.unreadCount > 0 ? '#ef4444' : '#64748b'} />
+            <span style={{ fontSize: '0.775rem', color: stats.unreadCount > 0 ? '#fca5a5' : 'var(--admin-text-muted, #94a3b8)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Unread Farmer Messages</span>
+            <AlertCircle size={18} color={stats.unreadCount > 0 ? '#ef4444' : 'var(--admin-text-muted, #64748b)'} />
           </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 900, color: stats.unreadCount > 0 ? '#ef4444' : '#ffffff', marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '2.2rem', fontWeight: 900, color: stats.unreadCount > 0 ? '#ef4444' : 'var(--admin-text-main, #ffffff)', marginTop: '0.5rem' }}>
             {stats.unreadCount}
           </div>
-          <div style={{ fontSize: '0.775rem', color: stats.unreadCount > 0 ? '#f87171' : '#64748b', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '0.775rem', color: stats.unreadCount > 0 ? '#f87171' : 'var(--admin-text-muted, #64748b)', marginTop: '0.25rem' }}>
             {stats.unreadCount > 0 ? '⚡ Priority reply requested' : 'All caught up'}
           </div>
         </div>
@@ -510,11 +588,11 @@ const AdminSupportPage = () => {
       {/* Inquiries Management Workspace (Full-Width Card Directory) */}
       <div
         style={{
-          background: '#111c34',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'var(--admin-bg-card)',
+          border: '1px solid var(--admin-border, rgba(255,255,255,0.1))',
           borderRadius: '20px',
           padding: '1.85rem',
-          boxShadow: '0 12px 36px rgba(0,0,0,0.3)',
+          boxShadow: '0 12px 36px rgba(0,0,0,0.08)',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.75rem',
@@ -524,7 +602,7 @@ const AdminSupportPage = () => {
         {/* Controls Bar */}
         <div className="flex justify-between items-center flex-wrap gap-3">
           {/* Search Box */}
-          <div className="relative" style={{ flex: 1, minWidth: '280px', maxWidth: '480px' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '280px', maxWidth: '480px' }}>
             <input
               type="text"
               placeholder="Search farmer name, phone, ticket #, SKU..."
@@ -534,14 +612,14 @@ const AdminSupportPage = () => {
                 width: '100%',
                 fontSize: '0.875rem',
                 padding: '0.65rem 1rem 0.65rem 2.5rem',
-                background: 'rgba(15, 23, 42, 0.8)',
-                border: '1px solid rgba(255,255,255,0.15)',
+                backgroundColor: 'var(--admin-input-bg)',
+                border: '1px solid var(--admin-input-border, rgba(255,255,255,0.15))',
                 borderRadius: '12px',
-                color: '#ffffff',
+                color: 'var(--admin-text-main)',
                 outline: 'none'
               }}
             />
-            <Search size={16} color="#94a3b8" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+            <Search size={16} color="var(--admin-text-muted, #94a3b8)" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
           </div>
 
           {/* Status Filter Tabs */}
@@ -559,9 +637,9 @@ const AdminSupportPage = () => {
                     borderRadius: '10px',
                     fontSize: '0.8rem',
                     fontWeight: isSelected ? 800 : 600,
-                    background: isSelected ? '#166534' : 'rgba(30, 41, 59, 0.6)',
-                    color: isSelected ? '#ffffff' : '#cbd5e1',
-                    border: isSelected ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.1)',
+                    background: isSelected ? 'var(--admin-accent, #166534)' : 'var(--admin-bg-card-alt, rgba(30, 41, 59, 0.6))',
+                    color: isSelected ? '#ffffff' : 'var(--admin-text-main, #cbd5e1)',
+                    border: isSelected ? '1px solid var(--admin-accent, #22c55e)' : '1px solid var(--admin-border, rgba(255,255,255,0.1))',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
                     display: 'flex',
@@ -592,15 +670,15 @@ const AdminSupportPage = () => {
         {/* Inquiries Cards Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem', marginTop: '0.5rem' }}>
           {loading ? (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: '#94a3b8' }}>
-              <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 0.75rem auto', color: '#22c55e' }} />
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--admin-text-muted)' }}>
+              <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 0.75rem auto', color: 'var(--admin-accent, #22c55e)' }} />
               <div style={{ fontSize: '1rem', fontWeight: 600 }}>Loading farmer inquiry records...</div>
             </div>
           ) : tickets.length === 0 ? (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: '#94a3b8', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '16px' }}>
-              <MessageSquare size={42} color="rgba(255,255,255,0.2)" style={{ margin: '0 auto 1rem auto' }} />
-              <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff' }}>No Inquiries Found</div>
-              <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.35rem' }}>Try clearing your search keyword or switching status filter tabs.</p>
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--admin-text-muted)', backgroundColor: 'var(--admin-input-bg)', borderRadius: '16px', border: '1px solid var(--admin-border)' }}>
+              <MessageSquare size={42} color="var(--admin-text-muted, rgba(255,255,255,0.2))" style={{ margin: '0 auto 1rem auto' }} />
+              <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--admin-text-main)' }}>No Inquiries Found</div>
+              <p style={{ fontSize: '0.85rem', color: 'var(--admin-text-muted)', marginTop: '0.35rem' }}>Try clearing your search keyword or switching status filter tabs.</p>
             </div>
           ) : (
             tickets.map((t) => {
@@ -610,14 +688,14 @@ const AdminSupportPage = () => {
                 <div
                   key={t._id}
                   style={{
-                    background: t.unreadByAdmin > 0 ? 'linear-gradient(145deg, #1c2640, #141f36)' : 'linear-gradient(145deg, #16223b, #0f172a)',
-                    border: t.unreadByAdmin > 0 ? '1.5px solid #f59e0b' : '1px solid rgba(255,255,255,0.1)',
+                    background: 'var(--admin-bg-card-alt)',
+                    border: t.unreadByAdmin > 0 ? '1.5px solid #f59e0b' : '1px solid var(--admin-border, rgba(255,255,255,0.1))',
                     borderRadius: '16px',
                     padding: '1.25rem',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
                     transition: 'all 0.2s ease',
                     position: 'relative'
                   }}
@@ -638,7 +716,7 @@ const AdminSupportPage = () => {
                         padding: '0.2rem 0.6rem',
                         borderRadius: '999px',
                         boxShadow: '0 0 12px rgba(239, 68, 68, 0.9), 0 2px 6px rgba(0,0,0,0.5)',
-                        border: '2px solid #0f172a',
+                        border: '2px solid var(--admin-bg-card, #0f172a)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.35rem',
@@ -672,10 +750,10 @@ const AdminSupportPage = () => {
                           {t.userName?.charAt(0) || 'K'}
                         </div>
                         <div>
-                          <div style={{ fontWeight: 900, color: '#ffffff', fontSize: '0.975rem' }}>
+                          <div style={{ fontWeight: 900, color: 'var(--admin-text-main)', fontSize: '0.975rem' }}>
                             {t.userName}
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
                             #{t.ticketNumber || t._id.slice(-6).toUpperCase()} • {t.userPhone}
                           </div>
                         </div>
@@ -707,13 +785,13 @@ const AdminSupportPage = () => {
 
                     {/* Subject Line */}
                     <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#86efac', margin: '0.4rem 0 0.35rem 0' }}>
-                      {t.subject}
+                      {decodeText(t.subject)}
                     </div>
 
                     {/* Machinery tag if present */}
                     {t.productTitle && (
                       <div style={{ fontSize: '0.75rem', color: '#38bdf8', background: 'rgba(56, 189, 248, 0.12)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        🚜 {t.productTitle} {t.productSku ? `(SKU: ${t.productSku})` : ''}
+                        🚜 {decodeText(t.productTitle)} {t.productSku ? `(SKU: ${t.productSku})` : ''}
                       </div>
                     )}
 
@@ -721,7 +799,7 @@ const AdminSupportPage = () => {
                     {lastMsg && (
                       <div style={{ fontSize: '0.8rem', color: '#cbd5e1', background: 'rgba(0,0,0,0.25)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '0.75rem', lineHeight: 1.4 }}>
                         <strong style={{ color: lastMsg.sender === 'admin' ? '#86efac' : '#fbbf24' }}>
-                          {lastMsg.sender === 'admin' ? 'You: ' : `${t.userName}: `}
+                          {lastMsg.sender === 'admin' ? 'You: ' : `${decodeText(t.userName)}: `}
                         </strong>
                         <span>{lastMsg.text || (lastMsg.attachments?.length > 0 ? '📎 File Attachment' : lastMsg.images?.length > 0 ? '📷 Attached Image' : '🎥 Video Link')}</span>
                       </div>
@@ -730,25 +808,51 @@ const AdminSupportPage = () => {
 
                   {/* Actions Bar */}
                   <div className="flex justify-between items-center" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '0.75rem', marginTop: '0.35rem' }}>
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                       <a
                         href={`tel:${t.userPhone}`}
-                        style={{ color: '#86efac', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'none' }}
-                        className="hover:underline"
+                        style={{
+                          color: '#86efac',
+                          fontSize: '0.75rem',
+                          fontWeight: 800,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          textDecoration: 'none',
+                          background: 'rgba(34, 197, 94, 0.12)',
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(34, 197, 94, 0.25)',
+                          transition: 'all 0.15s ease'
+                        }}
+                        className="hover:scale-105 hover:bg-green-700/30 hover:border-green-400"
                         title="Call Farmer"
                       >
-                        <PhoneCall size={13} color="#86efac" />
+                        <PhoneCall size={12} color="#86efac" />
                         <span>Call</span>
                       </a>
                       <a
                         href={`https://wa.me/${t.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${t.userName} ji! 🙏 AgriMachina Support Desk se hum aapki inquiry (${t.subject}) ke sambandh me sampark kar rahe hain.`)}`}
                         target="_blank"
                         rel="noreferrer"
-                        style={{ color: '#34d399', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'none' }}
-                        className="hover:underline"
+                        style={{
+                          color: '#34d399',
+                          fontSize: '0.75rem',
+                          fontWeight: 800,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          textDecoration: 'none',
+                          background: 'rgba(52, 211, 153, 0.12)',
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(52, 211, 153, 0.25)',
+                          transition: 'all 0.15s ease'
+                        }}
+                        className="hover:scale-105 hover:bg-emerald-700/30 hover:border-emerald-400"
                         title="WhatsApp Farmer"
                       >
-                        <MessageCircle size={13} color="#34d399" />
+                        <MessageCircle size={12} color="#34d399" />
                         <span>WhatsApp</span>
                       </a>
                     </div>
@@ -756,18 +860,22 @@ const AdminSupportPage = () => {
                     <button
                       type="button"
                       onClick={() => handleOpenChatPopup(t)}
-                      className="btn btn-primary btn-sm"
                       style={{
-                        background: 'linear-gradient(135deg, #166534, #15803d)',
-                        borderColor: '#22c55e',
+                        background: 'linear-gradient(135deg, #16a34a, #15803d)',
+                        border: '1px solid #22c55e',
                         color: '#ffffff',
                         fontWeight: 800,
                         fontSize: '0.775rem',
-                        padding: '0.35rem 0.95rem',
-                        display: 'flex',
+                        padding: '0.35rem 0.85rem',
+                        borderRadius: '8px',
+                        display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '0.35rem'
+                        gap: '0.35rem',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(34, 197, 94, 0.3)',
+                        transition: 'all 0.2s ease'
                       }}
+                      className="hover:scale-105 hover:shadow-[0_0_12px_rgba(34,197,94,0.5)] active:scale-95"
                     >
                       <MessageSquare size={13} />
                       <span>Open Chat</span>
@@ -789,166 +897,258 @@ const AdminSupportPage = () => {
           className="floating-chat-popup-widget custom-chat-scrollbar"
           style={{
             position: 'fixed',
-            bottom: isMinimized ? '0' : '20px',
-            right: isMinimized ? '20px' : isMaximized ? '20px' : '25px',
-            left: isMaximized ? '20px' : 'auto',
-            top: isMaximized ? '20px' : 'auto',
-            width: isMaximized ? 'calc(100vw - 40px)' : isMinimized ? '340px' : '490px',
-            height: isMaximized ? 'calc(100vh - 40px)' : isMinimized ? '48px' : '620px',
-            maxHeight: isMaximized ? 'none' : '85vh',
-            background: '#0f172a',
-            border: '2px solid #22c55e',
-            borderRadius: isMinimized ? '14px 14px 0 0' : '18px',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.7), 0 0 20px rgba(34, 197, 94, 0.25)',
+            bottom: isMinimized ? '0' : isMaximized ? '0' : '20px',
+            right: isMinimized ? '20px' : isMaximized ? '0' : '25px',
+            left: isMaximized ? '0' : 'auto',
+            top: isMaximized ? '0' : 'auto',
+            width: isMaximized ? '100vw' : isMinimized ? '340px' : '460px',
+            height: isMaximized ? '100vh' : isMinimized ? '46px' : '590px',
+            maxHeight: isMaximized ? '100vh' : '88vh',
+            maxWidth: isMaximized ? '100vw' : 'calc(100vw - 32px)',
+            background: '#090e1a',
+            border: isMaximized ? 'none' : '1px solid rgba(34, 197, 94, 0.45)',
+            borderRadius: isMaximized ? '0px' : isMinimized ? '12px 12px 0 0' : '16px',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.85), 0 0 25px rgba(34, 197, 94, 0.18)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            zIndex: 99999,
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+            zIndex: 999999,
+            transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Pop-up Top Header (Always Visible) */}
           <div
             style={{
-              padding: '0.85rem 1.25rem',
-              background: 'linear-gradient(135deg, #14532d, #064e3b)',
+              padding: '0.65rem 1rem',
+              background: 'linear-gradient(135deg, #092617, #063820)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: isMinimized ? 'pointer' : 'default',
               userSelect: 'none',
-              borderBottom: isMinimized ? 'none' : '1px solid rgba(255,255,255,0.15)'
+              borderBottom: isMinimized ? 'none' : '1px solid rgba(255,255,255,0.1)'
             }}
             onClick={isMinimized ? () => setIsMinimized(false) : undefined}
           >
-            <div className="flex items-center gap-3" style={{ flex: 1, minWidth: 0 }}>
+            <div className="flex items-center gap-2.5" style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
-                  background: '#22c55e',
-                  color: '#000000',
+                  background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                  color: '#ffffff',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 900,
-                  fontSize: '0.95rem',
+                  fontSize: '0.85rem',
                   flexShrink: 0,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  marginRight: '0.25rem'
+                  boxShadow: '0 2px 8px rgba(34, 197, 94, 0.4)'
                 }}
               >
                 {activeTicket.userName?.charAt(0) || 'K'}
               </div>
               <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {activeTicket.userName} <span style={{ fontSize: '0.775rem', color: '#86efac', fontWeight: 600, marginLeft: '0.25rem' }}>({activeTicket.userPhone})</span>
+                <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{decodeText(activeTicket.userName)}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#86efac', fontWeight: 600 }}>({activeTicket.userPhone})</span>
                 </div>
                 {!isMinimized && (
-                  <div style={{ fontSize: '0.725rem', color: '#cbd5e1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '0.15rem' }}>
-                    #{activeTicket.ticketNumber || activeTicket._id.slice(-6).toUpperCase()} • {activeTicket.subject}
+                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    #{activeTicket.ticketNumber || activeTicket._id.slice(-6).toUpperCase()} • {decodeText(activeTicket.subject)}
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Window Controls (Minimize, Maximize, Close) */}
-            <div className="flex items-center gap-2" style={{ flexShrink: 0, marginLeft: '0.75rem' }} onClick={(e) => e.stopPropagation()}>
+            {/* Window Controls Dock (Compact, Refined, Spaced Glowing Buttons) */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                marginLeft: '0.75rem',
+                padding: '0.15rem 0.35rem',
+                background: 'rgba(0, 0, 0, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '8px',
+                backdropFilter: 'blur(8px)',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                flexShrink: 0
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Minimize Button */}
               <button
                 type="button"
                 onClick={() => setIsMinimized(!isMinimized)}
-                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
-                className="hover:bg-white/30"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.4))',
+                  border: '1px solid rgba(245, 158, 11, 0.6)',
+                  borderRadius: '6px',
+                  color: '#fef08a',
+                  width: '23px',
+                  height: '23px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+                className="hover:scale-110 hover:shadow-[0_0_10px_rgba(245,158,11,0.7)] active:scale-95"
                 title={isMinimized ? 'Restore Window' : 'Minimize Window'}
               >
-                {isMinimized ? <ChevronUp size={16} /> : <Minus size={16} strokeWidth={2.5} />}
+                {isMinimized ? <ChevronUp size={11} strokeWidth={2.8} /> : <Minus size={11} strokeWidth={3} />}
               </button>
 
+              {/* Maximize / Fullscreen Button */}
               {!isMinimized && (
                 <button
                   type="button"
                   onClick={() => setIsMaximized(!isMaximized)}
-                  style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
-                  className="hover:bg-white/30"
-                  title={isMaximized ? 'Restore Size' : 'Maximize Window'}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.4))',
+                    border: '1px solid rgba(56, 189, 248, 0.6)',
+                    borderRadius: '6px',
+                    color: '#bae6fd',
+                    width: '23px',
+                    height: '23px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.18s ease'
+                  }}
+                  className="hover:scale-110 hover:shadow-[0_0_10px_rgba(56,189,248,0.7)] active:scale-95"
+                  title={isMaximized ? 'Exit Full Screen' : 'Full Screen'}
                 >
-                  <Maximize2 size={14} />
+                  {isMaximized ? <Minimize2 size={11} strokeWidth={2.5} /> : <Maximize2 size={11} strokeWidth={2.5} />}
                 </button>
               )}
 
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setActiveTicket(null)}
-                style={{ background: 'rgba(239,68,68,0.3)', border: '1px solid rgba(239,68,68,0.5)', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
-                className="hover:bg-red-600"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(185, 28, 28, 0.5))',
+                  border: '1px solid rgba(239, 68, 68, 0.7)',
+                  borderRadius: '6px',
+                  color: '#fecaca',
+                  width: '23px',
+                  height: '23px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+                className="hover:scale-110 hover:bg-red-600 hover:text-white hover:shadow-[0_0_12px_rgba(239,68,68,0.9)] active:scale-95"
                 title="Close Chat Pop-up"
               >
-                <X size={15} />
+                <X size={11} strokeWidth={2.8} />
               </button>
             </div>
           </div>
 
           {/* Pop-up Body (Hidden when minimized) */}
           {!isMinimized && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100% - 48px)', overflow: 'hidden', background: '#090e1a' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100% - 44px)', overflow: 'hidden', background: '#090e1a' }}>
               {/* Context Bar: Machinery SKU + Status Selector + Call/WhatsApp Shortcuts */}
               <div
                 style={{
-                  padding: '0.65rem 1.25rem',
-                  background: '#111c34',
+                  padding: '0.45rem 0.85rem',
+                  background: '#0b1120',
                   borderBottom: '1px solid rgba(255,255,255,0.08)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '0.85rem',
-                  fontSize: '0.775rem',
+                  gap: '0.65rem',
+                  fontSize: '0.75rem',
                   flexWrap: 'wrap'
                 }}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <a
                     href={`tel:${activeTicket.userPhone}`}
-                    style={{ color: '#86efac', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none' }}
+                    style={{
+                      color: '#86efac',
+                      fontWeight: 800,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      textDecoration: 'none',
+                      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 101, 52, 0.35))',
+                      padding: '0.25rem 0.6rem',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(34, 197, 94, 0.45)',
+                      fontSize: '0.725rem',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="hover:scale-105 hover:border-green-400 hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
                   >
-                    <PhoneCall size={13} color="#86efac" />
+                    <PhoneCall size={12} color="#86efac" />
                     <span>Call</span>
                   </a>
                   <a
                     href={`https://wa.me/${activeTicket.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${activeTicket.userName} ji! 🙏 AgriMachina Support Desk.`)}`}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: '#34d399', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none' }}
+                    style={{
+                      color: '#34d399',
+                      fontWeight: 800,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      textDecoration: 'none',
+                      background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(5, 150, 105, 0.35))',
+                      padding: '0.25rem 0.6rem',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(52, 211, 153, 0.45)',
+                      fontSize: '0.725rem',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="hover:scale-105 hover:border-emerald-400 hover:shadow-[0_0_10px_rgba(52,211,153,0.4)]"
                   >
-                    <MessageCircle size={13} color="#34d399" />
+                    <MessageCircle size={12} color="#34d399" />
                     <span>WhatsApp</span>
                   </a>
 
                   {activeTicket.productTitle && (
-                    <span style={{ color: '#38bdf8', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '220px', marginLeft: '0.25rem' }}>
-                      • 🚜 {activeTicket.productTitle}
+                    <span style={{ color: '#38bdf8', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px', fontSize: '0.725rem', background: 'rgba(56, 189, 248, 0.1)', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+                      🚜 {decodeText(activeTicket.productTitle)}
                     </span>
                   )}
                 </div>
 
-                {/* Status Switcher */}
-                <div className="flex items-center gap-2">
-                  <span style={{ color: '#94a3b8', fontWeight: 700 }}>Status:</span>
+                {/* Compact Status Switcher Pill */}
+                <div className="flex items-center gap-1.5">
+                  <span style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 700 }}>Status:</span>
                   <select
                     value={activeTicket.status}
                     onChange={(e) => handleStatusChange(e.target.value)}
                     style={{
-                      fontSize: '0.75rem',
+                      fontSize: '0.725rem',
                       fontWeight: 800,
-                      padding: '0.3rem 0.6rem',
+                      padding: '0.25rem 0.6rem',
                       borderRadius: '8px',
-                      background: activeTicket.status === 'Open' ? '#7f1d1d' : activeTicket.status === 'In Progress' ? '#075985' : '#14532d',
+                      background: activeTicket.status === 'Open'
+                        ? 'linear-gradient(135deg, #7f1d1d, #991b1b)'
+                        : activeTicket.status === 'In Progress'
+                        ? 'linear-gradient(135deg, #0369a1, #0284c7)'
+                        : 'linear-gradient(135deg, #15803d, #16a34a)',
                       color: '#ffffff',
-                      border: '1px solid rgba(255,255,255,0.2)',
+                      border: '1px solid rgba(255,255,255,0.3)',
                       outline: 'none',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                      transition: 'all 0.15s ease'
                     }}
+                    className="hover:border-white/60 hover:scale-105"
                   >
                     <option value="Open">🔴 Open</option>
                     <option value="In Progress">🔵 In Progress</option>
@@ -958,17 +1158,17 @@ const AdminSupportPage = () => {
                 </div>
               </div>
 
-              {/* Messages Thread Stream (FULLY SCROLLABLE, 0 SCROLL BUG, SLEEK HOVER SCROLLBAR) */}
+              {/* Messages Thread Stream */}
               <div
                 ref={messagesScrollRef}
                 className="custom-chat-scrollbar"
                 style={{
                   flex: 1,
-                  padding: '1.25rem 1.25rem',
+                  padding: '1rem 1rem',
                   overflowY: 'auto',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '1.25rem',
+                  gap: '0.85rem',
                   background: '#090e1a'
                 }}
               >
@@ -986,11 +1186,11 @@ const AdminSupportPage = () => {
                         alignItems: isAdmin ? 'flex-end' : 'flex-start',
                         maxWidth: '85%',
                         alignSelf: isAdmin ? 'flex-end' : 'flex-start',
-                        marginBottom: '0.5rem'
+                        marginBottom: '0.25rem'
                       }}
                     >
-                      <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <strong style={{ color: isAdmin ? '#86efac' : '#38bdf8', fontWeight: 800 }}>
+                      <div style={{ fontSize: '0.68rem', color: '#64748b', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <strong style={{ color: isAdmin ? '#86efac' : '#38bdf8', fontWeight: 700 }}>
                           {isAdmin ? 'AgriMachina Specialist (You)' : msg.senderName || activeTicket.userName}
                         </strong>
                         <span>•</span>
@@ -999,14 +1199,14 @@ const AdminSupportPage = () => {
 
                       <div
                         style={{
-                          background: isAdmin ? 'linear-gradient(135deg, #166534, #14532d)' : '#1e293b',
+                          background: isAdmin ? 'linear-gradient(135deg, #15803d, #14532d)' : '#1e293b',
                           color: '#ffffff',
-                          border: isAdmin ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.1)',
-                          borderRadius: isAdmin ? '18px 18px 2px 18px' : '18px 18px 18px 2px',
-                          padding: '0.85rem 1.2rem',
-                          fontSize: '0.875rem',
-                          lineHeight: 1.55,
-                          boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+                          border: isAdmin ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.08)',
+                          borderRadius: isAdmin ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
+                          padding: '0.65rem 0.95rem',
+                          fontSize: '0.825rem',
+                          lineHeight: 1.45,
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word'
                         }}
@@ -1015,13 +1215,13 @@ const AdminSupportPage = () => {
 
                         {/* Images */}
                         {((msg.images && msg.images.length > 0) || allAttachments.some(a => a.fileType === 'image')) && (
-                          <div className="flex flex-wrap gap-2.5" style={{ marginTop: '0.65rem' }}>
+                          <div className="flex flex-wrap gap-2" style={{ marginTop: '0.5rem' }}>
                             {msg.images?.map((imgUrl, imgIdx) => (
                               <a key={`pop-img-${imgIdx}`} href={imgUrl} target="_blank" rel="noreferrer">
                                 <img
                                   src={imgUrl}
                                   alt="Attachment"
-                                  style={{ width: '110px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }}
+                                  style={{ width: '95px', height: '70px', objectFit: 'cover', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)' }}
                                 />
                               </a>
                             ))}
@@ -1030,7 +1230,7 @@ const AdminSupportPage = () => {
                                 <img
                                   src={att.url}
                                   alt={att.name || 'Attachment'}
-                                  style={{ width: '110px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }}
+                                  style={{ width: '95px', height: '70px', objectFit: 'cover', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)' }}
                                 />
                               </a>
                             ))}
@@ -1047,40 +1247,40 @@ const AdminSupportPage = () => {
                             style={{
                               display: 'flex',
                               alignItems: 'center',
-                              gap: '0.5rem',
-                              marginTop: '0.55rem',
-                              padding: '0.45rem 0.75rem',
+                              gap: '0.4rem',
+                              marginTop: '0.45rem',
+                              padding: '0.35rem 0.65rem',
                               background: 'rgba(0,0,0,0.3)',
-                              borderRadius: '8px',
+                              borderRadius: '6px',
                               border: '1px solid rgba(255,255,255,0.15)',
                               color: '#ffffff',
                               textDecoration: 'none',
-                              fontSize: '0.775rem',
-                              fontWeight: 700
+                              fontSize: '0.75rem',
+                              fontWeight: 600
                             }}
                           >
-                            <FileText size={15} color="#fef08a" />
+                            <FileText size={14} color="#fef08a" />
                             <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {att.name || 'Document.pdf'}
                             </span>
-                            <Download size={14} />
+                            <Download size={13} />
                           </a>
                         ))}
 
                         {/* Video */}
                         {msg.videoUrl && (
-                          <div style={{ marginTop: '0.65rem', borderRadius: '8px', overflow: 'hidden' }}>
+                          <div style={{ marginTop: '0.5rem', borderRadius: '6px', overflow: 'hidden' }}>
                             {embedUrl ? (
                               <iframe
                                 src={embedUrl}
                                 title="Video"
-                                style={{ width: '100%', height: '160px', border: 'none' }}
+                                style={{ width: '100%', height: '150px', border: 'none' }}
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                               />
                             ) : (
-                              <a href={msg.videoUrl} target="_blank" rel="noreferrer" style={{ color: '#fef08a', fontSize: '0.775rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                                <Play size={14} /> Watch Video Demo
+                              <a href={msg.videoUrl} target="_blank" rel="noreferrer" style={{ color: '#fef08a', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <Play size={13} /> Watch Video Demo
                               </a>
                             )}
                           </div>
@@ -1091,11 +1291,22 @@ const AdminSupportPage = () => {
                 })}
               </div>
 
-              {/* Canned Quick Suggestions Bar */}
-              <div style={{ padding: '0.45rem 1rem', background: '#111c34', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: '0.45rem', overflowX: 'auto', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.25rem', marginRight: '0.25rem' }}>
-                  <Sparkles size={12} color="#22c55e" />
-                  <span>Suggestions:</span>
+              {/* Canned Quick Suggestions Bar (No ugly green scrollbar artifact) */}
+              <div
+                className="hide-scrollbar"
+                style={{
+                  padding: '0.35rem 0.75rem',
+                  background: '#0a101d',
+                  borderTop: '1px solid rgba(255,255,255,0.06)',
+                  display: 'flex',
+                  gap: '0.35rem',
+                  overflowX: 'auto',
+                  alignItems: 'center'
+                }}
+              >
+                <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.2rem', flexShrink: 0 }}>
+                  <Sparkles size={11} color="#22c55e" />
+                  <span>Quick:</span>
                 </span>
                 {quickCannedReplies.map((reply, idx) => (
                   <button
@@ -1103,118 +1314,167 @@ const AdminSupportPage = () => {
                     type="button"
                     onClick={() => setReplyText(prev => (prev ? `${prev} ${reply}` : reply))}
                     style={{
-                      fontSize: '0.7rem',
-                      background: 'rgba(30, 41, 59, 0.8)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '14px',
-                      padding: '0.25rem 0.65rem',
+                      fontSize: '0.68rem',
+                      background: 'rgba(30, 41, 59, 0.6)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: '999px',
+                      padding: '0.18rem 0.55rem',
                       cursor: 'pointer',
                       whiteSpace: 'nowrap',
-                      color: '#e2e8f0',
-                      fontWeight: 600,
-                      transition: 'all 0.15s ease'
+                      color: '#cbd5e1',
+                      fontWeight: 500,
+                      transition: 'all 0.15s ease',
+                      flexShrink: 0
                     }}
-                    className="hover:border-green-500"
+                    className="hover:border-green-500 hover:text-white hover:bg-green-950/30"
                   >
-                    {reply.slice(0, 26)}...
+                    {reply.slice(0, 24)}...
                   </button>
                 ))}
               </div>
 
-              {/* Compose & Reply Bar */}
-              <form onSubmit={handleSendReply} style={{ padding: '0.85rem 1.15rem', background: '#111c34', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                {/* Attached File Badges */}
+              {/* Sleek, Compact Modern Composer */}
+              <form
+                onSubmit={handleSendReply}
+                style={{
+                  padding: '0.55rem 0.75rem 0.65rem 0.75rem',
+                  background: '#0d1527',
+                  borderTop: '1px solid rgba(255,255,255,0.08)'
+                }}
+              >
+                {/* Attached File Badges Strip */}
                 {attachmentsList.length > 0 && (
-                  <div className="flex gap-2" style={{ marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+                  <div className="flex gap-1.5" style={{ marginBottom: '0.45rem', flexWrap: 'wrap' }}>
                     {attachmentsList.map((att, idx) => (
-                      <span key={idx} style={{ background: '#064e3b', border: '1px solid #059669', borderRadius: '8px', padding: '0.25rem 0.65rem', fontSize: '0.75rem', color: '#6ee7b7', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <FileText size={13} color="#fef08a" />
-                        <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.name}</span>
-                        {att.size > 0 && <span style={{ fontSize: '0.68rem', color: '#a7f3d0' }}>({formatFileSize(att.size)})</span>}
-                        <button type="button" onClick={() => handleRemoveAttachment(idx)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#ef4444', fontWeight: 900, padding: '0 2px' }}>✕</button>
+                      <span key={idx} style={{ background: 'rgba(6, 78, 59, 0.8)', border: '1px solid #059669', borderRadius: '6px', padding: '0.15rem 0.45rem', fontSize: '0.7rem', color: '#6ee7b7', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <FileText size={12} color="#fef08a" />
+                        <span style={{ maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.name}</span>
+                        {att.size > 0 && <span style={{ fontSize: '0.65rem', color: '#a7f3d0' }}>({formatFileSize(att.size)})</span>}
+                        <button type="button" onClick={() => handleRemoveAttachment(idx)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#ef4444', fontWeight: 900, padding: '0 2px', lineHeight: 1 }}>✕</button>
                       </span>
                     ))}
                   </div>
                 )}
 
-                <div className="flex gap-2.5">
+                {/* Unified Modern Input Capsule */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    background: '#070d19',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '20px',
+                    padding: '0.2rem 0.35rem 0.2rem 0.65rem',
+                    transition: 'all 0.2s ease'
+                  }}
+                  className="focus-within:border-green-500 focus-within:ring-1 focus-within:ring-green-500/50"
+                >
+                  {/* File Attachment Hidden Input & Icon Button */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    multiple
+                    accept="image/*,application/pdf,video/mp4,.doc,.docx,.xls,.xlsx,.csv,.txt,.zip"
+                    style={{ display: 'none' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingFiles}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: uploadingFiles ? '#34d399' : '#94a3b8',
+                      width: '28px',
+                      height: '28px',
+                      minWidth: '28px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      borderRadius: '50%',
+                      padding: 0,
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="hover:text-green-400 hover:bg-white/5"
+                    title="Attach Images, PDF, Docs, MP4 (Max 5MB)"
+                  >
+                    {uploadingFiles ? <RefreshCw size={15} className="animate-spin text-green-400" /> : <Paperclip size={16} />}
+                  </button>
+
+                  {/* Compact Auto-Fit Text Input */}
                   <textarea
-                    rows={2}
-                    placeholder="Type official agricultural advice or equipment details... (Ctrl+Enter to send)"
+                    rows={1}
+                    placeholder="Type reply... (Enter to send, Shift+Enter for newline)"
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
                         handleSendReply(e);
                       }
                     }}
                     style={{
                       flex: 1,
-                      fontSize: '0.875rem',
-                      padding: '0.65rem 0.85rem',
-                      background: 'rgba(15, 23, 42, 0.9)',
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      borderRadius: '12px',
+                      fontSize: '0.825rem',
+                      background: 'transparent',
+                      border: 'none',
                       color: '#ffffff',
                       resize: 'none',
                       outline: 'none',
-                      lineHeight: 1.45
+                      padding: '0.35rem 0.2rem',
+                      lineHeight: 1.35,
+                      height: '32px',
+                      minHeight: '32px',
+                      maxHeight: '80px',
+                      fontFamily: 'inherit'
                     }}
                   />
 
+                  {/* Compact Circular Send Button */}
                   <button
                     type="submit"
-                    disabled={sending || uploadingFiles}
+                    disabled={sending || uploadingFiles || (!replyText.trim() && attachmentsList.length === 0 && !videoUrl)}
                     style={{
-                      background: 'linear-gradient(135deg, #166534, #15803d)',
-                      border: '1px solid #22c55e',
-                      color: '#ffffff',
-                      borderRadius: '12px',
-                      padding: '0 1.15rem',
-                      fontWeight: 800,
-                      fontSize: '0.85rem',
+                      width: '32px',
+                      height: '32px',
+                      minWidth: '32px',
+                      borderRadius: '50%',
+                      background: (!replyText.trim() && attachmentsList.length === 0 && !videoUrl)
+                        ? 'rgba(255, 255, 255, 0.08)'
+                        : 'linear-gradient(135deg, #16a34a, #15803d)',
+                      border: 'none',
+                      color: (!replyText.trim() && attachmentsList.length === 0 && !videoUrl) ? '#475569' : '#ffffff',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.4rem',
-                      cursor: 'pointer'
+                      justifyContent: 'center',
+                      cursor: (!replyText.trim() && attachmentsList.length === 0 && !videoUrl) ? 'not-allowed' : 'pointer',
+                      boxShadow: (!replyText.trim() && attachmentsList.length === 0 && !videoUrl) ? 'none' : '0 2px 8px rgba(34, 197, 94, 0.35)',
+                      transition: 'all 0.15s ease',
+                      padding: 0
                     }}
+                    className="hover:scale-105 active:scale-95"
+                    title="Send Reply (Enter)"
                   >
-                    <Send size={15} />
-                    <span>{sending ? 'Sending...' : 'Send'}</span>
+                    {sending ? (
+                      <RefreshCw size={13} className="animate-spin" />
+                    ) : (
+                      <Send size={14} style={{ marginLeft: '1px' }} />
+                    )}
                   </button>
                 </div>
 
-                {/* Attachment options inside composer */}
-                <div className="flex justify-between items-center gap-2" style={{ marginTop: '0.6rem', fontSize: '0.75rem', flexWrap: 'wrap' }}>
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileUpload}
-                      multiple
-                      accept="image/*,application/pdf,video/mp4,.doc,.docx,.xls,.xlsx,.csv,.txt,.zip"
-                      style={{ display: 'none' }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploadingFiles}
-                      style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)', borderRadius: '8px', color: '#86efac', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 700, padding: '0.35rem 0.75rem' }}
-                    >
-                      <UploadCloud size={15} />
-                      <span>{uploadingFiles ? 'Uploading...' : '📎 Attach Files (Max 5MB)'}</span>
-                    </button>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>
-                      Photos, PDFs, Docs, MP4 Videos (Max 5MB)
-                    </span>
-                  </div>
-
-                  <label style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer', fontSize: '0.75rem' }}>
+                {/* Minimalist Footer Row */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.35rem', padding: '0 0.35rem', fontSize: '0.68rem', color: '#64748b' }}>
+                  <span>Max 5MB files • Enter to send</span>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer', color: markResolvedOnSend ? '#34d399' : '#94a3b8', fontWeight: 600, userSelect: 'none' }}>
                     <input
                       type="checkbox"
                       checked={markResolvedOnSend}
                       onChange={(e) => setMarkResolvedOnSend(e.target.checked)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ width: '12px', height: '12px', accentColor: '#16a34a', cursor: 'pointer' }}
                     />
                     <span>Mark as Resolved</span>
                   </label>

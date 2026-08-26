@@ -103,7 +103,7 @@ const AdminLoginPage = () => {
                 className="input-field"
                 style={{
                   background: 'rgba(0,0,0,0.3)',
-                  borderColor: '#1e2e4f',
+                  borderColor: 'var(--admin-border)',
                   color: '#ffffff',
                   paddingLeft: '2.5rem'
                 }}
@@ -125,7 +125,7 @@ const AdminLoginPage = () => {
                 className="input-field"
                 style={{
                   background: 'rgba(0,0,0,0.3)',
-                  borderColor: '#1e2e4f',
+                  borderColor: 'var(--admin-border)',
                   color: '#ffffff',
                   paddingLeft: '2.5rem'
                 }}

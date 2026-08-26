@@ -35,7 +35,7 @@ const TabEMI = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* EMI Enable Toggle */}
-      <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '1rem' }}>
             Enable Kisan EMI Plans & Calculator for this Machine
@@ -61,7 +61,7 @@ const TabEMI = ({ formData, updateField }) => {
                 type="number"
                 step="0.1"
                 className="input-field"
-                style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                 value={emi.interestRate ?? 13.5}
                 onChange={(e) => updateEMI('interestRate', Number(e.target.value))}
               />
@@ -72,7 +72,7 @@ const TabEMI = ({ formData, updateField }) => {
               <input
                 type="number"
                 className="input-field"
-                style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                 value={emi.minDownPayment ?? 0}
                 onChange={(e) => updateEMI('minDownPayment', Number(e.target.value))}
               />
@@ -83,7 +83,7 @@ const TabEMI = ({ formData, updateField }) => {
               <input
                 type="number"
                 className="input-field"
-                style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                 value={emi.processingFee ?? 499}
                 onChange={(e) => updateEMI('processingFee', Number(e.target.value))}
               />

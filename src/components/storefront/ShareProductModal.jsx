@@ -386,7 +386,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
                 width: '140px',
                 height: '140px',
                 borderRadius: '10px',
-                background: '#ffffff',
+                background: 'var(--bg-surface)',
                 padding: '6px',
                 border: '1px solid var(--border-color)',
                 boxShadow: 'var(--shadow-sm)'

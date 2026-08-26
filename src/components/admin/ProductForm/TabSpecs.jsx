@@ -60,7 +60,7 @@ const TabSpecs = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Quick Add Presets Ribbon */}
-      <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
         <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 600 }}>
           ⚡ Click to Rapidly Add Agricultural Spec Presets:
         </div>
@@ -71,7 +71,7 @@ const TabSpecs = ({ formData, updateField }) => {
               type="button"
               onClick={() => addPreset(p)}
               className="btn btn-secondary btn-sm"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#cbd5e1', fontSize: '0.75rem' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#cbd5e1', fontSize: '0.75rem' }}
             >
               + {p.name} ({p.group})
             </button>
@@ -80,12 +80,12 @@ const TabSpecs = ({ formData, updateField }) => {
       </div>
 
       {/* Add Custom Spec Row */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
         <h4 style={{ fontSize: '0.95rem', color: '#ffffff', marginBottom: '0.75rem' }}>Add Custom Specification Entry</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
           <select
             className="select-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newGroup}
             onChange={(e) => setNewGroup(e.target.value)}
           >
@@ -95,7 +95,7 @@ const TabSpecs = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Spec Name (e.g. Working Depth)"
@@ -104,7 +104,7 @@ const TabSpecs = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             placeholder="Value (e.g. 150)"
@@ -113,7 +113,7 @@ const TabSpecs = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newUnit}
             onChange={(e) => setNewUnit(e.target.value)}
             placeholder="Unit (e.g. mm, HP, kg)"

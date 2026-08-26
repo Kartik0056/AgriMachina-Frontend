@@ -61,8 +61,8 @@ const BrandStorefrontSection = () => {
               Direct Manufacturer Storefronts
             </span>
           </div>
-          <h2 style={{ fontSize: '1.75rem', color: '#062416' }}>Authorized Agricultural Machinery Brands</h2>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+          <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)' }}>Authorized Agricultural Machinery Brands</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
             Direct manufacturer warranties, 100% genuine spares, and verified factory pricing
           </p>
         </div>
@@ -79,9 +79,9 @@ const BrandStorefrontSection = () => {
             key={idx}
             to={brand.link}
             style={{
-              background: '#ffffff',
+              background: 'var(--bg-surface)',
               borderRadius: '16px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--border-color)',
               padding: '1.25rem',
               display: 'flex',
               flexDirection: 'column',
@@ -93,7 +93,7 @@ const BrandStorefrontSection = () => {
             }}
           >
             <div>
-              <div style={{ width: '100%', height: '120px', background: '#f8fafc', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.75rem', border: '1px solid #f1f5f9' }}>
+              <div style={{ width: '100%', height: '120px', background: 'var(--bg-surface-alt)', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.75rem', border: '1px solid var(--border-color)' }}>
                 <img
                   src={brand.image}
                   alt={brand.name}
@@ -106,17 +106,17 @@ const BrandStorefrontSection = () => {
                 <span>Verified OEM</span>
               </div>
 
-              <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.25rem' }}>
+              <h4 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.25rem' }}>
                 {brand.name}
               </h4>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', lineHeight: 1.3, marginBottom: '0.5rem' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3, marginBottom: '0.5rem' }}>
                 {brand.tag}
               </div>
             </div>
 
             <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '0.65rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem' }}>
               <span style={{ color: '#166534', fontWeight: 700 }}>{brand.modelsCount}+ Models</span>
-              <span style={{ color: '#94a3b8' }}>{brand.warranty}</span>
+              <span style={{ color: 'var(--text-light)' }}>{brand.warranty}</span>
             </div>
           </Link>
         ))}

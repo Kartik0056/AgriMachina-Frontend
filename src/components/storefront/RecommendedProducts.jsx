@@ -29,8 +29,8 @@ const RecommendedProducts = ({ productId, title = 'You May Also Like' }) => {
     <div style={{ marginTop: '3rem' }}>
       <div className="flex justify-between items-center" style={{ marginBottom: '1.5rem' }}>
         <div>
-          <h3 style={{ fontSize: '1.5rem', color: '#062416' }}>{title}</h3>
-          <p style={{ fontSize: '0.875rem', color: '#64748b' }}>
+          <h3 style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>{title}</h3>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
             Handpicked matching farm machinery and implements based on your selection.
           </p>
         </div>

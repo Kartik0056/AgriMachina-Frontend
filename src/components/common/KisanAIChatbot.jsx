@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  MessageCircle,
   X,
   Send,
   Sparkles,
   Bot,
-  User,
   Globe,
-  HelpCircle,
-  Tractor,
   ShieldCheck,
-  CreditCard,
-  Truck,
-  PhoneCall,
   ChevronRight,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Minus,
+  ChevronUp,
+  PhoneCall,
+  MessageSquare,
+  HelpCircle,
+  FileText,
+  AlertTriangle,
+  Phone
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import api from '../../services/api';
 
 const supportedLanguages = [
   { code: 'hi', name: 'हिंदी (Hindi)', flag: '🇮🇳' },
@@ -32,18 +34,20 @@ const supportedLanguages = [
 
 const quickQuestions = {
   hi: [
+    '5 HP Power Weeder chahiye',
+    'Machine start nahi ho rahi / Technical Problem',
+    'Shikayat / Raise Support Ticket',
     '0% No-Cost EMI kaise milegi?',
     'Cotton & Sugarcane ke liye best weeder?',
-    'Govt. SMAM Subsidy kaise claim karein?',
-    'Delivery kitne din me aayegi?',
-    'Engine warranty aur spare parts?'
+    'Govt. SMAM Subsidy kaise claim karein?'
   ],
   en: [
+    'I need 5 HP Power Weeder',
+    'Machine not starting / Technical Issue',
+    'Complaint / Raise Support Ticket',
     'How to get 0% No-Cost EMI?',
     'Best Power Weeder for cotton & sugarcane?',
-    'How to claim Govt. SMAM Subsidy?',
-    'Delivery timelines & tracking?',
-    'Engine warranty & spare parts?'
+    'How to claim Govt. SMAM Subsidy?'
   ],
   gu: [
     '0% No-Cost EMI કેવી રીતે મળશે?',
@@ -61,7 +65,7 @@ const quickQuestions = {
     '0% No-Cost EMI कशी मिळेल?',
     'कापूस आणि उसासाठी सर्वोत्तम वीडर?',
     'शासकीय सबसिडी कशी मिळवावी?',
-    'डिलिव्हरी किती दिवसात होईल?'
+    'ડિલિવરી किती दिवसात होईल?'
   ],
   te: [
     '0% No-Cost EMI ఎలా పొందాలి?',
@@ -80,100 +84,149 @@ const quickQuestions = {
   ]
 };
 
-// Agricultural AI Knowledge Processor
-const generateAgriculturalResponse = (input, lang) => {
-  const query = input.toLowerCase();
+// Formatted Rich Markdown Text Renderer (Eliminates raw ** and renders lists, bold, badges)
+const FormattedMessage = ({ text, isUser }) => {
+  if (!text) return null;
 
-  // 1. EMI & Financing Inquiries
-  if (query.includes('emi') || query.includes('loan') || query.includes('installment') || query.includes('kist') || query.includes('किस्त') || query.includes('ऋण')) {
-    if (lang === 'hi') {
-      return {
-        text: `💳 **0% No-Cost EMI Financing Jankari:**\n\n1. Aap hamari kisi bhi machinery ko **3 se 36 mahine ki aasan kishton (EMI)** par khareed sakte hain.\n2. **0% No-Cost EMI** SBI Kisan Credit Card, HDFC Agri Finance, ICICI Bank, Axis Bank aur Bajaj Finserv EMI Card par uplabdh hai.\n3. Checkout page par **"Kisan Equipment EMI"** select karke apna bank aur tenure chunein. Koi down-payment ki zaroorat nahi hai!`,
-        actionLink: { label: 'Explore 0% EMI Machines', url: '/products' }
-      };
-    } else if (lang === 'gu') {
-      return {
-        text: `💳 **0% No-Cost EMI માહિતી:**\n\nતમે કોઈપણ મશીનરી **3 થી 36 મહિનાની સરળ EMI** પર ખરીદી શકો છો. SBI કિસાન કાર્ડ, HDFC, ICICI અને Bajaj Finserv પર 0% વ્યાજની સુવિધા ઉપલબ્ધ છે. ચેકઆઉટ વખતે EMI વિકલ્પ પસંદ કરો.`,
-        actionLink: { label: 'મશીનરી જુઓ', url: '/products' }
-      };
-    } else if (lang === 'pa') {
-      return {
-        text: `💳 **0% No-Cost EMI ਜਾਣਕਾਰੀ:**\n\nਤੁਸੀਂ ਕੋਈ ਵੀ ਖੇਤੀਬਾੜੀ ਮਸ਼ੀਨ **3 ਤੋਂ 36 ਮਹੀਨੇ ਦੀਆਂ ਆਸਾਨ ਕਿਸ਼ਤਾਂ** 'ਤੇ ਲੈ ਸਕਦੇ ਹੋ। SBI ਕਿਸਾਨ ਕਾਰਡ, HDFC ਅਤੇ Bajaj Finserv 'ਤੇ 0% ਵਿਆਜ ਦੀ ਸਹੂਲਤ ਹੈ।`,
-        actionLink: { label: 'ਮਸ਼ੀਨਾਂ ਦੇਖੋ', url: '/products' }
-      };
-    } else {
-      return {
-        text: `💳 **0% No-Cost EMI Financing Overview:**\n\n1. Avail **3 to 36 months flexible installments** on all equipment.\n2. Supported by **SBI Kisan Credit Card, HDFC Agri Finance, ICICI, Axis Bank, and Bajaj Finserv** with zero down-payment.\n3. Simply choose *"Kisan Equipment EMI"* during checkout to select your bank and tenure.`,
-        actionLink: { label: 'Browse EMI Machinery', url: '/products' }
-      };
+  const lines = text.split('\n');
+
+  const formatInline = (str) => {
+    if (!str) return '';
+    const parts = [];
+    const regex = /(\*\*[^*]+\*\*|~~[^~]+~~|\*[^*]+\*)/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(str)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(str.slice(lastIndex, match.index));
+      }
+      const token = match[0];
+      if (token.startsWith('**') && token.endsWith('**')) {
+        parts.push(
+          <strong
+            key={`b-${match.index}`}
+            style={{
+              fontWeight: 800,
+              color: isUser ? '#ffffff' : '#14532d'
+            }}
+          >
+            {token.slice(2, -2)}
+          </strong>
+        );
+      } else if (token.startsWith('~~') && token.endsWith('~~')) {
+        parts.push(
+          <del key={`d-${match.index}`} style={{ opacity: 0.65 }}>
+            {token.slice(2, -2)}
+          </del>
+        );
+      } else if (token.startsWith('*') && token.endsWith('*')) {
+        parts.push(
+          <em key={`i-${match.index}`} style={{ fontStyle: 'italic', opacity: 0.9 }}>
+            {token.slice(1, -1)}
+          </em>
+        );
+      }
+      lastIndex = regex.lastIndex;
     }
-  }
 
-  // 2. Power Weeder / Tiller Recommendations
-  if (query.includes('weeder') || query.includes('tiller') || query.includes('cultivat') || query.includes('cotton') || query.includes('sugarcane') || query.includes('कपास') || query.includes('गन्ना') || query.includes('निंदाई')) {
-    if (lang === 'hi') {
-      return {
-        text: `🌱 **Power Weeder & Tiller Recommendation:**\n\n• **Cotton, Ganna (Sugarcane), Sabziyon ke liye:** Hamara **7HP 4-Stroke Petrol Weeder (AV-708)** sabse best hai (₹38,499). Isme 32 Boron steel blades hain jo 3 se 8 inch gehraai tak jhad-jhankhar saaf karte hain.\n• **Bhari Mitti (Heavy Black Soil) ke liye:** **9HP Diesel Power Tiller** lein jo high-torque ke sath deep rotary tilling karta hai.`,
-        actionLink: { label: 'View 7HP Power Weeder (AV-708)', url: '/products?category=Power+Weeder+%26+Tiller' }
-      };
-    } else {
-      return {
-        text: `🌱 **Power Weeder & Tiller Guidance:**\n\n• **For Cotton, Sugarcane & Row Crops:** The **7HP 4-Stroke Petrol Weeder (AV-708)** at ₹38,499 is our top-rated machine featuring 32 Boron steel blades and 2 forward + 1 reverse gears.\n• **For Heavy Black Clay Soil:** Choose the **9HP Heavy Diesel Tiller** for maximum continuous torque.`,
-        actionLink: { label: 'Explore Power Weeders', url: '/products?category=Power+Weeder+%26+Tiller' }
-      };
+    if (lastIndex < str.length) {
+      parts.push(str.slice(lastIndex));
     }
-  }
 
-  // 3. Solar Water Pumps & Irrigation
-  if (query.includes('solar') || query.includes('pump') || query.includes('pani') || query.includes('borewell') || query.includes('motor') || query.includes('सोलर') || query.includes('पंप')) {
-    return {
-      text: `☀️ **Solar Submersible Pump Overview:**\n\n• **5HP DC Brushless Solar Pump Set:** 35,000 Liters/Hour high discharge deta hai aur 120 meters (400 feet) tak deep borewell se paani nikalta hai.\n• Isme **Smart MPPT Controller** aur dry-run protection shamil hai. Agle 25 saal tak ₹0 electricity bill!`,
-      actionLink: { label: 'View Solar Pump Sets', url: '/products?category=Pumps+%26+Irrigation' }
-    };
-  }
+    return parts;
+  };
 
-  // 4. Govt Subsidy
-  if (query.includes('subsidy') || query.includes('smam') || query.includes('dbt') || query.includes('sarkari') || query.includes('सब्सीडी') || query.includes('अनुदान')) {
-    return {
-      text: `🏛️ **Govt. SMAM / DBT Subsidy Assistance:**\n\n• Hamari sabhi machines central & state **SMAM / DBT Agriculture Subsidy** ke antargat approved hain (40% se 50% subsidy eligible).\n• Order complete hote hi hum aapko **Authorized GST Commercial Tax Invoice** engine aur chassis number ke sath bhejte hain jise aap apne rajya ke agriculture portal (e.g. DBT Agri, Kisan Portal) par upload karke subsidy claim kar sakte hain.`,
-      actionLink: { label: 'Contact Subsidy Expert', url: '/contact' }
-    };
-  }
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+      {lines.map((line, lineIdx) => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return <div key={lineIdx} style={{ height: '0.2rem' }} />;
+        }
 
-  // 5. Delivery & Shipping
-  if (query.includes('delivery') || query.includes('shipping') || query.includes('track') || query.includes('kab') || query.includes('time') || query.includes('डिलीवरी')) {
-    return {
-      text: `🚚 **Free Palletized Farm Delivery:**\n\n• Hum pure Bharat (all pincodes) me **100% FREE Farm Delivery** dete hain.\n• Machine wooden crate packing me hydraulic truck dwara **4 se 7 business days** me sidhe aapke khet ya ghar ke gate tak pahunchai jaati hai.\n• Order dispatch hone par aapko live Lorry Receipt (LR) tracking number SMS aur WhatsApp par milta hai.`,
-      actionLink: { label: 'Track Your Orders', url: '/orders' }
-    };
-  }
+        // Numbered list item: "1. ", "2. "
+        const numMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+        if (numMatch) {
+          const num = numMatch[1];
+          const content = numMatch[2];
+          return (
+            <div
+              key={lineIdx}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.45rem',
+                fontSize: '0.825rem',
+                lineHeight: 1.45
+              }}
+            >
+              <span
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  background: isUser ? 'rgba(255,255,255,0.25)' : 'linear-gradient(135deg, #16a34a, #15803d)',
+                  color: '#ffffff',
+                  fontSize: '0.65rem',
+                  fontWeight: 900,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  marginTop: '2px'
+                }}
+              >
+                {num}
+              </span>
+              <div style={{ flex: 1 }}>{formatInline(content)}</div>
+            </div>
+          );
+        }
 
-  // 6. Warranty & Spare Parts
-  if (query.includes('warranty') || query.includes('guarantee') || query.includes('part') || query.includes('service') || query.includes('वारंटी') || query.includes('खराब')) {
-    return {
-      text: `🛡️ **Warranty & 100% Genuine Spare Parts:**\n\n• Har machinery par **1-Year Comprehensive OEM Engine & Gearbox Warranty** milti hai.\n• Sabhi wearing spare parts (tilling blades, recoil starters, carburetors, drive belts, spray nozzles) hamare warehouse me 10 saal tak available rehte hain aur 24 ghante me dispatch hote hain.`,
-      actionLink: { label: 'Kisan Support & Helpline', url: '/contact' }
-    };
-  }
+        // Bullet point: "• ", "- ", "* "
+        if (trimmed.startsWith('• ') || trimmed.startsWith('- ') || (trimmed.startsWith('* ') && !trimmed.startsWith('** '))) {
+          const content = trimmed.replace(/^[•\-*]\s+/, '');
+          return (
+            <div
+              key={lineIdx}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.45rem',
+                fontSize: '0.825rem',
+                lineHeight: 1.45
+              }}
+            >
+              <span style={{ color: isUser ? '#ffffff' : '#16a34a', fontSize: '0.85rem', lineHeight: '1.2' }}>•</span>
+              <div style={{ flex: 1 }}>{formatInline(content)}</div>
+            </div>
+          );
+        }
 
-  // 7. General Fallback with intelligent routing
-  if (lang === 'hi') {
-    return {
-      text: `Namaste Kisan Bhai! 🙏 Main aapka **Kisan AI Assistant** hoon. \n\nAap mujhse **Power Weeders, Solar Pumps, Brush Cutters, 0% EMI Loan, Govt. Subsidy, Delivery Status, ya Engine Warranty** ke baare me kuch bhi pooch sakte hain. Neeche diye gaye options par click karein ya apna sawal likhein:`,
-      actionLink: { label: 'Toll-Free Helpline: 1800-AGRI-FARM', url: '/contact' }
-    };
-  } else {
-    return {
-      text: `Hello Farmer Friend! 🙏 I am your **Kisan AI Assistant**.\n\nYou can ask me about **Power Weeders, Solar Water Pumps, Earth Augers, 0% No-Cost EMI, Govt. Subsidies, Delivery Timelines, or Spare Parts**. Feel free to click a suggestion below or type your question:`,
-      actionLink: { label: 'Contact Agricultural Specialist', url: '/contact' }
-    };
-  }
+        // Regular line / header
+        return (
+          <div
+            key={lineIdx}
+            style={{
+              fontSize: '0.835rem',
+              lineHeight: 1.48,
+              color: isUser ? '#ffffff' : '#0f172a'
+            }}
+          >
+            {formatInline(trimmed)}
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const KisanAIChatbot = () => {
   const [isLauncherHovered, setIsLauncherHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const [currentLang, setCurrentLang] = useState('hi');
   const [messages, setMessages] = useState([
     {
@@ -197,7 +250,7 @@ const KisanAIChatbot = () => {
     }
   }, [messages, isOpen, isTyping]);
 
-  const handleSendMessage = (textToSend = null) => {
+  const handleSendMessage = async (textToSend = null) => {
     const text = textToSend || inputVal;
     if (!text || !text.trim()) return;
 
@@ -212,19 +265,37 @@ const KisanAIChatbot = () => {
     if (!textToSend) setInputVal('');
     setIsTyping(true);
 
-    // Simulate AI thinking and response
-    setTimeout(() => {
-      const botResponse = generateAgriculturalResponse(text, currentLang);
-      const newBotMsg = {
+    try {
+      // Call intelligent backend RAG knowledge engine (analyzes live catalog & policies)
+      const res = await api.post('/ai/chat', { message: text.trim(), lang: currentLang });
+      if (res.data.success && (res.data.data || res.data.text)) {
+        const botData = res.data.data || {};
+        const newBotMsg = {
+          id: Date.now() + 1,
+          sender: 'bot',
+          text: botData.text || res.data.text || '',
+          actionLink: botData.actionLink || res.data.actionLink || null,
+          products: botData.products || res.data.products || [],
+          supportActions: botData.supportActions || res.data.supportActions || [],
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setMessages(prev => [...prev, newBotMsg]);
+      } else {
+        throw new Error('Fallback required');
+      }
+    } catch (err) {
+      // Fallback response if offline
+      const fallbackMsg = {
         id: Date.now() + 1,
         sender: 'bot',
-        text: botResponse.text,
-        actionLink: botResponse.actionLink,
+        text: `🙏 **Namaste Kisan Bhai!**\n\nHamara **Kisan AI Assistant** aapki seva me hajir hai. Kheti ki machinery (Power Weeders, Brush Cutters, Solar Pumps), 0% EMI Loan, aur Govt. SMAM Subsidy ke baare me poochhein.`,
+        actionLink: { label: 'Explore Agriculture Store', url: '/products' },
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      setMessages(prev => [...prev, newBotMsg]);
+      setMessages(prev => [...prev, fallbackMsg]);
+    } finally {
       setIsTyping(false);
-    }, 700);
+    }
   };
 
   return (
@@ -244,7 +315,7 @@ const KisanAIChatbot = () => {
             gap: '0.65rem'
           }}
         >
-          {/* Tooltip Callout Badge (Appears smoothly ONLY on hover) */}
+          {/* Tooltip Callout Badge */}
           <div
             onClick={() => setIsOpen(true)}
             style={{
@@ -315,125 +386,217 @@ const KisanAIChatbot = () => {
         <div
           style={{
             position: 'fixed',
-            bottom: '24px',
-            right: '24px',
-            width: isMinimized ? '320px' : '400px',
-            height: isMinimized ? '55px' : '560px',
-            maxHeight: '90vh',
-            maxWidth: 'calc(100vw - 32px)',
-            background: '#ffffff',
-            borderRadius: '18px',
+            bottom: isMinimized ? '0' : isMaximized ? '0' : '24px',
+            right: isMinimized ? '24px' : isMaximized ? '0' : '24px',
+            left: isMaximized ? '0' : 'auto',
+            top: isMaximized ? '0' : 'auto',
+            width: isMaximized ? '100vw' : isMinimized ? '340px' : '440px',
+            height: isMaximized ? '100vh' : isMinimized ? '46px' : '600px',
+            maxHeight: isMaximized ? '100vh' : '90vh',
+            maxWidth: isMaximized ? '100vw' : 'calc(100vw - 32px)',
+            background: 'var(--bg-surface)',
+            borderRadius: isMaximized ? '0px' : isMinimized ? '14px 14px 0 0' : '18px',
             boxShadow: '0 25px 60px -10px rgba(6, 36, 22, 0.45), 0 0 0 1px rgba(0,0,0,0.1)',
-            zIndex: 9999,
+            zIndex: 999999,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+            border: isMaximized ? 'none' : '1.5px solid #22c55e',
+            transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Header */}
           <div
             style={{
-              background: 'linear-gradient(135deg, #062416, #166534)',
+              background: 'linear-gradient(135deg, #092617, #063820)',
               color: '#ffffff',
-              padding: '0.75rem 1rem',
+              padding: '0.65rem 1rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid #14532d'
+              borderBottom: '1px solid #14532d',
+              flexShrink: 0
             }}
           >
-            <div className="flex items-center gap-2.5">
+            {/* Left: Avatar + Title (Zero wrapping, perfectly aligned) */}
+            <div className="flex items-center gap-2.5" style={{ minWidth: 0, flex: 1 }}>
               <div
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '32px',
+                  height: '32px',
+                  minWidth: '32px',
                   borderRadius: '50%',
-                  background: '#15803d',
+                  background: 'linear-gradient(135deg, #15803d, #166534)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '1.5px solid #86efac'
+                  border: '1.5px solid #86efac',
+                  boxShadow: '0 2px 8px rgba(34, 197, 94, 0.4)',
+                  flexShrink: 0
                 }}
               >
-                <Bot size={20} color="#fef08a" />
+                <Bot size={18} color="#fef08a" />
               </div>
-              <div>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff', lineHeight: 1.1 }}>
+              <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#ffffff', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   Kisan AI Specialist
                 </div>
-                <div style={{ fontSize: '0.7rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e' }} />
-                  <span>24x7 Multilingual Farm Assistant</span>
+                <div style={{ fontSize: '0.7rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.3rem', whiteSpace: 'nowrap' }}>
+                  <span style={{ width: '6px', height: '6px', minWidth: '6px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e' }} />
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>24×7 Multilingual Farm Assistant</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Language Selector Dropdown */}
-              {!isMinimized && (
-                <div className="flex items-center gap-1" style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '6px', padding: '0.2rem 0.4rem' }}>
-                  <Globe size={13} color="#86efac" />
-                  <select
-                    value={currentLang}
-                    onChange={(e) => setCurrentLang(e.target.value)}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#ffffff',
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      outline: 'none'
-                    }}
-                  >
-                    {supportedLanguages.map(l => (
-                      <option key={l.code} value={l.code} style={{ color: '#0f172a', background: '#ffffff' }}>
-                        {l.flag} {l.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Minimize / Maximize */}
+            {/* Right: Window Controls Dock (Compact, Refined, Spaced Glowing Buttons) */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                marginLeft: '0.75rem',
+                padding: '0.15rem 0.35rem',
+                background: 'rgba(0, 0, 0, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                borderRadius: '8px',
+                backdropFilter: 'blur(8px)',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                flexShrink: 0
+              }}
+            >
+              {/* Minimize Button */}
               <button
                 type="button"
                 onClick={() => setIsMinimized(!isMinimized)}
-                style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', padding: '2px' }}
-                title={isMinimized ? 'Expand' : 'Minimize'}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(180, 83, 9, 0.45))',
+                  border: '1px solid rgba(245, 158, 11, 0.65)',
+                  borderRadius: '6px',
+                  color: '#fef08a',
+                  width: '23px',
+                  height: '23px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+                className="hover:scale-110 hover:shadow-[0_0_10px_rgba(245,158,11,0.7)] active:scale-95"
+                title={isMinimized ? 'Restore Window' : 'Minimize Window'}
               >
-                {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
+                {isMinimized ? <ChevronUp size={11} strokeWidth={2.8} /> : <Minus size={11} strokeWidth={3} />}
               </button>
 
-              {/* Close */}
+              {/* Maximize / Fullscreen Button */}
+              {!isMinimized && (
+                <button
+                  type="button"
+                  onClick={() => setIsMaximized(!isMaximized)}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(2, 132, 199, 0.45))',
+                    border: '1px solid rgba(56, 189, 248, 0.65)',
+                    borderRadius: '6px',
+                    color: '#bae6fd',
+                    width: '23px',
+                    height: '23px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.18s ease'
+                  }}
+                  className="hover:scale-110 hover:shadow-[0_0_10px_rgba(56,189,248,0.7)] active:scale-95"
+                  title={isMaximized ? 'Exit Full Screen' : 'Full Screen'}
+                >
+                  {isMaximized ? <Minimize2 size={11} strokeWidth={2.5} /> : <Maximize2 size={11} strokeWidth={2.5} />}
+                </button>
+              )}
+
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', padding: '2px' }}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(185, 28, 28, 0.55))',
+                  border: '1px solid rgba(239, 68, 68, 0.75)',
+                  borderRadius: '6px',
+                  color: '#fecaca',
+                  width: '23px',
+                  height: '23px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+                className="hover:scale-110 hover:bg-red-600 hover:text-white hover:shadow-[0_0_12px_rgba(239,68,68,0.9)] active:scale-95"
                 title="Close Chat"
               >
-                <X size={18} />
+                <X size={11} strokeWidth={2.8} />
               </button>
             </div>
           </div>
+
+          {/* Subheader Language Switcher Bar (Spacious and neatly separated) */}
+          {!isMinimized && (
+            <div
+              style={{
+                background: '#071d12',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                padding: '0.35rem 0.85rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '0.75rem',
+                flexShrink: 0
+              }}
+            >
+              <div className="flex items-center gap-1.5" style={{ color: '#86efac', fontWeight: 700 }}>
+                <Globe size={13} color="#34d399" />
+                <span>Language / भाषा:</span>
+              </div>
+              <select
+                value={currentLang}
+                onChange={(e) => setCurrentLang(e.target.value)}
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  borderRadius: '6px',
+                  color: '#ffffff',
+                  fontSize: '0.725rem',
+                  fontWeight: 700,
+                  padding: '0.15rem 0.45rem',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+                className="hover:bg-white/20"
+              >
+                {supportedLanguages.map(l => (
+                  <option key={l.code} value={l.code} style={{ color: 'var(--text-main)', background: 'var(--bg-surface)' }}>
+                    {l.flag} {l.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {!isMinimized && (
             <>
               {/* Messages Area */}
               <div
+                className="hide-scrollbar"
                 style={{
                   flex: 1,
                   padding: '1rem',
                   overflowY: 'auto',
-                  background: '#f8fafc',
+                  background: 'var(--bg-surface-alt)',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '0.75rem'
+                  gap: '0.85rem'
                 }}
               >
                 {/* Advisor Notice */}
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '0.45rem 0.75rem', fontSize: '0.725rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
                   <ShieldCheck size={14} color="#16a34a" />
                   <span>Ask in Hindi, English, Punjabi, Gujarati, Marathi, or any Indian language.</span>
                 </div>
@@ -444,24 +607,80 @@ const KisanAIChatbot = () => {
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      alignItems: m.sender === 'user' ? 'flex-end' : 'flex-start'
+                      alignItems: m.sender === 'user' ? 'flex-end' : 'flex-start',
+                      width: '100%'
                     }}
                   >
                     <div
                       style={{
-                        maxWidth: '85%',
+                        maxWidth: '88%',
                         padding: '0.75rem 0.95rem',
                         borderRadius: m.sender === 'user' ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
-                        background: m.sender === 'user' ? '#166534' : '#ffffff',
+                        background: m.sender === 'user' ? 'linear-gradient(135deg, #166534, #15803d)' : '#ffffff',
                         color: m.sender === 'user' ? '#ffffff' : '#0f172a',
                         border: m.sender === 'user' ? 'none' : '1px solid #e2e8f0',
-                        fontSize: '0.84rem',
-                        lineHeight: 1.45,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                        whiteSpace: 'pre-line'
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
                       }}
                     >
-                      {m.text}
+                      {/* Rich Formatted Markdown Output */}
+                      <FormattedMessage text={m.text} isUser={m.sender === 'user'} />
+
+                      {/* Matching Live Product Cards from Catalog */}
+                      {m.products && m.products.length > 0 && (
+                        <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                          <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#166534', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <Sparkles size={12} color="#16a34a" />
+                            <span>Recommended Machinery from Store:</span>
+                          </div>
+                          {m.products.map((prod) => (
+                            <Link
+                              key={prod._id || prod.slug}
+                              to={`/products/${prod.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.6rem',
+                                padding: '0.45rem 0.6rem',
+                                background: 'var(--bg-surface-alt)',
+                                border: '1px solid #bbf7d0',
+                                borderRadius: '8px',
+                                textDecoration: 'none',
+                                transition: 'all 0.15s ease'
+                              }}
+                              className="hover:border-green-600 hover:bg-green-50/50"
+                            >
+                              <img
+                                src={prod.image || '/images/machinery/power_weeder.jpg'}
+                                alt={prod.title}
+                                style={{ width: '38px', height: '38px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                                onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=200&q=80'; }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {prod.title}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.1rem' }}>
+                                  <span style={{ fontSize: '0.775rem', fontWeight: 900, color: '#166534' }}>
+                                    ₹{prod.price?.toLocaleString('en-IN')}
+                                  </span>
+                                  {prod.compareAtPrice > prod.price && (
+                                    <span style={{ fontSize: '0.65rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
+                                      ₹{prod.compareAtPrice?.toLocaleString('en-IN')}
+                                    </span>
+                                  )}
+                                  {prod.discountPercent > 0 && (
+                                    <span style={{ fontSize: '0.625rem', background: '#dcfce7', color: '#15803d', fontWeight: 800, padding: '0.05rem 0.3rem', borderRadius: '4px' }}>
+                                      {prod.discountPercent}% OFF
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <ChevronRight size={14} color="#166534" />
+                            </Link>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Action Button Link inside Bot Bubble */}
                       {m.actionLink && (
@@ -482,23 +701,114 @@ const KisanAIChatbot = () => {
                               borderRadius: '6px',
                               textDecoration: 'none'
                             }}
+                            className="hover:bg-green-100"
                           >
                             <span>{m.actionLink.label}</span>
                             <ChevronRight size={13} />
                           </Link>
                         </div>
                       )}
+
+                      {/* Interactive Support & Escalation Quick Buttons */}
+                      {m.supportActions && m.supportActions.length > 0 && (
+                        <div style={{ marginTop: '0.75rem', paddingTop: '0.65rem', borderTop: '1px dashed #cbd5e1' }}>
+                          <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#b91c1c', display: 'flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.45rem' }}>
+                            <AlertTriangle size={12} color="#dc2626" />
+                            <span>Official Support & Escalation Options:</span>
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                            {m.supportActions.map((act, actIdx) => {
+                              if (act.type === 'call') {
+                                return (
+                                  <a
+                                    key={actIdx}
+                                    href={`tel:${act.phone || '18002474327'}`}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.35rem',
+                                      background: '#eff6ff',
+                                      border: '1px solid #93c5fd',
+                                      color: '#1d4ed8',
+                                      fontWeight: 800,
+                                      fontSize: '0.725rem',
+                                      padding: '0.35rem 0.65rem',
+                                      borderRadius: '6px',
+                                      textDecoration: 'none'
+                                    }}
+                                    className="hover:bg-blue-100 active:scale-95"
+                                  >
+                                    <PhoneCall size={12} />
+                                    <span>{act.label}</span>
+                                  </a>
+                                );
+                              } else if (act.type === 'whatsapp') {
+                                return (
+                                  <a
+                                    key={actIdx}
+                                    href={act.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.35rem',
+                                      background: '#f0fdf4',
+                                      border: '1px solid #86efac',
+                                      color: '#15803d',
+                                      fontWeight: 800,
+                                      fontSize: '0.725rem',
+                                      padding: '0.35rem 0.65rem',
+                                      borderRadius: '6px',
+                                      textDecoration: 'none'
+                                    }}
+                                    className="hover:bg-green-100 active:scale-95"
+                                  >
+                                    <MessageSquare size={12} />
+                                    <span>{act.label}</span>
+                                  </a>
+                                );
+                              } else {
+                                return (
+                                  <Link
+                                    key={actIdx}
+                                    to={act.url || '/support'}
+                                    onClick={() => setIsOpen(false)}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.35rem',
+                                      background: '#fef2f2',
+                                      border: '1px solid #fca5a5',
+                                      color: '#b91c1c',
+                                      fontWeight: 800,
+                                      fontSize: '0.725rem',
+                                      padding: '0.35rem 0.65rem',
+                                      borderRadius: '6px',
+                                      textDecoration: 'none'
+                                    }}
+                                    className="hover:bg-red-100 active:scale-95"
+                                  >
+                                    <FileText size={12} />
+                                    <span>{act.label}</span>
+                                  </Link>
+                                );
+                              }
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <span style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '2px', padding: '0 4px' }}>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-light)', marginTop: '2px', padding: '0 4px' }}>
                       {m.time}
                     </span>
                   </div>
                 ))}
 
                 {isTyping && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#166534', fontSize: '0.75rem', background: '#ffffff', border: '1px solid #e2e8f0', padding: '0.45rem 0.75rem', borderRadius: '12px', width: 'fit-content' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#166534', fontSize: '0.75rem', background: 'var(--bg-surface)', border: '1px solid #bbf7d0', padding: '0.45rem 0.75rem', borderRadius: '12px', width: 'fit-content', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' }}>
                     <Bot size={14} className="animate-spin" />
-                    <span>Kisan AI is typing...</span>
+                    <span>Analyzing AgriMachina catalog & policies...</span>
                   </div>
                 )}
 
@@ -507,16 +817,16 @@ const KisanAIChatbot = () => {
 
               {/* Quick Question Chips */}
               <div
+                className="hide-scrollbar"
                 style={{
-                  padding: '0.5rem 0.75rem',
-                  background: '#ffffff',
+                  padding: '0.45rem 0.75rem',
+                  background: 'var(--bg-surface)',
                   borderTop: '1px solid #e2e8f0',
                   display: 'flex',
                   gap: '0.4rem',
                   overflowX: 'auto',
                   whiteSpace: 'nowrap'
                 }}
-                className="no-scrollbar"
               >
                 {(quickQuestions[currentLang] || quickQuestions['en']).map((q, idx) => (
                   <button
@@ -524,7 +834,7 @@ const KisanAIChatbot = () => {
                     type="button"
                     onClick={() => handleSendMessage(q)}
                     style={{
-                      background: '#f1f5f9',
+                      background: 'var(--bg-surface-alt)',
                       border: '1px solid #cbd5e1',
                       borderRadius: '16px',
                       padding: '0.25rem 0.65rem',
@@ -532,9 +842,10 @@ const KisanAIChatbot = () => {
                       color: '#1e293b',
                       fontWeight: 600,
                       cursor: 'pointer',
-                      flexShrink: 0
+                      flexShrink: 0,
+                      transition: 'all 0.15s ease'
                     }}
-                    className="hover:bg-green-100 hover:text-green-900"
+                    className="hover:bg-green-100 hover:text-green-900 hover:border-green-400 hover:scale-105"
                   >
                     💡 {q}
                   </button>
@@ -548,42 +859,61 @@ const KisanAIChatbot = () => {
                   handleSendMessage();
                 }}
                 style={{
-                  padding: '0.75rem',
-                  background: '#ffffff',
-                  borderTop: '1px solid #e2e8f0',
-                  display: 'flex',
-                  gap: '0.5rem',
-                  alignItems: 'center'
+                  padding: '0.55rem 0.75rem',
+                  background: 'var(--bg-surface)',
+                  borderTop: '1px solid #e2e8f0'
                 }}
               >
-                <input
-                  type="text"
-                  value={inputVal}
-                  onChange={(e) => setInputVal(e.target.value)}
-                  placeholder="Type your agricultural question..."
-                  className="input-field"
-                  style={{ fontSize: '0.85rem', padding: '0.55rem 0.85rem', borderRadius: '24px', flex: 1 }}
-                />
-                <button
-                  type="submit"
-                  disabled={!inputVal.trim()}
+                <div
                   style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    background: inputVal.trim() ? '#166534' : '#cbd5e1',
-                    color: '#ffffff',
-                    border: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: inputVal.trim() ? 'pointer' : 'default',
-                    flexShrink: 0,
-                    transition: 'all 0.15s ease'
+                    gap: '0.45rem',
+                    background: 'var(--bg-surface-alt)',
+                    border: '1.5px solid #cbd5e1',
+                    borderRadius: '24px',
+                    padding: '0.2rem 0.35rem 0.2rem 0.75rem',
+                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.04)'
                   }}
                 >
-                  <Send size={16} />
-                </button>
+                  <input
+                    type="text"
+                    value={inputVal}
+                    onChange={(e) => setInputVal(e.target.value)}
+                    placeholder="Type your agricultural question..."
+                    style={{
+                      fontSize: '0.825rem',
+                      background: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      flex: 1,
+                      color: 'var(--text-main)',
+                      padding: '0.25rem 0'
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!inputVal.trim()}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: inputVal.trim() ? 'linear-gradient(135deg, #16a34a, #15803d)' : '#cbd5e1',
+                      color: '#ffffff',
+                      border: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: inputVal.trim() ? 'pointer' : 'default',
+                      flexShrink: 0,
+                      boxShadow: inputVal.trim() ? '0 2px 6px rgba(22, 163, 74, 0.4)' : 'none',
+                      transition: 'all 0.18s ease'
+                    }}
+                    className="hover:scale-105 active:scale-95"
+                  >
+                    <Send size={14} />
+                  </button>
+                </div>
               </form>
             </>
           )}

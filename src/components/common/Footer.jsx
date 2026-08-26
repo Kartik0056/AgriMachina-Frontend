@@ -4,7 +4,7 @@ import { Tractor, ShieldCheck, Truck, CreditCard, Headphones, Award } from 'luci
 
 const Footer = () => {
   return (
-    <footer style={{ background: '#051b11', color: '#94a3b8', borderTop: '4px solid #166534', marginTop: '4rem' }}>
+    <footer style={{ background: '#051b11', color: 'var(--text-light)', borderTop: '4px solid #166534', marginTop: '4rem' }}>
       {/* Guarantees Ribbon */}
       <div style={{ background: '#082819', padding: '2rem 0', borderBottom: '1px solid #14532d' }}>
         <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">

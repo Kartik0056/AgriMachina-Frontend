@@ -309,10 +309,10 @@ const UserProfilePage = () => {
   if (!isAuthenticated && !user) {
     return (
       <div className="container" style={{ padding: '4rem 1.25rem', textAlign: 'center' }}>
-        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '3rem', maxWidth: '500px', margin: '0 auto' }}>
+        <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '3rem', maxWidth: '500px', margin: '0 auto' }}>
           <User size={48} color="#166534" style={{ margin: '0 auto 1rem auto' }} />
-          <h2 style={{ fontSize: '1.5rem', color: '#062416', marginBottom: '0.5rem' }}>Farmer Account Login Required</h2>
-          <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+          <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Farmer Account Login Required</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
             Please login to view your profile details, farm addresses, order history, and security settings.
           </p>
           <Link to="/login?redirect=/profile" className="btn btn-primary btn-lg" style={{ width: '100%' }}>
@@ -362,7 +362,7 @@ const UserProfilePage = () => {
                 height: '68px',
                 borderRadius: '50%',
                 background: '#86efac',
-                color: '#062416',
+                color: 'var(--text-main)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -404,7 +404,7 @@ const UserProfilePage = () => {
       {/* Main Layout: Nav Tabs Sidebar + Content */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Left Navigation Sidebar */}
-        <div className="flex flex-col gap-2" style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '1rem', height: 'fit-content' }}>
+        <div className="flex flex-col gap-2" style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '1rem', height: 'fit-content' }}>
           <button
             type="button"
             onClick={() => setActiveTab('profile')}
@@ -482,7 +482,7 @@ const UserProfilePage = () => {
               gap: '0.75rem',
               padding: '0.85rem 1rem',
               borderRadius: '10px',
-              color: '#475569',
+              color: 'var(--text-muted)',
               fontSize: '0.9rem',
               fontWeight: 500,
               textDecoration: 'none'
@@ -497,10 +497,10 @@ const UserProfilePage = () => {
         <div className="md:col-span-3">
           {/* TAB 1: PROFILE & CONTACT DETAILS */}
           {activeTab === 'profile' && (
-            <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', color: '#062416', fontWeight: 800 }}>Farmer Profile Information</h3>
-                <p style={{ fontSize: '0.85rem', color: '#64748b' }}>
+            <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800 }}>Farmer Profile Information</h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                   Update your contact details, farm profile, and land cultivation information.
                 </p>
               </div>
@@ -508,8 +508,8 @@ const UserProfilePage = () => {
               <form onSubmit={handleUpdateProfile} className="flex flex-col gap-6">
                 {/* Farmer Profile Avatar Photo Upload Card */}
                 <div style={{
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  background: 'var(--bg-surface-alt)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '12px',
                   padding: '1.25rem',
                   display: 'flex',
@@ -550,10 +550,10 @@ const UserProfilePage = () => {
                   </div>
 
                   <div className="flex-1" style={{ minWidth: '220px' }}>
-                    <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: '0.25rem' }}>
+                    <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '0.95rem', marginBottom: '0.25rem' }}>
                       Profile Photo / Kisan Avatar
                     </div>
-                    <p style={{ fontSize: '0.785rem', color: '#64748b', marginBottom: '0.75rem' }}>
+                    <p style={{ fontSize: '0.785rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
                       Upload your farm photo or portrait. Supported: JPG, PNG, WebP (Max 5MB).
                     </p>
 
@@ -698,11 +698,11 @@ const UserProfilePage = () => {
 
           {/* TAB 2: MULTIPLE SAVED ADDRESSES */}
           {activeTab === 'addresses' && (
-            <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-              <div className="flex justify-between items-center" style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
+              <div className="flex justify-between items-center" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', color: '#062416', fontWeight: 800 }}>Saved Farm Delivery Addresses</h3>
-                  <p style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                  <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800 }}>Saved Farm Delivery Addresses</h3>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                     Manage multiple farm plots, warehouses, and doorstep delivery destinations.
                   </p>
                 </div>
@@ -713,10 +713,10 @@ const UserProfilePage = () => {
               </div>
 
               {(!user?.addresses || user.addresses.length === 0) ? (
-                <div style={{ textAlign: 'center', padding: '3rem', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+                <div style={{ textAlign: 'center', padding: '3rem', background: 'var(--bg-surface-alt)', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
                   <MapPin size={36} color="#94a3b8" style={{ margin: '0 auto 0.75rem auto' }} />
-                  <h4 style={{ fontSize: '1rem', color: '#0f172a', marginBottom: '0.25rem' }}>No Saved Delivery Addresses</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
+                  <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', marginBottom: '0.25rem' }}>No Saved Delivery Addresses</h4>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
                     Add your farm plot or village delivery address for 1-click checkout.
                   </p>
                   <button onClick={handleOpenAddAddress} className="btn btn-primary btn-sm">
@@ -741,7 +741,7 @@ const UserProfilePage = () => {
                     >
                       <div>
                         <div className="flex justify-between items-start" style={{ marginBottom: '0.5rem' }}>
-                          <span className="badge" style={{ background: '#e2e8f0', color: '#0f172a', fontSize: '0.7rem' }}>
+                          <span className="badge" style={{ background: '#e2e8f0', color: 'var(--text-main)', fontSize: '0.7rem' }}>
                             {addr.addressType || 'Farm'} Address
                           </span>
                           {addr.isDefault && (
@@ -751,19 +751,19 @@ const UserProfilePage = () => {
                           )}
                         </div>
 
-                        <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem', marginBottom: '0.25rem' }}>
+                        <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1rem', marginBottom: '0.25rem' }}>
                           {addr.fullName || user.name}
                         </div>
-                        <div style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.4, marginBottom: '0.5rem' }}>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.4, marginBottom: '0.5rem' }}>
                           <div>{addr.street}</div>
                           <div>{addr.villageCity}, {addr.district} - {addr.pincode}</div>
                           <div>{addr.state}, India</div>
-                          {addr.landmark && <div style={{ color: '#64748b', fontSize: '0.75rem' }}>Landmark: {addr.landmark}</div>}
+                          {addr.landmark && <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Landmark: {addr.landmark}</div>}
                           {addr.phone && <div style={{ color: '#166534', fontWeight: 600, marginTop: '0.25rem' }}>📞 {addr.phone}</div>}
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between" style={{ borderTop: '1px solid #e2e8f0', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
+                      <div className="flex items-center justify-between" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
                         {!addr.isDefault ? (
                           <button
                             type="button"
@@ -806,10 +806,10 @@ const UserProfilePage = () => {
 
           {/* TAB 3: SECURITY & PASSWORD */}
           {activeTab === 'security' && (
-            <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', color: '#062416', fontWeight: 800 }}>Account Security & Password</h3>
-                <p style={{ fontSize: '0.85rem', color: '#64748b' }}>
+            <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800 }}>Account Security & Password</h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                   Update your account password or initiate OTP password recovery.
                 </p>
               </div>
@@ -997,7 +997,7 @@ const UserProfilePage = () => {
               checked={addressForm.isDefault}
               onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
             />
-            <span style={{ fontWeight: 600, color: '#0f172a' }}>Make this my default farm delivery address</span>
+            <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>Make this my default farm delivery address</span>
           </label>
 
           <div className="flex justify-end gap-2" style={{ marginTop: '1rem' }}>
@@ -1019,7 +1019,7 @@ const UserProfilePage = () => {
       >
         {forgotStep === 1 ? (
           <form onSubmit={handleForgotRequest} className="flex flex-col gap-4">
-            <p style={{ fontSize: '0.85rem', color: '#64748b' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
               Enter your registered email address to receive a 6-digit password reset verification OTP.
             </p>
 
@@ -1045,7 +1045,7 @@ const UserProfilePage = () => {
           </form>
         ) : (
           <form onSubmit={handleForgotReset} className="flex flex-col gap-4">
-            <div style={{ background: '#f0fdf4', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #bbf7d0', fontSize: '0.8rem', color: '#166534' }}>
+            <div style={{ background: 'var(--primary-50)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #bbf7d0', fontSize: '0.8rem', color: '#166534' }}>
               ✓ Verification OTP sent to <strong>{forgotEmail}</strong> {demoOtpNotice}
             </div>
 
@@ -1076,7 +1076,7 @@ const UserProfilePage = () => {
             </div>
 
             <div className="flex justify-between items-center" style={{ marginTop: '0.5rem' }}>
-              <button type="button" onClick={() => setForgotStep(1)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '0.8rem', cursor: 'pointer' }}>
+              <button type="button" onClick={() => setForgotStep(1)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}>
                 ← Change Email
               </button>
 

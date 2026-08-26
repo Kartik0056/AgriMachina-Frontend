@@ -43,15 +43,15 @@ const AdminSidebar = ({ pendingReviewsCount = 0, pendingOrdersCount = 0 }) => {
   return (
     <aside className="admin-sidebar">
       {/* Brand Header */}
-      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--bg-dark-border)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div style={{ background: '#166534', padding: '0.45rem', borderRadius: '8px' }}>
-          <Tractor size={20} color="#34d399" />
+      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--admin-border)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ background: 'var(--admin-accent, #166534)', padding: '0.45rem', borderRadius: '8px' }}>
+          <Tractor size={20} color="#ffffff" />
         </div>
         <div>
-          <div style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
-            AGRI<span style={{ color: '#34d399' }}>ADMIN</span>
+          <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--admin-text-main)', letterSpacing: '-0.02em' }}>
+            AGRI<span style={{ color: 'var(--admin-accent)' }}>ADMIN</span>
           </div>
-          <div style={{ fontSize: '0.65rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <div style={{ fontSize: '0.65rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Operations CMS
           </div>
         </div>
@@ -82,11 +82,11 @@ const AdminSidebar = ({ pendingReviewsCount = 0, pendingOrdersCount = 0 }) => {
       </div>
 
       {/* Admin User Footer Badge */}
-      <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid var(--bg-dark-border)', background: 'rgba(0,0,0,0.25)' }}>
-        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ffffff' }}>
+      <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid var(--admin-border)', background: 'var(--admin-bg-card-alt, rgba(0,0,0,0.15))' }}>
+        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--admin-text-main)' }}>
           {admin?.name || 'Administrator'}
         </div>
-        <div style={{ fontSize: '0.75rem', color: '#34d399', fontWeight: 600 }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--admin-accent)', fontWeight: 600 }}>
           {admin?.role || 'SUPER_ADMIN'}
         </div>
       </div>

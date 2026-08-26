@@ -26,10 +26,10 @@ const WishlistPage = () => {
           <span className="badge badge-primary" style={{ marginBottom: '0.4rem' }}>
             ❤️ Kisan Saved Machinery
           </span>
-          <h1 style={{ fontSize: '2rem', color: '#062416', fontWeight: 900 }}>
+          <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900 }}>
             My Wishlist ({wishlistItems.length})
           </h1>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
             Equipment you've saved to compare, check subsidy eligibility, or purchase later.
           </p>
         </div>
@@ -49,7 +49,7 @@ const WishlistPage = () => {
       </div>
 
       {wishlistItems.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem 1rem', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+        <div style={{ textAlign: 'center', padding: '4rem 1rem', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
           <div style={{
             width: '64px',
             height: '64px',
@@ -63,10 +63,10 @@ const WishlistPage = () => {
           }}>
             <Heart size={32} />
           </div>
-          <h3 style={{ fontSize: '1.25rem', color: '#0f172a', fontWeight: 800, marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem' }}>
             Your Wishlist is Empty
           </h3>
-          <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
             Tap the heart icon ❤️ on any power weeder, solar pump, or harvester to save it here for easy access.
           </p>
           <Link to="/products" className="btn btn-primary btn-lg">
@@ -84,9 +84,9 @@ const WishlistPage = () => {
               <div
                 key={prodId}
                 style={{
-                  background: '#ffffff',
+                  background: 'var(--bg-surface)',
                   borderRadius: '16px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid var(--border-color)',
                   padding: '1.25rem',
                   display: 'flex',
                   flexDirection: 'column',
@@ -103,8 +103,8 @@ const WishlistPage = () => {
                     position: 'absolute',
                     top: '12px',
                     right: '12px',
-                    background: '#ffffff',
-                    border: '1px solid #e2e8f0',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '50%',
                     width: '32px',
                     height: '32px',
@@ -124,7 +124,7 @@ const WishlistPage = () => {
                 <div>
                   {/* Thumbnail */}
                   <Link to={`/product/${prodSlug}`} style={{ display: 'block', textDecoration: 'none' }}>
-                    <div style={{ width: '100%', height: '180px', borderRadius: '12px', overflow: 'hidden', background: '#f8fafc', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '100%', height: '180px', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg-surface-alt)', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <img
                         src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
                         alt={product.name}
@@ -137,18 +137,18 @@ const WishlistPage = () => {
                       {product.category || 'Agricultural Equipment'}
                     </div>
 
-                    <h3 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800, lineHeight: 1.3, marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: 800, lineHeight: 1.3, marginBottom: '0.5rem' }}>
                       {product.name}
                     </h3>
                   </Link>
 
                   {/* Price */}
                   <div className="flex items-baseline gap-2" style={{ marginBottom: '0.5rem' }}>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#062416' }}>
+                    <span style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--text-main)' }}>
                       {formatINR(product.sellingPrice)}
                     </span>
                     {product.mrp > product.sellingPrice && (
-                      <span style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'line-through' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
                         {formatINR(product.mrp)}
                       </span>
                     )}

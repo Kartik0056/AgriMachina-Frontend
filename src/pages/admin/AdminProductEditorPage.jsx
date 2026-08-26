@@ -211,7 +211,7 @@ const AdminProductEditorPage = () => {
           <button
             onClick={() => navigate(`${adminPanelPath}/products`)}
             className="btn btn-secondary btn-sm"
-            style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
           >
             <ArrowLeft size={16} />
             <span>Back to Products</span>
@@ -229,7 +229,7 @@ const AdminProductEditorPage = () => {
 
         <div className="flex items-center gap-2">
           {isEdit && (
-            <button type="button" onClick={handlePreview} className="btn btn-secondary btn-sm" style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}>
+            <button type="button" onClick={handlePreview} className="btn btn-secondary btn-sm" style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}>
               <Eye size={15} />
               <span>Preview</span>
             </button>
@@ -240,7 +240,7 @@ const AdminProductEditorPage = () => {
             disabled={saving}
             onClick={() => handleSave('Draft')}
             className="btn btn-secondary btn-sm"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
           >
             <Save size={15} />
             <span>Save Draft</span>

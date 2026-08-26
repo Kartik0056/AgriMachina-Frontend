@@ -34,13 +34,16 @@ import api from '../../services/api';
 import { formatINR } from '../../services/emiHelper';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useLiveRefresh } from '../../context/SyncContext';
 
+
 const ProductDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { addToCart, trackRecentlyViewed } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToast } = useToast();
@@ -60,33 +63,27 @@ const ProductDetailPage = () => {
       const res = await api.get(`/products/${slug}`);
       if (res.data.success) {
         setProduct(res.data.product);
-        if (!isBackground) {
-          trackRecentlyViewed(res.data.product);
+        trackRecentlyViewed(res.data.product);
+        if (res.data.bundle) {
+          setBundleData(res.data.bundle);
         }
-
-        // Fetch frequently bought together bundle
-        try {
-          const bundleRes = await api.get(`/products/${res.data.product._id}/frequently-bought-together`);
-          if (bundleRes.data.success) {
-            setBundleData(bundleRes.data.bundle);
-          }
-        } catch (e) {}
       }
     } catch (error) {
-      console.error('Failed to load product detail', error);
+      console.error('Failed to fetch product details', error);
+      addToast('Product not found or unavailable', 'error');
     } finally {
-      if (!isBackground) setLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (slug) {
-      fetchProductDetails(false);
+      fetchProductDetails();
       window.scrollTo(0, 0);
     }
   }, [slug]);
 
-  // Live real-time update when Admin edits this machine (price, stock, title, etc.)
+  // Real-time live synchronization
   useLiveRefresh((event) => {
     if (slug) {
       fetchProductDetails(true);
@@ -95,7 +92,7 @@ const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="container" style={{ padding: '5rem 0', textAlign: 'center', color: '#64748b' }}>
+      <div className="container" style={{ padding: '5rem 0', textAlign: 'center', color: 'var(--text-muted)' }}>
         <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>Loading agricultural machinery details...</div>
       </div>
     );
@@ -104,8 +101,8 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <div className="container" style={{ padding: '5rem 0', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '1.75rem', color: '#0f172a', marginBottom: '1rem' }}>Product Not Found</h2>
-        <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>The requested equipment listing may have been moved or archived.</p>
+        <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Product Not Found</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>The requested equipment listing may have been moved or archived.</p>
         <Link to="/products" className="btn btn-primary">Browse Machinery</Link>
       </div>
     );
@@ -126,6 +123,11 @@ const ProductDetailPage = () => {
       return;
     }
     addToCart(product, quantity);
+    if (!isAuthenticated) {
+      addToast('Farmer login required to proceed to Buy Now & confirm order.', 'info');
+      navigate('/login?redirect=/checkout');
+      return;
+    }
     navigate('/checkout');
   };
 
@@ -167,7 +169,7 @@ const ProductDetailPage = () => {
         {/* Right: Technical Summary & Purchasing Actions */}
         <div className="flex flex-col gap-5">
           {/* Brand, Model, SKU & Upper Corner Share Button */}
-          <div className="flex items-center justify-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.25rem' }}>
+          <div className="flex items-center justify-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {product.brand} {product.modelNumber ? `• ${t('model', 'Model')}: ${product.modelNumber}` : ''}
             </span>
@@ -264,7 +266,7 @@ const ProductDetailPage = () => {
                 {formatINR(product.sellingPrice)}
               </span>
               {product.mrp > product.sellingPrice && (
-                <span style={{ fontSize: '1.15rem', color: '#94a3b8', textDecoration: 'line-through' }}>
+                <span style={{ fontSize: '1.15rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
                   {formatINR(product.mrp)}
                 </span>
               )}
@@ -282,7 +284,7 @@ const ProductDetailPage = () => {
 
             {/* Extra Discount Announcement */}
             {product.hasExtraDiscount && product.extraDiscountLabel && (
-              <div style={{ background: 'var(--primary-50)', border: '1px solid #86efac', borderRadius: '8px', padding: '0.5rem 0.75rem', marginTop: '0.75rem', fontSize: '0.85rem', color: '#166534', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-400, #86efac)', borderRadius: '8px', padding: '0.5rem 0.75rem', marginTop: '0.75rem', fontSize: '0.85rem', color: '#166534', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <span>🏷️ <strong>{t('extra_discount', 'Special Offer')}:</strong> {product.extraDiscountLabel}</span>
               </div>
             )}
@@ -332,11 +334,11 @@ const ProductDetailPage = () => {
           {/* Stock Availability */}
           <div className="flex items-center gap-2">
             {isOutOfStock ? (
-              <span className="badge badge-danger">{t('out_of_stock', 'Out of Stock')}</span>
+              <span className="badge badge-danger" style={{ background: 'var(--bg-surface)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>{t('out_of_stock', 'Out of Stock')}</span>
             ) : isLowStock ? (
-              <span className="badge badge-warning">⚡ {t('low_stock', 'Low Stock: Only')} {product.stockQuantity} remaining</span>
+              <span className="badge badge-warning" style={{ background: 'var(--bg-surface)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>⚡ {t('low_stock', 'Low Stock: Only')} {product.stockQuantity} remaining</span>
             ) : (
-              <span className="badge badge-success">✓ {t('in_stock', 'In Stock & Ready for Immediate Dispatch')}</span>
+              <span className="badge badge-success" style={{ background: 'var(--bg-surface)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>✓ {t('in_stock', 'In Stock & Ready for Immediate Dispatch')}</span>
             )}
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
               • Dispatches from {product.warehouse || 'Central Agro Hub'}
@@ -596,17 +598,17 @@ const ProductDetailPage = () => {
 
       {/* SECTION 10: FREQUENTLY ASKED QUESTIONS */}
       {product.faqs && product.faqs.length > 0 && (
-        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2rem', marginBottom: '3.5rem' }}>
-          <h3 style={{ fontSize: '1.35rem', color: '#062416', marginBottom: '1.25rem' }}>
+        <div style={{ background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '2rem', marginBottom: '3.5rem' }}>
+          <h3 style={{ fontSize: '1.35rem', color: 'var(--text-main)', marginBottom: '1.25rem' }}>
             Frequently Asked Farmer Questions (FAQ)
           </h3>
           <div className="flex flex-col gap-3">
             {product.faqs.map((faq, idx) => (
-              <div key={idx} style={{ background: '#ffffff', padding: '1rem 1.25rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0f172a', marginBottom: '0.35rem' }}>
+              <div key={idx} style={{ background: 'var(--bg-surface)', padding: '1rem 1.25rem', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-main)', marginBottom: '0.35rem' }}>
                   Q: {faq.question}
                 </div>
-                <div style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5 }}>
+                <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                   A: {faq.answer}
                 </div>
               </div>

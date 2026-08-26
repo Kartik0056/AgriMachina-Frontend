@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2, ArrowRight, ShieldCheck, Tag, CreditCard, X, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { formatINR } from '../../services/emiHelper';
 import api from '../../services/api';
 
 const CartPage = () => {
+  const { isAuthenticated } = useAuth();
   const {
     cartItems,
     updateQuantity,
@@ -16,6 +18,7 @@ const CartPage = () => {
     shippingFee,
     grandTotal
   } = useCart();
+
 
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -83,7 +86,7 @@ const CartPage = () => {
           width: '80px',
           height: '80px',
           borderRadius: '50%',
-          background: '#f0fdf4',
+          background: 'var(--primary-50)',
           color: '#166534',
           display: 'flex',
           alignItems: 'center',
@@ -92,8 +95,8 @@ const CartPage = () => {
         }}>
           <ShoppingCart size={40} />
         </div>
-        <h2 style={{ fontSize: '1.75rem', color: '#0f172a', marginBottom: '0.5rem' }}>Your Cart is Empty</h2>
-        <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Explore our agricultural machinery catalog to add high-efficiency equipment.</p>
+        <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Your Cart is Empty</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Explore our agricultural machinery catalog to add high-efficiency equipment.</p>
         <Link to="/products" className="btn btn-primary btn-lg">Browse Farm Equipment</Link>
       </div>
     );
@@ -101,7 +104,7 @@ const CartPage = () => {
 
   return (
     <div className="container" style={{ padding: '2.5rem 1.25rem 4rem 1.25rem' }}>
-      <h1 style={{ fontSize: '2rem', color: '#062416', marginBottom: '1.5rem' }}>
+      <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>
         Shopping Cart ({cartItems.length} Machinery {cartItems.length === 1 ? 'Item' : 'Items'})
       </h1>
 
@@ -114,9 +117,9 @@ const CartPage = () => {
               <div
                 key={product._id}
                 style={{
-                  background: '#ffffff',
+                  background: 'var(--bg-surface)',
                   borderRadius: '16px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid var(--border-color)',
                   padding: '1.25rem',
                   display: 'flex',
                   gap: '1rem',
@@ -127,7 +130,7 @@ const CartPage = () => {
                 <img
                   src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
                   alt={product.name}
-                  style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '10px', background: '#f8fafc', padding: '4px' }}
+                  style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '10px', background: 'var(--bg-surface-alt)', padding: '4px' }}
                 />
 
                 <div className="flex-1" style={{ minWidth: '200px' }}>
@@ -135,26 +138,26 @@ const CartPage = () => {
                     {product.brand} • SKU: {product.sku}
                   </div>
                   <Link to={`/product/${product.slug || product._id}`}>
-                    <h4 style={{ fontSize: '1rem', color: '#0f172a', margin: '0.2rem 0 0.5rem 0', fontWeight: 700 }}>
+                    <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', margin: '0.2rem 0 0.5rem 0', fontWeight: 700 }}>
                       {product.name}
                     </h4>
                   </Link>
 
                   <div className="flex items-center gap-4">
-                    <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#062416' }}>
+                    <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>
                       {formatINR(product.sellingPrice)}
                     </span>
-                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                       (Incl. {product.gstPercent || 12}% GST)
                     </span>
                   </div>
                 </div>
 
                 {/* Quantity Controls */}
-                <div className="flex items-center" style={{ border: '1px solid #cbd5e1', borderRadius: '6px', overflow: 'hidden' }}>
+                <div className="flex items-center" style={{ border: '1px solid var(--border-color)', borderRadius: '6px', overflow: 'hidden' }}>
                   <button
                     onClick={() => updateQuantity(product._id, quantity - 1)}
-                    style={{ width: '30px', height: '34px', background: '#f1f5f9', border: 'none', cursor: 'pointer', fontWeight: 700 }}
+                    style={{ width: '30px', height: '34px', background: 'var(--bg-surface-alt)', border: 'none', cursor: 'pointer', fontWeight: 700 }}
                   >
                     -
                   </button>
@@ -163,7 +166,7 @@ const CartPage = () => {
                   </span>
                   <button
                     onClick={() => updateQuantity(product._id, quantity + 1)}
-                    style={{ width: '30px', height: '34px', background: '#f1f5f9', border: 'none', cursor: 'pointer', fontWeight: 700 }}
+                    style={{ width: '30px', height: '34px', background: 'var(--bg-surface-alt)', border: 'none', cursor: 'pointer', fontWeight: 700 }}
                   >
                     +
                   </button>
@@ -171,7 +174,7 @@ const CartPage = () => {
 
                 {/* Subtotal & Delete */}
                 <div style={{ textAlign: 'right', minWidth: '100px' }}>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)' }}>
                     {formatINR(itemTotal)}
                   </div>
                   <button
@@ -187,7 +190,7 @@ const CartPage = () => {
           })}
 
           {/* Free Shipping Alert */}
-          <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '0.85rem 1.25rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#166534', fontSize: '0.85rem' }}>
+          <div style={{ background: 'var(--primary-50)', border: '1px solid #bbf7d0', padding: '0.85rem 1.25rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#166534', fontSize: '0.85rem' }}>
             <ShieldCheck size={18} color="#22c55e" />
             <span>Eligible for <strong>Free Palletized Farm Delivery</strong> across all states in India!</span>
           </div>
@@ -195,17 +198,17 @@ const CartPage = () => {
 
         {/* Order Summary Sidebar */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '1.75rem',
           height: 'fit-content'
         }}>
-          <h3 style={{ fontSize: '1.25rem', color: '#062416', marginBottom: '1.25rem', fontWeight: 800 }}>Order Summary</h3>
+          <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1.25rem', fontWeight: 800 }}>Order Summary</h3>
 
           {/* Coupon Code Input & Applied State */}
-          <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1.25rem' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <Tag size={15} color="#166534" />
               <span>Apply Discount Coupon</span>
             </label>
@@ -213,8 +216,8 @@ const CartPage = () => {
             {appliedCoupon ? (
               <div
                 style={{
-                  background: '#f0fdf4',
-                  border: '1px solid #86efac',
+                  background: 'var(--primary-50)',
+                  border: '1px solid var(--primary-400, #86efac)',
                   borderRadius: '10px',
                   padding: '0.75rem 0.85rem',
                   display: 'flex',
@@ -266,7 +269,7 @@ const CartPage = () => {
                 {/* Available Database Coupons Suggestions */}
                 {activeCoupons.length > 0 && (
                   <div style={{ marginTop: '0.65rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '0.35rem', fontWeight: 600 }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.35rem', fontWeight: 600 }}>
                       Available Active Coupons:
                     </div>
                     <div className="flex flex-wrap gap-1.5">
@@ -276,7 +279,7 @@ const CartPage = () => {
                           type="button"
                           onClick={() => handleApplyCoupon(ac.code)}
                           style={{
-                            background: '#f1f5f9',
+                            background: 'var(--bg-surface-alt)',
                             border: '1px dashed #94a3b8',
                             borderRadius: '6px',
                             padding: '0.2rem 0.45rem',
@@ -298,17 +301,17 @@ const CartPage = () => {
           </div>
 
           {/* Breakdown */}
-          <div className="flex flex-col gap-2.5" style={{ fontSize: '0.9rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1rem' }}>
+          <div className="flex flex-col gap-2.5" style={{ fontSize: '0.9rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1rem' }}>
             <div className="flex justify-between">
-              <span style={{ color: '#64748b' }}>Items Subtotal:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Items Subtotal:</span>
               <span style={{ fontWeight: 600 }}>{formatINR(cartSubtotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: '#64748b' }}>Estimated GST (Included):</span>
+              <span style={{ color: 'var(--text-muted)' }}>Estimated GST (Included):</span>
               <span style={{ fontWeight: 600 }}>{formatINR(gstTotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: '#64748b' }}>Farm Delivery:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Farm Delivery:</span>
               <span style={{ fontWeight: 700, color: shippingFee === 0 ? '#166534' : '#0f172a' }}>
                 {shippingFee === 0 ? 'FREE' : formatINR(shippingFee)}
               </span>
@@ -322,12 +325,19 @@ const CartPage = () => {
           </div>
 
           <div className="flex justify-between items-baseline" style={{ marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#062416' }}>Grand Total:</span>
-            <span style={{ fontSize: '1.75rem', fontWeight: 900, color: '#062416' }}>{formatINR(finalTotal)}</span>
+            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)' }}>Grand Total:</span>
+            <span style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-main)' }}>{formatINR(finalTotal)}</span>
           </div>
 
           <button
-            onClick={() => navigate('/checkout', { state: { coupon: appliedCoupon, discount } })}
+            onClick={() => {
+              if (!isAuthenticated) {
+                addToast('Farmer login required to proceed to checkout and confirm your order.', 'info');
+                navigate('/login?redirect=/checkout', { state: { coupon: appliedCoupon, discount } });
+                return;
+              }
+              navigate('/checkout', { state: { coupon: appliedCoupon, discount } });
+            }}
             className="btn btn-primary btn-lg"
             style={{ width: '100%' }}
           >
@@ -339,5 +349,6 @@ const CartPage = () => {
     </div>
   );
 };
+
 
 export default CartPage;

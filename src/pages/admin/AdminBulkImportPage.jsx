@@ -142,7 +142,7 @@ const AdminBulkImportPage = () => {
         <button
           onClick={handleDownloadTemplate}
           className="btn btn-secondary btn-sm"
-          style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+          style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
         >
           <Download size={15} />
           <span>Download Starter Template (.xlsx)</span>
@@ -187,7 +187,7 @@ const AdminBulkImportPage = () => {
 
             <form onSubmit={handleFileParse} className="flex flex-col gap-4">
               <div style={{
-                background: '#070d1a',
+                background: 'var(--admin-bg-sidebar)',
                 border: '2px dashed #1e2e4f',
                 borderRadius: '12px',
                 padding: '2.5rem',
@@ -240,20 +240,20 @@ const AdminBulkImportPage = () => {
                 accept=".zip"
                 onChange={(e) => setZipFile(e.target.files[0])}
                 className="input-field"
-                style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               />
               <button
                 type="submit"
                 disabled={!zipFile || zipUploading}
                 className="btn btn-secondary btn-sm"
-                style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               >
                 <span>{zipUploading ? 'Extracting & Mapping...' : 'Upload & Map ZIP to SKUs'}</span>
               </button>
             </form>
 
             {zipResult && (
-              <div style={{ marginTop: '1rem', background: '#070d1a', padding: '0.75rem', borderRadius: '8px', border: '1px solid #1e2e4f', fontSize: '0.75rem', color: '#34d399' }}>
+              <div style={{ marginTop: '1rem', background: 'var(--admin-bg-sidebar)', padding: '0.75rem', borderRadius: '8px', border: '1px solid #1e2e4f', fontSize: '0.75rem', color: '#34d399' }}>
                 ✓ Mapped {zipResult.mappedCount} images to {zipResult.affectedProducts?.length || 0} machinery listings.
               </div>
             )}
@@ -286,7 +286,7 @@ const AdminBulkImportPage = () => {
                 type="button"
                 onClick={() => setActiveStep(1)}
                 className="btn btn-secondary btn-sm"
-                style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+                style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               >
                 Re-upload File
               </button>
@@ -336,7 +336,7 @@ const AdminBulkImportPage = () => {
                         )}
                       </td>
                       <td style={{ fontWeight: 600, color: '#ffffff' }}>{row.data?.name || '—'}</td>
-                      <td><code>{row.data?.sku || '—'}</code></td>
+                      <td><code style={{ whiteSpace: 'nowrap', fontSize: '0.75rem', backgroundColor: 'var(--admin-input-bg)', padding: '0.2rem 0.5rem', borderRadius: '4px', border: '1px solid var(--admin-border)', letterSpacing: '0.03em', fontFamily: "'SF Mono', Consolas, monospace", color: 'var(--admin-text-main)' }}>{row.data?.sku || '—'}</code></td>
                       <td>{row.data?.category || '—'}</td>
                       <td>{row.data?.brand || '—'}</td>
                       <td style={{ color: '#34d399', fontWeight: 700 }}>{row.data?.sellingPrice ? formatINR(row.data.sellingPrice) : '—'}</td>
@@ -385,7 +385,7 @@ const AdminBulkImportPage = () => {
             All valid products have been committed to MongoDB with full technical attributes, reducing-balance EMI plans, and inventory transaction logs.
           </p>
 
-          <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', maxWidth: '450px', margin: '0 auto 2rem auto', textAlign: 'left' }}>
+          <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', maxWidth: '450px', margin: '0 auto 2rem auto', textAlign: 'left' }}>
             <div className="flex justify-between" style={{ marginBottom: '0.5rem' }}>
               <span style={{ color: '#94a3b8' }}>New Products Created:</span>
               <strong style={{ color: '#34d399' }}>{importSuccessResult.createdCount}</strong>

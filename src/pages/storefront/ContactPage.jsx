@@ -89,10 +89,10 @@ const ContactPage = () => {
         <span className="badge badge-primary" style={{ marginBottom: '0.75rem', padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
           🌾 Kisan Technical Advisory & Customer Support
         </span>
-        <h1 style={{ fontSize: '2.4rem', color: '#062416', fontWeight: 900, marginBottom: '0.75rem' }}>
+        <h1 style={{ fontSize: '2.4rem', color: 'var(--text-main)', fontWeight: 900, marginBottom: '0.75rem' }}>
           Connect with Agricultural Machinery Specialists
         </h1>
-        <p style={{ color: '#64748b', fontSize: '1rem', maxWidth: '680px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '680px', margin: '0 auto' }}>
           Have questions about field compatibility, subsidy documentation, 0% EMI financing, or custom implements? Our certified agricultural engineers are available 6 days a week.
         </p>
       </div>
@@ -101,9 +101,9 @@ const ContactPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ marginBottom: '3rem' }}>
         {/* Card 1: Toll-Free Helpline */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '1.75rem',
           display: 'flex',
           flexDirection: 'column',
@@ -115,7 +115,7 @@ const ContactPage = () => {
             width: '56px',
             height: '56px',
             borderRadius: '50%',
-            background: '#f0fdf4',
+            background: 'var(--primary-50)',
             color: '#166534',
             display: 'flex',
             alignItems: 'center',
@@ -124,10 +124,10 @@ const ContactPage = () => {
           }}>
             <PhoneCall size={26} color="#166534" />
           </div>
-          <h3 style={{ fontSize: '1.2rem', color: '#062416', fontWeight: 800, marginBottom: '0.35rem' }}>
+          <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
             Toll-Free Kisan Helpline
           </h3>
-          <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
             Call toll-free for product recommendations, warranty support, and delivery status.
           </p>
           <a
@@ -137,16 +137,16 @@ const ContactPage = () => {
           >
             📞 1800-AGRI-FARM (Toll-Free)
           </a>
-          <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
             Mon - Sat: 8:00 AM to 8:00 PM
           </span>
         </div>
 
         {/* Card 2: WhatsApp Engineer Chat */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '1.75rem',
           display: 'flex',
           flexDirection: 'column',
@@ -158,7 +158,7 @@ const ContactPage = () => {
             width: '56px',
             height: '56px',
             borderRadius: '50%',
-            background: '#f0fdf4',
+            background: 'var(--primary-50)',
             color: '#16a34a',
             display: 'flex',
             alignItems: 'center',
@@ -167,10 +167,10 @@ const ContactPage = () => {
           }}>
             <MessageSquare size={26} color="#16a34a" />
           </div>
-          <h3 style={{ fontSize: '1.2rem', color: '#062416', fontWeight: 800, marginBottom: '0.35rem' }}>
+          <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
             WhatsApp Technical Support
           </h3>
-          <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
             Receive video field demonstrations, machine manuals, and spare parts catalogs on WhatsApp.
           </p>
           <a
@@ -182,16 +182,16 @@ const ContactPage = () => {
           >
             💬 Chat on WhatsApp (+91 90277 99171)
           </a>
-          <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
             Average response time: 5 Minutes
           </span>
         </div>
 
         {/* Card 3: Central Warehouse & Factory */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '1.75rem',
           display: 'flex',
           flexDirection: 'column',
@@ -212,16 +212,16 @@ const ContactPage = () => {
           }}>
             <MapPin size={26} color="#d97706" />
           </div>
-          <h3 style={{ fontSize: '1.2rem', color: '#062416', fontWeight: 800, marginBottom: '0.35rem' }}>
+          <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
             Central Warehouse & Factory
           </h3>
-          <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.75rem' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
             AgriMachina Industrial Zone, National Highway 27, Shapar-Veraval, Rajkot, Gujarat - 360024
           </p>
           <div style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700 }}>
             ✉️ support@agrimachina.in
           </div>
-          <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
             Central Depot & Testing Yard
           </span>
         </div>
@@ -231,32 +231,32 @@ const ContactPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Contact Form (7 cols) */}
         <div className="lg:col-span-7" style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
           borderRadius: '16px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '2rem',
           boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
         }}>
-          <h3 style={{ fontSize: '1.4rem', color: '#062416', fontWeight: 800, marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem' }}>
             Submit an Inquiry / Request a Callback
           </h3>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
             Fill in your farm details below and an agricultural engineer will contact you with recommendations.
           </p>
 
           {submitted ? (
             <div style={{
-              background: '#f0fdf4',
-              border: '1px solid #86efac',
+              background: 'var(--primary-50)',
+              border: '1px solid var(--primary-400, #86efac)',
               borderRadius: '12px',
               padding: '2rem',
               textAlign: 'center'
             }}>
               <CheckCircle2 size={48} color="#16a34a" style={{ margin: '0 auto 1rem auto' }} />
-              <h4 style={{ fontSize: '1.25rem', color: '#062416', fontWeight: 800, marginBottom: '0.5rem' }}>
+              <h4 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem' }}>
                 Thank You, {formData.name}!
               </h4>
-              <p style={{ color: '#475569', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
                 Your inquiry has been successfully assigned to our agricultural engineering team. We will call you on <strong>{formData.phone}</strong> shortly.
               </p>
               <button
@@ -388,13 +388,13 @@ const ContactPage = () => {
         {/* FAQs Accordion (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-4">
           <div style={{
-            background: '#ffffff',
+            background: 'var(--bg-surface)',
             borderRadius: '16px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid var(--border-color)',
             padding: '1.75rem',
             boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
           }}>
-            <h3 style={{ fontSize: '1.3rem', color: '#062416', fontWeight: 800, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <HelpCircle size={20} color="#166534" />
               <span>Frequently Asked Questions</span>
             </h3>
@@ -406,7 +406,7 @@ const ContactPage = () => {
                   <div
                     key={idx}
                     style={{
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '10px',
                       overflow: 'hidden',
                       transition: 'all 0.15s ease'
@@ -442,7 +442,7 @@ const ContactPage = () => {
                     </button>
 
                     {isOpen && (
-                      <div style={{ padding: '0.85rem 1rem', fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, background: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
+                      <div style={{ padding: '0.85rem 1rem', fontSize: '0.825rem', color: 'var(--text-muted)', lineHeight: 1.5, background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)' }}>
                         {faq.a}
                       </div>
                     )}

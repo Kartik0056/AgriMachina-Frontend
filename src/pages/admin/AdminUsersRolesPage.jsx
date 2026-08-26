@@ -1,38 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Users, ShieldCheck, Plus, UserPlus, Lock, Mail, RefreshCw } from 'lucide-react';
+import { ShieldCheck, UserPlus, Key, Lock, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 import adminApi from '../../services/adminApi';
 import { useToast } from '../../context/ToastContext';
 
 const AdminUsersRolesPage = () => {
   const [admins, setAdmins] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Create admin modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [username, setUsername] = useState('');
+
+  // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('CATALOG_MANAGER');
-  const [saving, setSaving] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const { addToast } = useToast();
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [admRes, roleRes, permRes] = await Promise.all([
+      const [adminRes, roleRes] = await Promise.all([
         adminApi.get('/roles/admins'),
-        adminApi.get('/roles'),
-        adminApi.get('/roles/permissions')
+        adminApi.get('/roles')
       ]);
-      if (admRes.data.success) setAdmins(admRes.data.admins || []);
+      if (adminRes.data.success) setAdmins(adminRes.data.admins || []);
       if (roleRes.data.success) setRoles(roleRes.data.roles || []);
-      if (permRes.data.success) setPermissions(permRes.data.permissions || []);
     } catch (err) {
-      addToast('Failed to load RBAC roles & administrators', 'error');
+      addToast('Failed to load RBAC permissions data', 'error');
     } finally {
       setLoading(false);
     }
@@ -44,28 +41,28 @@ const AdminUsersRolesPage = () => {
 
   const handleCreateAdmin = async (e) => {
     e.preventDefault();
-    setSaving(true);
+    setSubmitting(true);
     try {
       const res = await adminApi.post('/roles/admins', {
-        username,
         name,
         email,
+        username,
         password,
         role
       });
       if (res.data.success) {
-        addToast(`Admin user ${res.data.admin.username} created successfully!`, 'success');
+        addToast(`Admin user "${name}" successfully created!`, 'success');
         setIsModalOpen(false);
-        setUsername('');
         setName('');
         setEmail('');
+        setUsername('');
         setPassword('');
         fetchData();
       }
     } catch (err) {
       addToast(err.response?.data?.message || 'Failed to create admin user', 'error');
     } finally {
-      setSaving(false);
+      setSubmitting(false);
     }
   };
 
@@ -74,10 +71,10 @@ const AdminUsersRolesPage = () => {
       {/* Top Banner */}
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', color: '#ffffff', fontWeight: 800 }}>
+          <h1 style={{ fontSize: '1.75rem', color: 'var(--admin-text-main)', fontWeight: 800 }}>
             Administrators & Role-Based Access Control (RBAC)
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+          <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
             Manage staff accounts, assign granular security privileges, and inspect system roles
           </p>
         </div>
@@ -93,8 +90,8 @@ const AdminUsersRolesPage = () => {
 
       {/* Admin Users Table */}
       <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--bg-dark-border)' }}>
-          <h3 style={{ fontSize: '1.1rem', color: '#ffffff' }}>Active System Administrators</h3>
+        <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--admin-border, #1e2e4f)' }}>
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Active System Administrators</h3>
         </div>
         <div className="admin-table-container" style={{ border: 'none' }}>
           <table className="admin-table">
@@ -111,9 +108,9 @@ const AdminUsersRolesPage = () => {
             <tbody>
               {admins.map((adm) => (
                 <tr key={adm._id}>
-                  <td style={{ color: '#ffffff', fontWeight: 700 }}>{adm.name}</td>
-                  <td><code>{adm.username}</code></td>
-                  <td>{adm.email}</td>
+                  <td style={{ color: 'var(--admin-text-main)', fontWeight: 700 }}>{adm.name}</td>
+                  <td><code style={{ color: 'var(--admin-text-main)' }}>{adm.username}</code></td>
+                  <td style={{ color: 'var(--admin-text-muted)' }}>{adm.email}</td>
                   <td>
                     <span className="badge badge-primary">{adm.role}</span>
                   </td>
@@ -122,8 +119,8 @@ const AdminUsersRolesPage = () => {
                       {adm.isActive ? 'Active' : 'Locked'}
                     </span>
                   </td>
-                  <td style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                    {adm.lastLogin ? new Date(adm.lastLogin).toLocaleString() : 'Never'}
+                  <td style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
+                    {adm.lastLogin ? new Date(adm.lastLogin).toLocaleString('en-IN') : 'Never'}
                   </td>
                 </tr>
               ))}
@@ -134,7 +131,7 @@ const AdminUsersRolesPage = () => {
 
       {/* Roles & Permissions Matrix */}
       <div className="admin-card">
-        <h3 style={{ fontSize: '1.1rem', color: '#ffffff', marginBottom: '1rem' }}>
+        <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', marginBottom: '1rem', fontWeight: 700 }}>
           Standard RBAC Security Roles
         </h3>
 
@@ -143,19 +140,19 @@ const AdminUsersRolesPage = () => {
             <div
               key={r._id}
               style={{
-                background: '#070d1a',
-                border: '1px solid #1e2e4f',
+                background: 'var(--admin-bg-card-alt)',
+                border: '1px solid var(--admin-border, #1e2e4f)',
                 borderRadius: '10px',
                 padding: '1.25rem'
               }}
             >
-              <div style={{ fontWeight: 800, color: '#34d399', fontSize: '0.95rem', marginBottom: '0.35rem' }}>
+              <div style={{ fontWeight: 800, color: 'var(--admin-accent, #34d399)', fontSize: '0.95rem', marginBottom: '0.35rem' }}>
                 {r.name}
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.75rem' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-muted)', lineHeight: 1.4, marginBottom: '0.75rem' }}>
                 {r.description}
               </p>
-              <div style={{ fontSize: '0.75rem', color: '#cbd5e1' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-main)' }}>
                 Privileges: <strong>{r.permissions?.length || 0} permissions</strong>
               </div>
             </div>
@@ -166,19 +163,19 @@ const AdminUsersRolesPage = () => {
       {/* Create Admin Modal */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="modal-content dark-theme" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
-            <h3 style={{ fontSize: '1.25rem', color: '#ffffff', marginBottom: '1rem' }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px', background: 'var(--admin-bg-card)', border: '1px solid var(--admin-border, #334155)' }}>
+            <h3 style={{ fontSize: '1.25rem', color: 'var(--admin-text-main)', marginBottom: '1rem', fontWeight: 800 }}>
               Create Staff Administrator Account
             </h3>
 
             <form onSubmit={handleCreateAdmin} className="flex flex-col gap-4">
               <div className="input-group">
-                <label className="input-label" style={{ color: '#cbd5e1' }}>Full Name *</label>
+                <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Full Name *</label>
                 <input
                   type="text"
                   required
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Anand Sharma"
@@ -186,12 +183,12 @@ const AdminUsersRolesPage = () => {
               </div>
 
               <div className="input-group">
-                <label className="input-label" style={{ color: '#cbd5e1' }}>Username *</label>
+                <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Username *</label>
                 <input
                   type="text"
                   required
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="e.g. anand_sharma"
@@ -199,12 +196,12 @@ const AdminUsersRolesPage = () => {
               </div>
 
               <div className="input-group">
-                <label className="input-label" style={{ color: '#cbd5e1' }}>Work Email Address *</label>
+                <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Work Email Address *</label>
                 <input
                   type="email"
                   required
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="anand@agrimachinery.com"
@@ -212,12 +209,12 @@ const AdminUsersRolesPage = () => {
               </div>
 
               <div className="input-group">
-                <label className="input-label" style={{ color: '#cbd5e1' }}>Initial Master Password *</label>
+                <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Initial Master Password *</label>
                 <input
                   type="password"
                   required
                   className="input-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
@@ -225,10 +222,10 @@ const AdminUsersRolesPage = () => {
               </div>
 
               <div className="input-group">
-                <label className="input-label" style={{ color: '#cbd5e1' }}>Assigned RBAC Role *</label>
+                <label className="input-label" style={{ color: 'var(--admin-text-muted)' }}>Assigned RBAC Role *</label>
                 <select
                   className="select-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                 >
@@ -246,16 +243,16 @@ const AdminUsersRolesPage = () => {
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="btn btn-secondary btn-sm"
-                  style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
+                  disabled={submitting}
                   className="btn btn-primary btn-sm"
                 >
-                  {saving ? 'Creating...' : 'Create Account'}
+                  {submitting ? 'Creating...' : 'Authorize & Create Account'}
                 </button>
               </div>
             </form>

@@ -65,8 +65,8 @@ const LoginPage = () => {
     <div className="container" style={{ padding: '4rem 1.25rem', maxWidth: '520px' }}>
       {isCheckoutRedirect && (
         <div style={{
-          background: '#f0fdf4',
-          border: '1px solid #86efac',
+          background: 'var(--primary-50)',
+          border: '1px solid var(--primary-400, #86efac)',
           borderRadius: '14px',
           padding: '1rem 1.25rem',
           marginBottom: '1.5rem',
@@ -86,9 +86,9 @@ const LoginPage = () => {
         </div>
       )}
       <div style={{
-        background: '#ffffff',
+        background: 'var(--bg-surface)',
         borderRadius: '20px',
-        border: '1px solid #e2e8f0',
+        border: '1px solid var(--border-color)',
         padding: '2.5rem',
         boxShadow: 'var(--shadow-lg)'
       }}>
@@ -106,10 +106,10 @@ const LoginPage = () => {
           }}>
             <Tractor size={30} color="#86efac" />
           </div>
-          <h2 style={{ fontSize: '1.75rem', color: '#062416' }}>
+          <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)' }}>
             {isRegister ? 'Farmer Account Registration' : 'Farmer Customer Login'}
           </h2>
-          <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
             {isRegister ? 'Register your agricultural holding for equipment financing and order tracking' : 'Access your machinery orders, warranties, and verified reviews'}
           </p>
         </div>

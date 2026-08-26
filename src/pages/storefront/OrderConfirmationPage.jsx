@@ -39,9 +39,9 @@ const OrderConfirmationPage = () => {
   return (
     <div className="container" style={{ padding: '4rem 1.25rem', maxWidth: '750px' }}>
       <div style={{
-        background: '#ffffff',
+        background: 'var(--bg-surface)',
         borderRadius: '20px',
-        border: '1px solid #e2e8f0',
+        border: '1px solid var(--border-color)',
         padding: '2.5rem',
         textAlign: 'center',
         boxShadow: 'var(--shadow-lg)'
@@ -60,50 +60,50 @@ const OrderConfirmationPage = () => {
           <CheckCircle2 size={40} />
         </div>
 
-        <h1 style={{ fontSize: '2rem', color: '#062416', marginBottom: '0.5rem' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>
           Farm Machinery Order Confirmed!
         </h1>
-        <p style={{ color: '#64748b', fontSize: '1rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '1.5rem' }}>
           Thank you for choosing AgriMachina. Your equipment order has been confirmed and registered for priority warehouse dispatch.
         </p>
 
         {/* Order Details Card */}
         <div style={{
-          background: '#f8fafc',
+          background: 'var(--bg-surface-alt)',
           borderRadius: '12px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-color)',
           padding: '1.5rem',
           textAlign: 'left',
           marginBottom: '2rem'
         }}>
-          <div className="flex justify-between items-center" style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.85rem' }}>Order Reference:</span>
-            <span style={{ fontWeight: 800, fontSize: '1rem', color: '#062416' }}>{order?.orderNumber || 'AG-CONFIRMED'}</span>
+          <div className="flex justify-between items-center" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Order Reference:</span>
+            <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-main)' }}>{order?.orderNumber || 'AG-CONFIRMED'}</span>
           </div>
 
           <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            <span style={{ color: '#64748b' }}>Customer Name:</span>
+            <span style={{ color: 'var(--text-muted)' }}>Customer Name:</span>
             <span style={{ fontWeight: 600 }}>{order?.customerName || order?.shippingAddress?.fullName}</span>
           </div>
 
           <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            <span style={{ color: '#64748b' }}>Delivery Destination:</span>
+            <span style={{ color: 'var(--text-muted)' }}>Delivery Destination:</span>
             <span style={{ fontWeight: 600 }}>{order?.shippingAddress?.villageCity}, {order?.shippingAddress?.state} ({order?.shippingAddress?.pincode})</span>
           </div>
 
           <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            <span style={{ color: '#64748b' }}>Payment Mode:</span>
+            <span style={{ color: 'var(--text-muted)' }}>Payment Mode:</span>
             <span style={{ fontWeight: 700, color: '#166534' }}>{order?.payment?.method || 'COD'}</span>
           </div>
 
-          <div className="flex justify-between items-center" style={{ borderTop: '1px solid #e2e8f0', paddingTop: '0.75rem', marginTop: '0.75rem' }}>
-            <span style={{ fontWeight: 700, color: '#0f172a' }}>Grand Total:</span>
-            <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#062416' }}>{formatINR(order?.pricing?.grandTotal || 0)}</span>
+          <div className="flex justify-between items-center" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem', marginTop: '0.75rem' }}>
+            <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>Grand Total:</span>
+            <span style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-main)' }}>{formatINR(order?.pricing?.grandTotal || 0)}</span>
           </div>
         </div>
 
         {/* Tracking Flow */}
-        <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', textAlign: 'left' }}>
+        <div style={{ background: 'var(--primary-50)', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', textAlign: 'left' }}>
           <Truck size={24} color="#166534" style={{ flexShrink: 0 }} />
           <div style={{ fontSize: '0.85rem', color: '#166534' }}>
             <strong>Estimated Farm Delivery: 4 - 7 Business Days.</strong> You will receive SMS & WhatsApp status updates as the machinery moves through transit hubs.

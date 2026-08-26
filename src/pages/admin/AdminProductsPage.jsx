@@ -179,10 +179,10 @@ const AdminProductsPage = () => {
       {/* Top Header */}
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', color: '#ffffff', fontWeight: 800 }}>
+          <h1 style={{ fontSize: '1.75rem', color: 'var(--admin-text-main)', fontWeight: 800 }}>
             Agricultural Machinery Listings
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+          <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
             Manage commercial equipment specifications, pricing, inventory, and publication workflows
           </p>
         </div>
@@ -191,7 +191,7 @@ const AdminProductsPage = () => {
           <Link
             to={`${adminPanelPath}/products/bulk-import`}
             className="btn btn-secondary btn-sm"
-            style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
           >
             <FileSpreadsheet size={15} />
             <span>Bulk Import (XLSX/CSV)</span>
@@ -215,16 +215,16 @@ const AdminProductsPage = () => {
               type="text"
               placeholder="Search Name, SKU, Model..."
               className="input-field"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff', paddingLeft: '2.2rem' }}
+              style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)', paddingLeft: '2.2rem' }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <Search size={15} color="#94a3b8" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
+            <Search size={15} color="var(--admin-text-muted, #94a3b8)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
           </div>
 
           <select
             className="select-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
             value={category}
             onChange={(e) => { setCategory(e.target.value); setPage(1); }}
           >
@@ -234,7 +234,7 @@ const AdminProductsPage = () => {
 
           <select
             className="select-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
             value={status}
             onChange={(e) => { setStatus(e.target.value); setPage(1); }}
           >
@@ -248,7 +248,7 @@ const AdminProductsPage = () => {
 
           <select
             className="select-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
             value={stockStatus}
             onChange={(e) => { setStockStatus(e.target.value); setPage(1); }}
           >
@@ -264,7 +264,7 @@ const AdminProductsPage = () => {
               type="button"
               onClick={() => { setSearch(''); setCategory(''); setStatus(''); setStockStatus(''); setPage(1); }}
               className="btn btn-secondary btn-sm"
-              style={{ background: '#1e293b', borderColor: '#334155', color: '#cbd5e1' }}
+              style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#cbd5e1' }}
             >
               Reset
             </button>
@@ -349,21 +349,34 @@ const AdminProductsPage = () => {
                       <img
                         src={p.mainImage?.url || 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=100&q=80'}
                         alt=""
-                        style={{ width: '42px', height: '42px', objectFit: 'cover', borderRadius: '6px' }}
+                        style={{ width: '42px', height: '42px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--admin-border)', flexShrink: 0 }}
                       />
                     </td>
-                    <td>
-                      <div style={{ fontWeight: 700, color: '#ffffff', maxWidth: '220px', lineHeight: 1.2 }}>
+                    <td style={{ paddingLeft: '0.25rem' }}>
+                      <div style={{ fontWeight: 700, color: 'var(--admin-text-main)', maxWidth: '220px', lineHeight: 1.2 }}>
                         {p.name?.replace(/&amp;/g, '&')}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
                         {p.brand?.replace(/&amp;/g, '&')} {p.modelNumber ? `(${p.modelNumber})` : ''}
                       </div>
                     </td>
-                    <td><code>{p.sku}</code></td>
-                    <td><span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>{p.category?.replace(/&amp;/g, '&')}</span></td>
-                    <td style={{ fontWeight: 700, color: '#34d399' }}>{formatINR(p.sellingPrice)}</td>
-                    <td style={{ color: '#94a3b8' }}>{formatINR(p.mrp)}</td>
+                    <td>
+                      <code style={{
+                        fontSize: '0.75rem',
+                        color: 'var(--admin-text-main)',
+                        backgroundColor: 'var(--admin-input-bg)',
+                        padding: '0.25rem 0.55rem',
+                        borderRadius: '5px',
+                        border: '1px solid var(--admin-border)',
+                        whiteSpace: 'nowrap',
+                        display: 'inline-block',
+                        letterSpacing: '0.03em',
+                        fontFamily: "'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace"
+                      }}>{p.sku}</code>
+                    </td>
+                    <td><span style={{ fontSize: '0.8rem', color: 'var(--admin-text-muted)' }}>{p.category?.replace(/&amp;/g, '&')}</span></td>
+                    <td style={{ fontWeight: 700, color: 'var(--admin-accent, #34d399)' }}>{formatINR(p.sellingPrice)}</td>
+                    <td style={{ color: 'var(--admin-text-muted)' }}>{formatINR(p.mrp)}</td>
                     <td>
                       <span className={`badge ${
                         p.stockStatus === 'OUT OF STOCK' ? 'badge-danger' :
@@ -457,7 +470,7 @@ const AdminProductsPage = () => {
               disabled={page <= 1}
               onClick={() => setPage(page - 1)}
               className="btn btn-secondary btn-sm"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             >
               <ChevronLeft size={15} />
               <span>Previous</span>
@@ -466,7 +479,7 @@ const AdminProductsPage = () => {
               disabled={page >= totalPages}
               onClick={() => setPage(page + 1)}
               className="btn btn-secondary btn-sm"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             >
               <span>Next</span>
               <ChevronRight size={15} />
@@ -488,7 +501,7 @@ const AdminProductsPage = () => {
                 <label className="input-label" style={{ color: '#cbd5e1' }}>Select Property to Update</label>
                 <select
                   className="select-field"
-                  style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                   value={bulkAction}
                   onChange={(e) => setBulkAction(e.target.value)}
                 >
@@ -503,7 +516,7 @@ const AdminProductsPage = () => {
                 {bulkAction === 'status' ? (
                   <select
                     className="select-field"
-                    style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={bulkValue}
                     onChange={(e) => setBulkValue(e.target.value)}
                   >
@@ -516,7 +529,7 @@ const AdminProductsPage = () => {
                   <input
                     type="text"
                     className="input-field"
-                    style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+                    style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={bulkValue}
                     onChange={(e) => setBulkValue(e.target.value)}
                   />
@@ -528,7 +541,7 @@ const AdminProductsPage = () => {
                   type="button"
                   onClick={() => setIsBulkModalOpen(false)}
                   className="btn btn-secondary btn-sm"
-                  style={{ background: '#1e293b', borderColor: '#334155', color: '#ffffff' }}
+                  style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                 >
                   Cancel
                 </button>

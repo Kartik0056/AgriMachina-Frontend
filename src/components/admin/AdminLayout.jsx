@@ -3,10 +3,12 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import AdminTopBar from './AdminTopBar';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import adminApi from '../../services/adminApi';
 
 const AdminLayout = () => {
   const { isAuthenticated, loading, adminPanelPath } = useAdminAuth();
+  const { adminTheme } = useTheme();
   const location = useLocation();
   const [stats, setStats] = useState({ pendingReviews: 0, pendingOrders: 0 });
 
@@ -29,7 +31,7 @@ const AdminLayout = () => {
 
   if (loading) {
     return (
-      <div style={{ background: '#0b1324', color: '#ffffff', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ background: 'var(--admin-bg-main)', color: 'var(--admin-text-main)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div>Loading Admin Operations Portal...</div>
       </div>
     );
@@ -40,7 +42,7 @@ const AdminLayout = () => {
   }
 
   return (
-    <div className="admin-shell">
+    <div className="admin-shell" data-admin-theme={adminTheme || 'dark'}>
       <AdminSidebar
         pendingReviewsCount={stats.pendingReviews}
         pendingOrdersCount={stats.pendingOrders}

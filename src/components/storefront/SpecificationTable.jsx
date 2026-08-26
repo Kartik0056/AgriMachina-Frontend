@@ -25,17 +25,17 @@ const SpecificationTable = ({ specifications = [] }) => {
   return (
     <div className="flex flex-col gap-6">
       {Object.entries(groups).map(([groupName, specs]) => (
-        <div key={groupName} style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+        <div key={groupName} style={{ background: 'var(--bg-surface)', borderRadius: '12px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
           <div style={{
-            background: '#f8fafc',
+            background: 'var(--bg-surface-alt)',
             padding: '0.85rem 1.25rem',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid var(--border-color)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
             fontWeight: 700,
             fontSize: '0.9rem',
-            color: '#0f172a',
+            color: 'var(--text-main)',
             textTransform: 'uppercase',
             letterSpacing: '0.05em'
           }}>
@@ -53,11 +53,11 @@ const SpecificationTable = ({ specifications = [] }) => {
                     backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fafafa'
                   }}
                 >
-                  <td style={{ padding: '0.75rem 1.25rem', color: '#64748b', width: '40%', fontWeight: 500 }}>
+                  <td style={{ padding: '0.75rem 1.25rem', color: 'var(--text-muted)', width: '40%', fontWeight: 500 }}>
                     {spec.name}
                   </td>
-                  <td style={{ padding: '0.75rem 1.25rem', color: '#0f172a', fontWeight: 600 }}>
-                    {spec.value} {spec.unit ? <span style={{ color: '#64748b', fontWeight: 400 }}>({spec.unit})</span> : ''}
+                  <td style={{ padding: '0.75rem 1.25rem', color: 'var(--text-main)', fontWeight: 600 }}>
+                    {spec.value} {spec.unit ? <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>({spec.unit})</span> : ''}
                   </td>
                 </tr>
               ))}

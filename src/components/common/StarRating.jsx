@@ -27,7 +27,7 @@ const StarRating = ({ rating = 0, totalReviews, size = 16, interactive = false, 
         </span>
       )}
       {totalReviews !== undefined && (
-        <span style={{ fontSize: `${size * 0.78}px`, color: '#64748b' }}>
+        <span style={{ fontSize: `${size * 0.78}px`, color: 'var(--text-muted)' }}>
           ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
         </span>
       )}

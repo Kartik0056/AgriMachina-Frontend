@@ -112,7 +112,7 @@ const TabMedia = ({ formData, updateField }) => {
           type="text"
           required
           className="input-field"
-          style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+          style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
           value={formData.mainImage?.url || ''}
           onChange={(e) => updateField('mainImage', { ...formData.mainImage, url: e.target.value, alt: formData.name || '' })}
           placeholder="https://... (JPG, PNG, or WEBP)"
@@ -120,7 +120,7 @@ const TabMedia = ({ formData, updateField }) => {
       </div>
 
       {/* File Upload Zone */}
-      <div style={{ background: '#070d1a', border: '2px dashed #1e2e4f', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '2px dashed #1e2e4f', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
         <input
           type="file"
           id="media-upload-input"
@@ -139,7 +139,7 @@ const TabMedia = ({ formData, updateField }) => {
       </div>
 
       {/* Gallery Image Manager */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Image size={18} color="#34d399" />
           <span>Product Gallery Ordering & Angle Tags</span>
@@ -150,14 +150,14 @@ const TabMedia = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff', flex: 1 }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', flex: 1 }}
             value={newImageUrl}
             onChange={(e) => setNewImageUrl(e.target.value)}
             placeholder="Paste additional image URL (e.g. 02 Front angle view)"
           />
           <select
             className="select-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff', width: '180px' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', width: '180px' }}
             value={newImageTag}
             onChange={(e) => setNewImageTag(e.target.value)}
           >
@@ -177,7 +177,7 @@ const TabMedia = ({ formData, updateField }) => {
             <div
               key={idx}
               style={{
-                background: '#070d1a',
+                background: 'var(--admin-bg-sidebar)',
                 border: '1px solid #1e2e4f',
                 borderRadius: '8px',
                 padding: '0.65rem 1rem',
@@ -208,7 +208,7 @@ const TabMedia = ({ formData, updateField }) => {
       </div>
 
       {/* Video Demonstration Section with On-Platform Embedded Player */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1.05rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Video size={20} color="#f59e0b" />
           <span>Product Working Video (YouTube Link / MP4 Upload - Plays On Platform)</span>
@@ -223,7 +223,7 @@ const TabMedia = ({ formData, updateField }) => {
             <input
               type="text"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={formData.video?.url || ''}
               onChange={(e) => updateField('video', { ...formData.video, url: e.target.value })}
               placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
@@ -235,7 +235,7 @@ const TabMedia = ({ formData, updateField }) => {
             <input
               type="text"
               className="input-field"
-              style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+              style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
               value={formData.video?.title || ''}
               onChange={(e) => updateField('video', { ...formData.video, title: e.target.value })}
               placeholder="e.g. 7HP Power Weeder Live Farm Soil Working Demo"
@@ -252,7 +252,7 @@ const TabMedia = ({ formData, updateField }) => {
             onChange={handleVideoUpload}
             style={{ display: 'none' }}
           />
-          <label htmlFor="video-upload-file" className="btn btn-secondary btn-sm" style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff', cursor: 'pointer' }}>
+          <label htmlFor="video-upload-file" className="btn btn-secondary btn-sm" style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', cursor: 'pointer' }}>
             <Upload size={14} color="#f59e0b" />
             <span>{uploadingVideo ? 'Uploading MP4...' : 'Or Upload MP4 Video File'}</span>
           </label>
@@ -265,7 +265,7 @@ const TabMedia = ({ formData, updateField }) => {
 
         {/* Live On-Platform Video Preview Player */}
         {formData.video?.url && (
-          <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
+          <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
             <div style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <Play size={14} color="#f59e0b" />
               <span>Live In-Platform Video Preview:</span>
@@ -297,7 +297,7 @@ const TabMedia = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.brochureUrl || ''}
             onChange={(e) => updateField('brochureUrl', e.target.value)}
             placeholder="https://.../brochure.pdf"
@@ -309,7 +309,7 @@ const TabMedia = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.userManualUrl || ''}
             onChange={(e) => updateField('userManualUrl', e.target.value)}
             placeholder="https://.../user-manual.pdf"

@@ -20,7 +20,7 @@ const TabWarranty = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={warranty.period || '1 Year Manufacturer Warranty'}
             onChange={(e) => updateWarranty('period', e.target.value)}
             placeholder="e.g. 1 Year Manufacturer Warranty"
@@ -32,7 +32,7 @@ const TabWarranty = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={warranty.type || 'Comprehensive'}
             onChange={(e) => updateWarranty('type', e.target.value)}
           />
@@ -43,7 +43,7 @@ const TabWarranty = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={warranty.provider || 'OEM Authorized Service Network'}
             onChange={(e) => updateWarranty('provider', e.target.value)}
           />
@@ -54,7 +54,7 @@ const TabWarranty = ({ formData, updateField }) => {
           <textarea
             className="textarea-field"
             rows="3"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={warranty.terms || ''}
             onChange={(e) => updateWarranty('terms', e.target.value)}
           />

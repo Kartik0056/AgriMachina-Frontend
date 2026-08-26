@@ -113,7 +113,7 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Verified Badge Ribbon */}
         <div style={{
-          background: '#f0fdf4',
+          background: 'var(--primary-50)',
           border: '1px solid #bbf7d0',
           padding: '0.75rem 1rem',
           borderRadius: '8px',
@@ -187,7 +187,7 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
         </div>
 
         {/* Farm Context */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ background: 'var(--bg-surface-alt)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <div className="input-group">
             <label className="input-label">Crops Grown</label>
             <input
@@ -218,7 +218,7 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
               <Camera size={16} color="#166534" />
               <span>Attach Field Photos (Up to 4)</span>
             </span>
-            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{imagesList.length}/4 Attached</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{imagesList.length}/4 Attached</span>
           </label>
 
           <div className="flex gap-2">
@@ -302,7 +302,7 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
               ) : videoUrl.endsWith('.mp4') || videoUrl.includes('mp4') ? (
                 <video src={videoUrl} controls style={{ width: '100%', height: '180px', objectFit: 'contain', background: '#000000' }} />
               ) : (
-                <div style={{ padding: '0.5rem', fontSize: '0.75rem', color: '#166534', background: '#f0fdf4', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <div style={{ padding: '0.5rem', fontSize: '0.75rem', color: '#166534', background: 'var(--primary-50)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <Play size={13} /> Video link attached: {videoUrl}
                 </div>
               )}

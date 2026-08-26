@@ -88,11 +88,11 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
   };
 
   return (
-    <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem' }}>
+    <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '2rem' }}>
       <div className="flex justify-between items-center" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h3 style={{ fontSize: '1.5rem', color: '#062416' }}>Verified Farmer Ratings & Field Reviews</h3>
-          <p style={{ fontSize: '0.875rem', color: '#64748b' }}>
+          <h3 style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>Verified Farmer Ratings & Field Reviews</h3>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
             Authentic customer reviews with field photos and live machinery operational videos.
           </p>
         </div>
@@ -105,21 +105,21 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
 
       {/* Ratings Overview Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{
-        background: '#f8fafc',
+        background: 'var(--bg-surface-alt)',
         borderRadius: '12px',
         padding: '1.5rem',
-        border: '1px solid #e2e8f0',
+        border: '1px solid var(--border-color)',
         marginBottom: '2rem'
       }}>
         {/* Big Rating Summary */}
         <div className="flex flex-col items-center justify-center text-center">
-          <div style={{ fontSize: '3.5rem', fontWeight: 900, color: '#062416', lineHeight: 1 }}>
+          <div style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--text-main)', lineHeight: 1 }}>
             {Number(stats.averageRating).toFixed(1)}
           </div>
           <div style={{ margin: '0.5rem 0' }}>
             <StarRating rating={stats.averageRating} size={22} />
           </div>
-          <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
             Based on {stats.totalReviews} verified farmer reviews
           </div>
         </div>
@@ -131,7 +131,7 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
             const percent = stats.totalReviews > 0 ? Math.round((count / stats.totalReviews) * 100) : 0;
             return (
               <div key={star} className="flex items-center gap-3" style={{ fontSize: '0.825rem' }}>
-                <span style={{ width: '35px', fontWeight: 600, color: '#334155' }}>{star} ★</span>
+                <span style={{ width: '35px', fontWeight: 600, color: 'var(--text-main)' }}>{star} ★</span>
                 <div style={{ flex: 1, height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
                   <div style={{
                     width: `${percent}%`,
@@ -140,8 +140,8 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                     borderRadius: '4px'
                   }} />
                 </div>
-                <span style={{ width: '45px', textAlign: 'right', color: '#64748b', fontWeight: 600 }}>{percent}%</span>
-                <span style={{ width: '30px', color: '#94a3b8', fontSize: '0.75rem' }}>({count})</span>
+                <span style={{ width: '45px', textAlign: 'right', color: 'var(--text-muted)', fontWeight: 600 }}>{percent}%</span>
+                <span style={{ width: '30px', color: 'var(--text-light)', fontSize: '0.75rem' }}>({count})</span>
               </div>
             );
           })}
@@ -150,12 +150,12 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
 
       {/* Reviews List */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>Loading verified reviews...</div>
+        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>Loading verified reviews...</div>
       ) : reviews.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '2.5rem', background: '#f8fafc', borderRadius: '12px' }}>
+        <div style={{ textAlign: 'center', padding: '2.5rem', background: 'var(--bg-surface-alt)', borderRadius: '12px' }}>
           <ShieldCheck size={36} color="#166534" style={{ margin: '0 auto 0.5rem auto' }} />
-          <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.25rem' }}>No Field Reviews Yet</div>
-          <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
+          <div style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.25rem' }}>No Field Reviews Yet</div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
             Be the first farmer to share your field experience and video for {productName}!
           </p>
           <button onClick={handleOpenWriteModal} className="btn btn-primary btn-sm">
@@ -201,7 +201,7 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>
+                        <span style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '0.95rem' }}>
                           {rev.userName}
                         </span>
                         {isMine && (
@@ -211,7 +211,7 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                         )}
                       </div>
                       {rev.farmContext?.farmType && (
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                           🌾 {rev.farmContext.farmType} {rev.farmContext.acres ? `(${rev.farmContext.acres} Acres)` : ''}
                         </div>
                       )}
@@ -224,7 +224,7 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                         <ShieldCheck size={13} /> VERIFIED PURCHASE
                       </span>
                     )}
-                    <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>
                       {new Date(rev.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
 
@@ -235,7 +235,7 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                           type="button"
                           onClick={() => handleEditClick(rev)}
                           className="btn btn-secondary btn-sm"
-                          style={{ padding: '0.4rem', borderRadius: '8px', background: '#ffffff', border: '1px solid #cbd5e1' }}
+                          style={{ padding: '0.4rem', borderRadius: '8px', background: 'var(--bg-surface)', border: '1px solid #cbd5e1' }}
                           title="Edit your review"
                         >
                           <Edit size={14} color="#166534" />
@@ -257,11 +257,11 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
                 <div>
                   <StarRating rating={rev.rating} size={15} />
                   {rev.title && (
-                    <h4 style={{ fontSize: '1rem', color: '#0f172a', margin: '0.35rem 0 0.25rem 0', fontWeight: 800 }}>
+                    <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', margin: '0.35rem 0 0.25rem 0', fontWeight: 800 }}>
                       {rev.title}
                     </h4>
                   )}
-                  <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: 1.55 }}>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: 1.55 }}>
                     {rev.comment}
                   </p>
                 </div>

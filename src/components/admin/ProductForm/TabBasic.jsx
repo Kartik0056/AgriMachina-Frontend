@@ -10,7 +10,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
             type="text"
             required
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.name || ''}
             onChange={(e) => updateField('name', e.target.value)}
             placeholder="e.g. Power Weeder 7HP Petrol 4-Stroke (AV-708)"
@@ -23,7 +23,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
             type="text"
             required
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.brand || ''}
             onChange={(e) => updateField('brand', e.target.value)}
             placeholder="e.g. AgriPro Master"
@@ -39,7 +39,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.modelNumber || ''}
             onChange={(e) => updateField('modelNumber', e.target.value)}
             placeholder="e.g. AV-708"
@@ -52,7 +52,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
             type="text"
             required
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff', textTransform: 'uppercase' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff', textTransform: 'uppercase' }}
             value={formData.sku || ''}
             onChange={(e) => updateField('sku', e.target.value.toUpperCase())}
             placeholder="e.g. AV-708-4S"
@@ -64,7 +64,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.productType || 'Machinery'}
             onChange={(e) => updateField('productType', e.target.value)}
             placeholder="e.g. Power Weeder & Cultivator"
@@ -75,7 +75,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <label className="input-label" style={{ color: '#cbd5e1' }}>Primary Category *</label>
           <select
             className="select-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.category || ''}
             onChange={(e) => updateField('category', e.target.value)}
           >
@@ -91,7 +91,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.subcategory || ''}
             onChange={(e) => updateField('subcategory', e.target.value)}
             placeholder="e.g. Petrol Power Weeders"
@@ -103,7 +103,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.hsnCode || '8432'}
             onChange={(e) => updateField('hsnCode', e.target.value)}
             placeholder="e.g. 8432"
@@ -115,7 +115,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.countryOfOrigin || 'India'}
             onChange={(e) => updateField('countryOfOrigin', e.target.value)}
           />
@@ -127,7 +127,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
         <textarea
           className="textarea-field"
           rows="2"
-          style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+          style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
           value={formData.shortDescription || ''}
           onChange={(e) => updateField('shortDescription', e.target.value)}
           placeholder="Brief 1-2 sentence engineering overview for search and cards..."
@@ -139,7 +139,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
         <textarea
           className="textarea-field"
           rows="6"
-          style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+          style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
           value={formData.description || ''}
           onChange={(e) => updateField('description', e.target.value)}
           placeholder="Detailed engineering highlights, working principles, field benefits, HTML allowed (sanitized on server)..."

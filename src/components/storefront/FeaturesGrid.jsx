@@ -16,7 +16,7 @@ const FeaturesGrid = ({ features = [] }) => {
 
   return (
     <div>
-      <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: '#0f172a' }}>
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
         Key Engineering Features
       </h3>
 
@@ -25,8 +25,8 @@ const FeaturesGrid = ({ features = [] }) => {
           <div
             key={idx}
             style={{
-              background: '#ffffff',
-              border: '1px solid #e2e8f0',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-color)',
               borderRadius: '12px',
               padding: '1.25rem',
               display: 'flex',
@@ -35,7 +35,7 @@ const FeaturesGrid = ({ features = [] }) => {
             }}
           >
             <div style={{
-              background: '#f0fdf4',
+              background: 'var(--primary-50)',
               padding: '0.65rem',
               borderRadius: '10px',
               border: '1px solid #dcfce7',
@@ -45,11 +45,11 @@ const FeaturesGrid = ({ features = [] }) => {
             </div>
 
             <div>
-              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0f172a', marginBottom: '0.25rem' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-main)', marginBottom: '0.25rem' }}>
                 {feat.title}
               </div>
               {feat.description && (
-                <p style={{ fontSize: '0.85rem', color: '#64748b', lineHeight: 1.45 }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
                   {feat.description}
                 </p>
               )}

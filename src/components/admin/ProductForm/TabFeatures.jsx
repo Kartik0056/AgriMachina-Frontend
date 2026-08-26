@@ -25,12 +25,12 @@ const TabFeatures = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Add Feature Row */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
         <h4 style={{ fontSize: '0.95rem', color: '#ffffff', marginBottom: '0.75rem' }}>Add Product Feature Highlight</h4>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <select
             className="select-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
           >
@@ -40,7 +40,7 @@ const TabFeatures = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Feature Title (e.g. 208cc 4-Stroke Engine)"
@@ -49,7 +49,7 @@ const TabFeatures = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description (e.g. Uninterrupted 8+ hours field run)"
@@ -68,7 +68,7 @@ const TabFeatures = ({ formData, updateField }) => {
           <div
             key={idx}
             style={{
-              background: '#070d1a',
+              background: 'var(--admin-bg-sidebar)',
               border: '1px solid #1e2e4f',
               borderRadius: '10px',
               padding: '1rem',

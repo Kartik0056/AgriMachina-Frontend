@@ -36,9 +36,20 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useSync } from '../../context/SyncContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import Modal from '../../components/common/Modal';
 import { getYouTubeEmbedUrl } from '../../services/videoHelper';
+
+const decodeText = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+};
 
 const quickFarmerQuestions = [
   'Is this machine suitable for heavy black cotton / clay soil?',
@@ -49,6 +60,10 @@ const quickFarmerQuestions = [
 ];
 
 const UserSupportPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const openTicketParam = searchParams.get('ticket') || location.state?.openTicketId;
+
   const { user, isAuthenticated } = useAuth();
   const { addToast } = useToast();
   const { subscribe } = useSync();
@@ -84,6 +99,11 @@ const UserSupportPage = () => {
   const modalFileInputRef = useRef(null);
   const messagesScrollRef = useRef(null);
   const prevMessagesCountRef = useRef(0);
+  const activeTicketIdRef = useRef(null);
+  activeTicketIdRef.current = activeTicket?._id;
+
+  const isMinimizedRef = useRef(isMinimized);
+  isMinimizedRef.current = isMinimized;
 
   const scrollToBottomInner = () => {
     if (messagesScrollRef.current) {
@@ -103,12 +123,12 @@ const UserSupportPage = () => {
         const fetched = res.data.tickets || [];
         setTickets(fetched);
 
-        if (activeTicket) {
-          const updated = fetched.find(t => t._id === activeTicket._id);
+        if (activeTicketIdRef.current) {
+          const updated = fetched.find(t => t._id === activeTicketIdRef.current);
           if (updated) {
             const newCount = updated.messages?.length || 0;
-            const oldCount = activeTicket.messages?.length || 0;
-            if (newCount !== oldCount || updated.status !== activeTicket.status) {
+            const oldCount = activeTicket?.messages?.length || 0;
+            if (newCount !== oldCount || updated.status !== activeTicket?.status) {
               setActiveTicket(updated);
             }
           }
@@ -129,29 +149,32 @@ const UserSupportPage = () => {
   useEffect(() => {
     const unsubscribe = subscribe((event) => {
       if (event.type === 'TICKET_UPDATED' || event.type === 'NEW_SUPPORT_QUERY') {
+        const payload = event.payload || {};
+        // If user is currently looking at this active ticket and an admin reply arrives, auto-mark as read
+        if (activeTicketIdRef.current === payload.ticketId && !isMinimizedRef.current && payload.type === 'admin_reply') {
+          api.put(`/support/tickets/${payload.ticketId}/read`).catch(() => {});
+        }
+        if (payload.type === 'ticket_read_by_user') {
+          setTickets(prev => prev.map(t => t._id === payload.ticketId ? { ...t, unreadByUser: 0 } : t));
+        }
         fetchTickets(false);
       }
     });
     return unsubscribe;
   }, [subscribe]);
 
-  // Scroll popup when new message arrives
-  useEffect(() => {
-    if (!activeTicket?.messages) return;
-    const currentCount = activeTicket.messages.length;
-    if (currentCount > prevMessagesCountRef.current) {
-      setTimeout(scrollToBottomInner, 50);
-      prevMessagesCountRef.current = currentCount;
-    }
-  }, [activeTicket?.messages]);
-
-  // Open Chat Popup
+  // Open Chat Popup & Instantly Clear Unread Count
   const handleOpenChatPopup = async (t) => {
     try {
       setIsMinimized(false);
       prevMessagesCountRef.current = 0;
+      activeTicketIdRef.current = t._id;
+      const unreadCount = t.unreadByUser || 0;
+
       // Mark as read locally immediately so the NEW badge vanishes on click
       setTickets(prev => prev.map(item => item._id === t._id ? { ...item, unreadByUser: 0 } : item));
+      window.dispatchEvent(new CustomEvent('user_ticket_read', { detail: { ticketId: t._id, count: unreadCount } }));
+
       const res = await api.get(`/support/tickets/${t._id}`);
       if (res.data.success) {
         setActiveTicket(res.data.ticket);
@@ -162,6 +185,33 @@ const UserSupportPage = () => {
       setActiveTicket(t);
     }
   };
+
+  // Auto-open ticket if specified in URL query param ?ticket=... or location.state
+  useEffect(() => {
+    if (openTicketParam && tickets.length > 0) {
+      const found = tickets.find(t => t._id === openTicketParam || t.ticketNumber === openTicketParam);
+      if (found) {
+        handleOpenChatPopup(found);
+        if (searchParams.has('ticket')) {
+          setSearchParams(prev => {
+            const next = new URLSearchParams(prev);
+            next.delete('ticket');
+            return next;
+          }, { replace: true });
+        }
+      }
+    }
+  }, [openTicketParam, tickets, searchParams, setSearchParams]);
+
+  // Scroll popup when new message arrives
+  useEffect(() => {
+    if (!activeTicket?.messages) return;
+    const currentCount = activeTicket.messages.length;
+    if (currentCount > prevMessagesCountRef.current) {
+      setTimeout(scrollToBottomInner, 50);
+      prevMessagesCountRef.current = currentCount;
+    }
+  }, [activeTicket?.messages]);
 
 const formatFileSize = (bytes) => {
   if (!bytes || bytes === 0) return '';
@@ -342,7 +392,7 @@ const formatFileSize = (bytes) => {
               <h1 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.75rem)', fontWeight: 900, color: 'var(--text-main)', margin: 0, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
                 My Support Inquiries & Advisory
               </h1>
-              <span className="badge" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', fontWeight: 800, fontSize: '0.7rem', padding: '0.15rem 0.5rem', borderRadius: '999px' }}>
+              <span className="badge" style={{ background: '#dcfce7', color: '#166534', border: '1px solid var(--primary-400, #86efac)', fontWeight: 800, fontSize: '0.7rem', padding: '0.15rem 0.5rem', borderRadius: '999px' }}>
                 🟢 24x7 Active
               </span>
             </div>
@@ -388,7 +438,7 @@ const formatFileSize = (bytes) => {
       >
         {/* Search Bar */}
         <div className="flex justify-between items-center flex-wrap gap-3">
-          <div className="relative" style={{ flex: 1, minWidth: '260px', maxWidth: '420px' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '260px', maxWidth: '420px' }}>
             <input
               type="text"
               placeholder="Search your conversations or machinery..."
@@ -471,7 +521,7 @@ const formatFileSize = (bytes) => {
                         zIndex: 10
                       }}
                     >
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ffffff', display: 'inline-block' }} />
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--bg-surface)', display: 'inline-block' }} />
                       <span>{t.unreadByUser} NEW</span>
                     </div>
                   )}
@@ -515,8 +565,20 @@ const formatFileSize = (bytes) => {
 
                     {/* Machinery tag if present */}
                     {t.productTitle && (
-                      <div style={{ fontSize: '0.75rem', color: '#166534', background: '#dcfce7', border: '1px solid #86efac', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 700 }}>
+                      <div style={{ fontSize: '0.75rem', color: '#166534', background: '#dcfce7', border: '1px solid var(--primary-400, #86efac)', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 700 }}>
                         🚜 {t.productTitle}
+                      </div>
+                    )}
+
+                    {/* Subject */}
+                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', margin: '0.4rem 0 0.35rem 0' }}>
+                      {decodeText(t.subject)}
+                    </div>
+
+                    {/* Machinery tag if present */}
+                    {t.productTitle && (
+                      <div style={{ fontSize: '0.75rem', color: '#166534', background: 'var(--primary-50)', border: '1px solid #bbf7d0', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        🚜 {decodeText(t.productTitle)} {t.productSku ? `(SKU: ${t.productSku})` : ''}
                       </div>
                     )}
 
@@ -540,18 +602,22 @@ const formatFileSize = (bytes) => {
                     <button
                       type="button"
                       onClick={() => handleOpenChatPopup(t)}
-                      className="btn btn-primary btn-sm"
                       style={{
-                        background: '#166534',
-                        borderColor: '#166534',
+                        background: 'linear-gradient(135deg, #166534, #15803d)',
+                        border: '1px solid #22c55e',
                         color: '#ffffff',
                         fontWeight: 800,
                         fontSize: '0.775rem',
                         padding: '0.35rem 0.95rem',
-                        display: 'flex',
+                        borderRadius: '8px',
+                        display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '0.35rem'
+                        gap: '0.35rem',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(22, 101, 52, 0.3)',
+                        transition: 'all 0.2s ease'
                       }}
+                      className="hover:scale-105 hover:shadow-[0_0_12px_rgba(34,197,94,0.5)] active:scale-95"
                     >
                       <MessageSquare size={13} />
                       <span>Open Chat</span>
@@ -573,28 +639,29 @@ const formatFileSize = (bytes) => {
           className="floating-chat-popup-widget custom-chat-scrollbar"
           style={{
             position: 'fixed',
-            bottom: isMinimized ? '0' : '20px',
-            right: isMinimized ? '20px' : isMaximized ? '20px' : '25px',
-            left: isMaximized ? '20px' : 'auto',
-            top: isMaximized ? '20px' : 'auto',
-            width: isMaximized ? 'calc(100vw - 40px)' : isMinimized ? '340px' : '490px',
-            height: isMaximized ? 'calc(100vh - 40px)' : isMinimized ? '48px' : '590px',
-            maxHeight: isMaximized ? 'none' : '85vh',
+            bottom: isMinimized ? '0' : isMaximized ? '0' : '20px',
+            right: isMinimized ? '20px' : isMaximized ? '0' : '25px',
+            left: isMaximized ? '0' : 'auto',
+            top: isMaximized ? '0' : 'auto',
+            width: isMaximized ? '100vw' : isMinimized ? '340px' : '460px',
+            height: isMaximized ? '100vh' : isMinimized ? '46px' : '590px',
+            maxHeight: isMaximized ? '100vh' : '88vh',
+            maxWidth: isMaximized ? '100vw' : 'calc(100vw - 32px)',
             background: 'var(--bg-surface)',
-            border: '2px solid #16a34a',
-            borderRadius: isMinimized ? '14px 14px 0 0' : '18px',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.35), 0 0 20px rgba(22, 163, 74, 0.2)',
+            border: isMaximized ? 'none' : '2px solid #16a34a',
+            borderRadius: isMaximized ? '0px' : isMinimized ? '14px 14px 0 0' : '18px',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 25px rgba(22, 163, 74, 0.25)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            zIndex: 99999,
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+            zIndex: 999999,
+            transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Pop-up Top Header (Always Visible) */}
           <div
             style={{
-              padding: '0.85rem 1.25rem',
+              padding: '0.65rem 1rem',
               background: 'linear-gradient(135deg, #14532d, #064e3b)',
               color: '#ffffff',
               display: 'flex',
@@ -606,70 +673,123 @@ const formatFileSize = (bytes) => {
             }}
             onClick={isMinimized ? () => setIsMinimized(false) : undefined}
           >
-            <div className="flex items-center gap-3" style={{ flex: 1, minWidth: 0 }}>
+            <div className="flex items-center gap-2.5" style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
-                  background: '#ffffff',
+                  background: 'var(--bg-surface)',
                   color: '#166534',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 900,
-                  fontSize: '1rem',
+                  fontSize: '0.85rem',
                   flexShrink: 0,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                  marginRight: '0.25rem'
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.25)'
                 }}
               >
                 🛠️
               </div>
               <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   AgriMachina Specialist Desk
                 </div>
                 {!isMinimized && (
-                  <div style={{ fontSize: '0.725rem', color: '#dcfce7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '0.15rem' }}>
-                    #{activeTicket.ticketNumber || activeTicket._id.slice(-6).toUpperCase()} • {activeTicket.subject}
+                  <div style={{ fontSize: '0.7rem', color: '#dcfce7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    #{activeTicket.ticketNumber || activeTicket._id.slice(-6).toUpperCase()} • {decodeText(activeTicket.subject)}
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Window Controls (Minimize, Maximize, Close) */}
-            <div className="flex items-center gap-2" style={{ flexShrink: 0, marginLeft: '0.75rem' }} onClick={(e) => e.stopPropagation()}>
+            {/* Window Controls Dock (Compact, Refined, Spaced Glowing Buttons) */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                marginLeft: '0.75rem',
+                padding: '0.15rem 0.35rem',
+                background: 'rgba(0, 0, 0, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                borderRadius: '8px',
+                backdropFilter: 'blur(8px)',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                flexShrink: 0
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Minimize Button */}
               <button
                 type="button"
                 onClick={() => setIsMinimized(!isMinimized)}
-                style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
-                className="hover:bg-white/30"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(180, 83, 9, 0.45))',
+                  border: '1px solid rgba(245, 158, 11, 0.65)',
+                  borderRadius: '6px',
+                  color: '#fef08a',
+                  width: '23px',
+                  height: '23px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+                className="hover:scale-110 hover:shadow-[0_0_10px_rgba(245,158,11,0.7)] active:scale-95"
                 title={isMinimized ? 'Restore Window' : 'Minimize Window'}
               >
-                {isMinimized ? <ChevronUp size={16} /> : <Minus size={16} strokeWidth={2.5} />}
+                {isMinimized ? <ChevronUp size={11} strokeWidth={2.8} /> : <Minus size={11} strokeWidth={3} />}
               </button>
 
+              {/* Maximize / Fullscreen Button */}
               {!isMinimized && (
                 <button
                   type="button"
                   onClick={() => setIsMaximized(!isMaximized)}
-                  style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
-                  className="hover:bg-white/30"
-                  title={isMaximized ? 'Restore Size' : 'Maximize Window'}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(2, 132, 199, 0.45))',
+                    border: '1px solid rgba(56, 189, 248, 0.65)',
+                    borderRadius: '6px',
+                    color: '#bae6fd',
+                    width: '23px',
+                    height: '23px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.18s ease'
+                  }}
+                  className="hover:scale-110 hover:shadow-[0_0_10px_rgba(56,189,248,0.7)] active:scale-95"
+                  title={isMaximized ? 'Exit Full Screen' : 'Full Screen'}
                 >
-                  <Maximize2 size={14} />
+                  {isMaximized ? <Minimize2 size={11} strokeWidth={2.5} /> : <Maximize2 size={11} strokeWidth={2.5} />}
                 </button>
               )}
 
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setActiveTicket(null)}
-                style={{ background: 'rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.6)', borderRadius: '8px', color: '#ffffff', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.15s ease' }}
-                className="hover:bg-red-600"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(185, 28, 28, 0.55))',
+                  border: '1px solid rgba(239, 68, 68, 0.75)',
+                  borderRadius: '6px',
+                  color: '#fecaca',
+                  width: '23px',
+                  height: '23px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+                className="hover:scale-110 hover:bg-red-600 hover:text-white hover:shadow-[0_0_12px_rgba(239,68,68,0.9)] active:scale-95"
                 title="Close Chat Pop-up"
               >
-                <X size={15} />
+                <X size={11} strokeWidth={2.8} />
               </button>
             </div>
           </div>
@@ -849,7 +969,18 @@ const formatFileSize = (bytes) => {
               </div>
 
               {/* Suggestions Quick Bar */}
-              <div style={{ padding: '0.45rem 1rem', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '0.45rem', overflowX: 'auto', alignItems: 'center' }}>
+              <div
+                className="hide-scrollbar"
+                style={{
+                  padding: '0.4rem 0.85rem',
+                  background: 'var(--bg-surface-alt)',
+                  borderTop: '1px solid var(--border-color)',
+                  display: 'flex',
+                  gap: '0.4rem',
+                  overflowX: 'auto',
+                  alignItems: 'center'
+                }}
+              >
                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.25rem', marginRight: '0.25rem' }}>
                   <Sparkles size={12} color="#166534" />
                   <span>Suggestions:</span>
@@ -861,7 +992,7 @@ const formatFileSize = (bytes) => {
                     onClick={() => setReplyText(prev => (prev ? `${prev} ${q}` : q))}
                     style={{
                       fontSize: '0.7rem',
-                      background: 'var(--bg-surface-alt)',
+                      background: 'var(--bg-surface)',
                       border: '1px solid var(--border-color)',
                       borderRadius: '14px',
                       padding: '0.25rem 0.65rem',
@@ -871,7 +1002,7 @@ const formatFileSize = (bytes) => {
                       fontWeight: 600,
                       transition: 'all 0.15s ease'
                     }}
-                    className="hover:border-green-600"
+                    className="hover:border-green-600 hover:scale-105"
                   >
                     {q.slice(0, 26)}...
                   </button>
@@ -900,10 +1031,24 @@ const formatFileSize = (bytes) => {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingFiles}
-                    className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.35rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      padding: '0.35rem 0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      background: 'linear-gradient(135deg, #166534, #15803d)',
+                      color: '#ffffff',
+                      border: '1px solid #22c55e',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="hover:scale-105"
                   >
-                    <UploadCloud size={15} color="#166534" />
+                    <UploadCloud size={15} color="#ffffff" />
                     <span>{uploadingFiles ? 'Uploading...' : '📎 Choose Device File (Max 5MB)'}</span>
                   </button>
 
@@ -916,7 +1061,7 @@ const formatFileSize = (bytes) => {
                       onChange={(e) => setPhotoInput(e.target.value)}
                       style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', border: '1px solid var(--border-color)', borderRadius: '8px', flex: 1 }}
                     />
-                    <button type="button" onClick={handleAddPhotoUrl} className="btn btn-secondary btn-sm" style={{ padding: '0.3rem 0.6rem', fontSize: '0.7rem' }}>
+                    <button type="button" onClick={handleAddPhotoUrl} style={{ padding: '0.3rem 0.6rem', fontSize: '0.7rem', background: 'var(--primary-50)', border: '1px solid var(--primary-400, #86efac)', borderRadius: '6px', color: '#166534', fontWeight: 700, cursor: 'pointer' }}>
                       Add
                     </button>
                   </div>
@@ -934,12 +1079,12 @@ const formatFileSize = (bytes) => {
                 </div>
               )}
 
-              {/* Compose Bar */}
-              <form onSubmit={handleSendMessage} style={{ padding: '0.75rem 1rem', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)' }}>
+              {/* Compose Bar - Sleek Modern Capsule */}
+              <form onSubmit={handleSendMessage} style={{ padding: '0.55rem 0.85rem', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-color)' }}>
                 {attachmentsList.length > 0 && (
                   <div className="flex gap-2" style={{ marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                     {attachmentsList.map((att, idx) => (
-                      <span key={idx} style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', padding: '0.2rem 0.6rem', fontSize: '0.725rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
+                      <span key={idx} style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-400, #86efac)', borderRadius: '8px', padding: '0.2rem 0.6rem', fontSize: '0.725rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
                         <FileText size={13} color="#059669" />
                         <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.name}</span>
                         {att.size > 0 && <span style={{ fontSize: '0.68rem', color: '#15803d' }}>({formatFileSize(att.size)})</span>}
@@ -949,26 +1094,39 @@ const formatFileSize = (bytes) => {
                   </div>
                 )}
 
-                <div className="flex items-center gap-2.5">
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    background: 'var(--bg-surface-alt)',
+                    border: '1.5px solid var(--border-color)',
+                    borderRadius: '24px',
+                    padding: '0.25rem 0.45rem 0.25rem 0.65rem',
+                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)'
+                  }}
+                >
                   <button
                     type="button"
                     onClick={() => setShowAttachmentDrawer(!showAttachmentDrawer)}
                     style={{
-                      background: showAttachmentDrawer ? '#dcfce7' : 'var(--bg-surface-alt)',
-                      border: '1px solid var(--border-color)',
+                      background: showAttachmentDrawer ? 'rgba(34, 197, 94, 0.2)' : 'transparent',
+                      border: 'none',
                       borderRadius: '50%',
-                      width: '38px',
-                      height: '38px',
+                      width: '28px',
+                      height: '28px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      color: '#166534',
-                      flexShrink: 0
+                      color: showAttachmentDrawer ? '#15803d' : 'var(--text-muted)',
+                      flexShrink: 0,
+                      transition: 'all 0.15s ease'
                     }}
+                    className="hover:text-green-600 hover:scale-110"
                     title="Attach File or Video Link"
                   >
-                    <Paperclip size={17} />
+                    <Paperclip size={15} />
                   </button>
 
                   <input
@@ -978,35 +1136,38 @@ const formatFileSize = (bytes) => {
                     onChange={(e) => setReplyText(e.target.value)}
                     style={{
                       flex: 1,
-                      fontSize: '0.875rem',
-                      padding: '0.65rem 1rem',
-                      background: 'var(--bg-surface-alt)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: '24px',
+                      fontSize: '0.825rem',
+                      background: 'transparent',
+                      border: 'none',
                       outline: 'none',
-                      color: 'var(--text-main)'
+                      color: 'var(--text-main)',
+                      padding: '0.25rem 0'
                     }}
                   />
 
                   <button
                     type="submit"
-                    disabled={sending || uploadingFiles}
+                    disabled={sending || uploadingFiles || (!replyText.trim() && attachmentsList.length === 0)}
                     style={{
-                      background: '#166534',
+                      background: 'linear-gradient(135deg, #16a34a, #15803d)',
                       border: 'none',
                       color: '#ffffff',
                       borderRadius: '50%',
-                      width: '38px',
-                      height: '38px',
+                      width: '32px',
+                      height: '32px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      flexShrink: 0
+                      flexShrink: 0,
+                      boxShadow: '0 2px 8px rgba(22, 163, 74, 0.35)',
+                      opacity: (!replyText.trim() && attachmentsList.length === 0) ? 0.5 : 1,
+                      transition: 'all 0.18s ease'
                     }}
+                    className="hover:scale-110 hover:shadow-[0_0_12px_rgba(22,163,74,0.6)] active:scale-95"
                     title="Send Message"
                   >
-                    <Send size={16} />
+                    <Send size={14} />
                   </button>
                 </div>
               </form>
@@ -1084,7 +1245,7 @@ const formatFileSize = (bytes) => {
             {newModalFiles.length > 0 && (
               <div className="flex gap-1.5" style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
                 {newModalFiles.map((att, idx) => (
-                  <span key={idx} style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '4px', padding: '0.15rem 0.45rem', fontSize: '0.7rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span key={idx} style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-400, #86efac)', borderRadius: '4px', padding: '0.15rem 0.45rem', fontSize: '0.7rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                     {att.name}
                     <button type="button" onClick={() => handleRemoveAttachment(idx, true)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626' }}>✕</button>
                   </span>

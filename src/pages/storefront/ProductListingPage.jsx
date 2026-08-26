@@ -95,17 +95,17 @@ const ProductListingPage = () => {
       {/* Top Header */}
       <div className="flex justify-between items-center" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.85rem', color: '#062416' }}>
+          <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)' }}>
             {selectedCategory ? `${selectedCategory}` : selectedIdealFor ? `${selectedIdealFor} Machinery` : 'Agricultural Machinery Catalog'}
           </h1>
-          <p style={{ fontSize: '0.875rem', color: '#64748b' }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
             Showing <strong>{total}</strong> verified farm machinery models in stock
           </p>
         </div>
 
         {/* Sort selector */}
         <div className="flex items-center gap-2">
-          <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>Sort by:</span>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Sort by:</span>
           <select
             value={sortBy}
             onChange={(e) => updateFilter('sortBy', e.target.value)}
@@ -128,9 +128,9 @@ const ProductListingPage = () => {
           style={{
             width: '280px',
             flexShrink: 0,
-            background: '#ffffff',
+            background: 'var(--bg-surface)',
             borderRadius: '16px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid var(--border-color)',
             padding: '1.5rem',
             position: 'sticky',
             top: '85px',
@@ -140,8 +140,8 @@ const ProductListingPage = () => {
             boxShadow: 'var(--shadow-sm)'
           }}
         >
-          <div className="flex justify-between items-center" style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
-            <h3 style={{ fontSize: '1.1rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <div className="flex justify-between items-center" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <Filter size={18} color="#166534" />
               <span>Filter Equipment</span>
             </h3>
@@ -246,15 +246,15 @@ const ProductListingPage = () => {
         {/* Products Grid Column */}
         <div style={{ flex: 1, minWidth: '300px' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
+            <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
               <RefreshCw className="animate-spin" size={32} color="#166534" style={{ margin: '0 auto 1rem auto' }} />
               <div>Loading agricultural machinery catalog...</div>
             </div>
           ) : products.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '4rem', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+            <div style={{ textAlign: 'center', padding: '4rem', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
               <Search size={40} color="#94a3b8" style={{ margin: '0 auto 1rem auto' }} />
-              <h3 style={{ fontSize: '1.25rem', color: '#0f172a', marginBottom: '0.5rem' }}>No Farm Machinery Matches Your Filters</h3>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>No Farm Machinery Matches Your Filters</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                 Try adjusting your category selection, search keyword, or clearing price filters.
               </p>
               <button onClick={clearAllFilters} className="btn btn-primary btn-sm">

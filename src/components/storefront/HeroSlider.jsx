@@ -261,7 +261,8 @@ const HeroSlider = () => {
   return (
     <div
       ref={sliderContainerRef}
-      style={{ position: 'relative', width: '100%', overflow: 'hidden', backgroundColor: '#062416' }}
+      className="hero-slider-section hero-banner"
+      style={{ position: 'relative', width: '100%', overflow: 'hidden', backgroundColor: '#062416', padding: 0 }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -272,7 +273,7 @@ const HeroSlider = () => {
           minHeight: '650px',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: '#062416',
+          backgroundcolor: 'var(--text-main)',
           overflow: 'hidden'
         }}
       >
@@ -491,7 +492,7 @@ const HeroSlider = () => {
                       {formatINR(slide.price)}
                     </span>
                     {slide.mrp > slide.price && (
-                      <span style={{ fontSize: '1.05rem', color: '#94a3b8', textDecoration: 'line-through' }}>
+                      <span style={{ fontSize: '1.05rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
                         {formatINR(slide.mrp)}
                       </span>
                     )}
@@ -531,7 +532,7 @@ const HeroSlider = () => {
                   type="button"
                   onClick={() => handleOpenEmi(slide)}
                   className="btn btn-secondary btn-lg gsap-hero-btn"
-                  style={{ background: 'rgba(255, 255, 255, 0.95)', color: '#062416', fontWeight: 700 }}
+                  style={{ background: 'rgba(255, 255, 255, 0.95)', color: 'var(--text-main)', fontWeight: 700 }}
                 >
                   <CreditCard size={18} color="#166534" />
                   <span>{t('view_emi_plans_btn', 'View Bank EMI Plans')}</span>
@@ -660,7 +661,7 @@ const HeroSlider = () => {
                   <img
                     src={sImg}
                     alt=""
-                    style={{ width: '38px', height: '38px', objectFit: 'contain', background: '#ffffff', borderRadius: '6px', padding: '2px' }}
+                    style={{ width: '38px', height: '38px', objectFit: 'contain', background: 'var(--bg-surface)', borderRadius: '6px', padding: '2px' }}
                   />
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{ fontSize: '0.75rem', fontWeight: 800, color: isActive ? '#86efac' : '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

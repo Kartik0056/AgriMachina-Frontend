@@ -7,7 +7,10 @@ import Footer from './components/common/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
 import FarmingCursorParticles from './components/common/FarmingCursorParticles';
 import KisanAIChatbot from './components/common/KisanAIChatbot';
+import WelcomeAuthModal from './components/storefront/WelcomeAuthModal';
+import CookieConsentBanner from './components/storefront/CookieConsentBanner';
 import HomePage from './pages/storefront/HomePage';
+
 import ProductListingPage from './pages/storefront/ProductListingPage';
 import ProductDetailPage from './pages/storefront/ProductDetailPage';
 import CartPage from './pages/storefront/CartPage';
@@ -120,9 +123,16 @@ function App() {
       {/* Free Intelligent Multilingual Agricultural Chatbot */}
       {!isAdminRoute && <KisanAIChatbot />}
 
+      {/* Guest Farmer Welcome Login / Register Popup on Initial Site Visit */}
+      {!isAdminRoute && <WelcomeAuthModal />}
+
+      {/* Modern Cookie & Privacy Consent Banner */}
+      {!isAdminRoute && <CookieConsentBanner />}
+
       {!isAdminRoute && <Footer />}
     </div>
   );
 }
 
 export default App;
+

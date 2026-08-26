@@ -26,7 +26,7 @@ const TabWhatsIncluded = ({ formData, updateField }) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
+      <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
         <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 600 }}>
           📦 Click to Add Standard Package Inclusions:
         </div>
@@ -37,7 +37,7 @@ const TabWhatsIncluded = ({ formData, updateField }) => {
               type="button"
               onClick={() => updateField('whatsIncluded', [...whatsIncluded, p])}
               className="btn btn-secondary btn-sm"
-              style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#cbd5e1', fontSize: '0.75rem' }}
+              style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#cbd5e1', fontSize: '0.75rem' }}
             >
               + {p}
             </button>
@@ -45,13 +45,13 @@ const TabWhatsIncluded = ({ formData, updateField }) => {
         </div>
       </div>
 
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
         <h4 style={{ fontSize: '0.95rem', color: '#ffffff', marginBottom: '0.75rem' }}>Add In-The-Box Accessory</h4>
         <div className="flex gap-2" style={{ maxWidth: '500px' }}>
           <input
             type="text"
             className="input-field"
-            style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
             placeholder="e.g. Safety Goggles & Earplugs"
@@ -68,7 +68,7 @@ const TabWhatsIncluded = ({ formData, updateField }) => {
           <div
             key={idx}
             style={{
-              background: '#070d1a',
+              background: 'var(--admin-bg-sidebar)',
               border: '1px solid #1e2e4f',
               borderRadius: '8px',
               padding: '0.75rem 1rem',

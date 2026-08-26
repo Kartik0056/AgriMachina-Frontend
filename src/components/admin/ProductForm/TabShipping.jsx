@@ -22,7 +22,7 @@ const TabShipping = ({ formData, updateField }) => {
           <input
             type="text"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={shipping.estimatedDeliveryDays || '4 - 7 Business Days'}
             onChange={(e) => updateShipping('estimatedDeliveryDays', e.target.value)}
           />
@@ -33,7 +33,7 @@ const TabShipping = ({ formData, updateField }) => {
           <input
             type="number"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={shipping.shippingCharge ?? 0}
             onChange={(e) => updateShipping('shippingCharge', Number(e.target.value))}
           />
@@ -44,14 +44,14 @@ const TabShipping = ({ formData, updateField }) => {
           <input
             type="number"
             className="input-field"
-            style={{ background: '#0b1324', borderColor: '#1e2e4f', color: '#ffffff' }}
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={shipping.freeShippingThreshold ?? 4999}
             onChange={(e) => updateShipping('freeShippingThreshold', Number(e.target.value))}
           />
         </div>
       </div>
 
-      <div className="flex flex-col gap-3" style={{ background: '#070d1a', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
+      <div className="flex flex-col gap-3" style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem' }}>
         <label className="flex items-center gap-2" style={{ cursor: 'pointer', color: '#ffffff', fontSize: '0.9rem' }}>
           <input
             type="checkbox"

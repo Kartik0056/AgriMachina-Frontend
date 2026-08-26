@@ -62,7 +62,7 @@ const TabRecommendations = ({ formData, updateField }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Manual Recommendations Override */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Sparkles size={18} color="#34d399" />
           <span>Manual "You May Also Like" Product Overrides</span>
@@ -89,7 +89,7 @@ const TabRecommendations = ({ formData, updateField }) => {
         {/* Select Dropdown to Add */}
         <select
           className="select-field"
-          style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff', maxWidth: '400px' }}
+          style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', maxWidth: '400px' }}
           onChange={(e) => {
             if (e.target.value) addManualRec(e.target.value);
             e.target.value = '';
@@ -103,7 +103,7 @@ const TabRecommendations = ({ formData, updateField }) => {
       </div>
 
       {/* Frequently Bought Together Bundle Configuration */}
-      <div style={{ background: '#0b1324', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
+      <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '0.5rem' }}>
           Frequently Bought Together (Combo Bundle Accessories)
         </h4>
@@ -127,7 +127,7 @@ const TabRecommendations = ({ formData, updateField }) => {
 
         <select
           className="select-field"
-          style={{ background: '#070d1a', borderColor: '#1e2e4f', color: '#ffffff', maxWidth: '400px' }}
+          style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', maxWidth: '400px' }}
           onChange={(e) => {
             if (e.target.value) addBoughtTogether(e.target.value);
             e.target.value = '';
