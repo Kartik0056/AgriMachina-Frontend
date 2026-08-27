@@ -60,30 +60,119 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
         </div>
 
         <div className="input-group">
-          <label className="input-label" style={{ color: '#cbd5e1' }}>Product Machinery Type</label>
-          <input
-            type="text"
-            className="input-field"
-            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
-            value={formData.productType || 'Machinery'}
-            onChange={(e) => updateField('productType', e.target.value)}
-            placeholder="e.g. Power Weeder & Cultivator"
-          />
-        </div>
-
-        <div className="input-group">
           <label className="input-label" style={{ color: '#cbd5e1' }}>Primary Category *</label>
           <select
             className="select-field"
             style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.category || ''}
-            onChange={(e) => updateField('category', e.target.value)}
+            onChange={(e) => {
+              const catName = e.target.value;
+              updateField('category', catName);
+              const foundCat = categories.find(c => c.name === catName);
+              if (foundCat) {
+                if (foundCat.categoryType && (!formData.productType || formData.productType === 'Machinery' || formData.productType === 'General')) {
+                  updateField('productType', foundCat.categoryType);
+                }
+                if (foundCat.unitType === 'weight' && (!formData.unit || formData.unit === 'unit' || formData.unit === 'pcs')) {
+                  updateField('unit', 'gm');
+                } else if (foundCat.unitType === 'volume' && (!formData.unit || formData.unit === 'unit' || formData.unit === 'pcs')) {
+                  updateField('unit', 'ltr');
+                } else if (foundCat.unitType === 'power' && (!formData.unit || formData.unit === 'unit' || formData.unit === 'pcs')) {
+                  updateField('unit', 'HP');
+                }
+              }
+            }}
           >
             <option value="">-- Select Category --</option>
             {categories.map((c) => (
               <option key={c._id} value={c.name}>{c.name}</option>
             ))}
           </select>
+        </div>
+
+        <div className="input-group">
+          <label className="input-label" style={{ color: '#cbd5e1' }}>Product Industry / Category Type</label>
+          <select
+            className="select-field"
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
+            value={formData.productType || 'General'}
+            onChange={(e) => updateField('productType', e.target.value)}
+          >
+            <option value="Agricultural Machinery">🌾 Agricultural Machinery & Implements</option>
+            <option value="Spices & Groceries">🌶️ Spices, Masala & Grocery Products</option>
+            <option value="Electronics & Appliances">⚡ Electronics, Motors & Gadgets</option>
+            <option value="Fashion & Apparel">👕 Fashion & Apparel</option>
+            <option value="Hardware & Tools">🛠️ Hardware & Tools</option>
+            <option value="General FMCG">📦 General FMCG & Retail</option>
+            <option value="General">🏷️ General Product</option>
+          </select>
+        </div>
+
+        {/* Measurement Unit & Net Quantity */}
+        <div className="input-group">
+          <label className="input-label" style={{ color: '#cbd5e1' }}>Measurement Unit</label>
+          <select
+            className="select-field"
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
+            value={formData.unit || 'pcs'}
+            onChange={(e) => {
+              const u = e.target.value;
+              updateField('unit', u);
+              if (formData.netQuantity) {
+                updateField('unitDisplay', `${formData.netQuantity} ${u}`);
+              }
+            }}
+          >
+            <optgroup label="Weight (Spices, Grains, Seeds)">
+              <option value="gm">gm (Grams)</option>
+              <option value="kg">kg (Kilograms)</option>
+              <option value="mg">mg (Milligrams)</option>
+              <option value="quintal">quintal</option>
+            </optgroup>
+            <optgroup label="Volume (Oils, Sprays, Liquids)">
+              <option value="ml">ml (Milliliters)</option>
+              <option value="ltr">ltr (Liters)</option>
+            </optgroup>
+            <optgroup label="Count / Packaging">
+              <option value="pcs">pcs (Pieces)</option>
+              <option value="pack">pack (Pack)</option>
+              <option value="box">box (Box)</option>
+              <option value="bottle">bottle</option>
+              <option value="can">can</option>
+              <option value="set">set (Set)</option>
+              <option value="unit">unit</option>
+            </optgroup>
+            <optgroup label="Power & Dimensions">
+              <option value="HP">HP (Horsepower)</option>
+              <option value="W">Watt</option>
+              <option value="kW">kW (Kilowatt)</option>
+              <option value="cc">cc (Engine Displacement)</option>
+              <option value="meter">meter</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div className="input-group">
+          <div className="flex justify-between items-center" style={{ marginBottom: '0.25rem' }}>
+            <label className="input-label" style={{ color: '#cbd5e1', margin: 0 }}>Net Quantity / Size</label>
+            {formData.netQuantity && formData.unit && (
+              <span style={{ fontSize: '0.75rem', color: 'var(--admin-accent, #22c55e)', fontWeight: 700 }}>
+                Display: {formData.netQuantity} {formData.unit}
+              </span>
+            )}
+          </div>
+          <input
+            type="text"
+            className="input-field"
+            style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
+            value={formData.netQuantity || ''}
+            onChange={(e) => {
+              const q = e.target.value;
+              updateField('netQuantity', q);
+              updateField('unitDisplay', q && formData.unit ? `${q} ${formData.unit}` : q);
+            }}
+            placeholder="e.g. 500 (for 500gm), 1 (for 1kg or 1Ltr), 7 (for 7HP)"
+          />
         </div>
 
         <div className="input-group">

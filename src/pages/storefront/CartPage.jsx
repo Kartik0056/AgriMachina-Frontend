@@ -105,17 +105,23 @@ const CartPage = () => {
   return (
     <div className="container" style={{ padding: '2.5rem 1.25rem 4rem 1.25rem' }}>
       <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>
-        Shopping Cart ({cartItems.length} Machinery {cartItems.length === 1 ? 'Item' : 'Items'})
+        Shopping Cart ({cartItems.length} {cartItems.length === 1 ? 'Product' : 'Products'})
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Cart Items List */}
         <div className="md:col-span-2 flex flex-col gap-4">
-          {cartItems.map(({ product, quantity }) => {
-            const itemTotal = product.sellingPrice * quantity;
+          {cartItems.map((cartEntry) => {
+            const { product, quantity, selectedVariant, cartKey } = cartEntry;
+            const itemUnit = selectedVariant?.unit || product.unit;
+            const itemQty = selectedVariant?.quantity || product.netQuantity;
+            const itemPrice = (selectedVariant && selectedVariant.sellingPrice !== undefined) ? Number(selectedVariant.sellingPrice) : Number(product.sellingPrice || product.price || 0);
+            const itemTotal = itemPrice * quantity;
+            const itemKey = cartKey || product._id;
+
             return (
               <div
-                key={product._id}
+                key={itemKey}
                 style={{
                   background: 'var(--bg-surface)',
                   borderRadius: '16px',
@@ -128,24 +134,41 @@ const CartPage = () => {
                 }}
               >
                 <img
-                  src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+                  src={selectedVariant?.image || product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
                   alt={product.name}
                   style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '10px', background: 'var(--bg-surface-alt)', padding: '4px' }}
                 />
 
                 <div className="flex-1" style={{ minWidth: '200px' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#166534', textTransform: 'uppercase' }}>
-                    {product.brand} • SKU: {product.sku}
+                  <div className="flex items-center gap-2" style={{ fontSize: '0.75rem', fontWeight: 700, color: '#166534', textTransform: 'uppercase' }}>
+                    <span>{product.brand}</span>
+                    <span>•</span>
+                    <span>SKU: {selectedVariant?.sku || product.sku}</span>
                   </div>
                   <Link to={`/product/${product.slug || product._id}`}>
-                    <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', margin: '0.2rem 0 0.5rem 0', fontWeight: 700 }}>
+                    <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', margin: '0.2rem 0 0.4rem 0', fontWeight: 700 }}>
                       {product.name}
                     </h4>
                   </Link>
 
+                  {/* Pack / Variant indicator if applicable */}
+                  {selectedVariant ? (
+                    <div style={{ marginBottom: '0.4rem' }}>
+                      <span className="badge" style={{ background: '#dbeafe', color: '#1e40af', fontWeight: 800, fontSize: '0.75rem', border: '1px solid #93c5fd' }}>
+                        Selected Size: {selectedVariant.name} {selectedVariant.quantity && selectedVariant.unit ? `(${selectedVariant.quantity} ${selectedVariant.unit})` : ''}
+                      </span>
+                    </div>
+                  ) : product.unitDisplay ? (
+                    <div style={{ marginBottom: '0.4rem' }}>
+                      <span className="badge" style={{ background: '#f1f5f9', color: '#475569', fontSize: '0.72rem' }}>
+                        Net Qty: {product.unitDisplay}
+                      </span>
+                    </div>
+                  ) : null}
+
                   <div className="flex items-center gap-4">
                     <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>
-                      {formatINR(product.sellingPrice)}
+                      {formatINR(itemPrice)}
                     </span>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                       (Incl. {product.gstPercent || 12}% GST)
@@ -156,7 +179,7 @@ const CartPage = () => {
                 {/* Quantity Controls */}
                 <div className="flex items-center" style={{ border: '1px solid var(--border-color)', borderRadius: '6px', overflow: 'hidden' }}>
                   <button
-                    onClick={() => updateQuantity(product._id, quantity - 1)}
+                    onClick={() => updateQuantity(itemKey, quantity - 1)}
                     style={{ width: '30px', height: '34px', background: 'var(--bg-surface-alt)', border: 'none', cursor: 'pointer', fontWeight: 700 }}
                   >
                     -
@@ -165,7 +188,7 @@ const CartPage = () => {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => updateQuantity(product._id, quantity + 1)}
+                    onClick={() => updateQuantity(itemKey, quantity + 1)}
                     style={{ width: '30px', height: '34px', background: 'var(--bg-surface-alt)', border: 'none', cursor: 'pointer', fontWeight: 700 }}
                   >
                     +
@@ -178,7 +201,7 @@ const CartPage = () => {
                     {formatINR(itemTotal)}
                   </div>
                   <button
-                    onClick={() => removeFromCart(product._id)}
+                    onClick={() => removeFromCart(itemKey)}
                     style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', marginTop: '0.35rem' }}
                   >
                     <Trash2 size={13} />
@@ -192,7 +215,7 @@ const CartPage = () => {
           {/* Free Shipping Alert */}
           <div style={{ background: 'var(--primary-50)', border: '1px solid #bbf7d0', padding: '0.85rem 1.25rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#166534', fontSize: '0.85rem' }}>
             <ShieldCheck size={18} color="#22c55e" />
-            <span>Eligible for <strong>Free Palletized Farm Delivery</strong> across all states in India!</span>
+            <span>Eligible for <strong>Free Express Delivery</strong> across all states in India!</span>
           </div>
         </div>
 

@@ -35,6 +35,7 @@ import { useTheme, THEMES } from '../../context/ThemeContext';
 import { useLanguage, LANGUAGES } from '../../context/LanguageContext';
 import { useSync } from '../../context/SyncContext';
 import api from '../../services/api';
+import CategoryIcon from './CategoryIcon';
 
 const categoriesData = [
   {
@@ -716,7 +717,7 @@ const Navbar = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('search_placeholder', 'Search Power Weeders, Solar Pumps, Sprayers...')}
+                placeholder={t('search_placeholder', 'Search Spices, Groceries, Electronics, Machinery, Brands (e.g. Everest, Honda, AgriPro)...')}
                 className="input-field"
                 style={{ paddingLeft: '2.5rem', borderRadius: '8px 0 0 8px', borderRight: 'none', fontSize: '0.85rem' }}
               />
@@ -1131,7 +1132,7 @@ const Navbar = () => {
                     }}
                   >
                     <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.5rem 0.5rem 0.5rem' }}>
-                      Machinery Categories
+                      {t('product_categories', 'Product Categories')}
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -1159,10 +1160,23 @@ const Navbar = () => {
                               transition: 'all 0.15s ease'
                             }}
                           >
-                            <div className="flex items-center gap-2.5">
-                              <span style={{ fontSize: '1.15rem' }}>{cat.icon}</span>
-                              <div>
-                                <div style={{ fontSize: '0.825rem', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#ffffff' : '#1e293b', lineHeight: 1.2 }}>
+                            <div className="flex items-center gap-2.5" style={{ minWidth: 0 }}>
+                              <div
+                                style={{
+                                  width: '28px',
+                                  height: '28px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0,
+                                  background: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)',
+                                  borderRadius: '6px'
+                                }}
+                              >
+                                <CategoryIcon icon={cat.icon} size={17} color={isSelected ? '#ffffff' : '#166534'} />
+                              </div>
+                              <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                                <div style={{ fontSize: '0.825rem', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#ffffff' : '#1e293b', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                   {cat.name}
                                 </div>
                                 <div style={{ fontSize: '0.675rem', color: isSelected ? '#bbf7d0' : '#64748b', marginTop: '2px' }}>
@@ -1170,7 +1184,7 @@ const Navbar = () => {
                                 </div>
                               </div>
                             </div>
-                            <ChevronRight size={14} color={isSelected ? '#86efac' : '#94a3b8'} />
+                            <ChevronRight size={14} color={isSelected ? '#86efac' : '#94a3b8'} style={{ flexShrink: 0 }} />
                           </div>
                         );
                       })}
@@ -1190,8 +1204,10 @@ const Navbar = () => {
                   >
                     <div>
                       <div className="flex items-center justify-between" style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem', marginBottom: '0.85rem' }}>
-                        <div className="flex items-center gap-2">
-                          <span style={{ fontSize: '1.35rem' }}>{activeCategory.icon}</span>
+                        <div className="flex items-center gap-2.5">
+                          <div style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#dcfce7', borderRadius: '8px', flexShrink: 0 }}>
+                            <CategoryIcon icon={activeCategory.icon} size={22} color="#166534" />
+                          </div>
                           <div>
                             <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-main)' }}>
                               {activeCategory.name}
@@ -1579,7 +1595,7 @@ const Navbar = () => {
                           className="hover:bg-green-50 dark:hover:bg-slate-800"
                         >
                           <div className="flex items-center gap-2">
-                            <span>{cat.icon}</span>
+                            <CategoryIcon icon={cat.icon} size={16} color="#166534" />
                             <span>{cat.name}</span>
                           </div>
                           <ChevronRight size={13} color="#94a3b8" />

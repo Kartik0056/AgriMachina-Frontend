@@ -1,14 +1,6 @@
 import React from 'react';
-import { Sprout, Scissors, Layers, Sun, Droplets, Sparkles, CheckCircle2 } from 'lucide-react';
-
-const iconMap = {
-  Sprout: <Sprout size={24} color="#166534" />,
-  Scissors: <Scissors size={24} color="#166534" />,
-  Layers: <Layers size={24} color="#166534" />,
-  Sun: <Sun size={24} color="#166534" />,
-  Droplets: <Droplets size={24} color="#166534" />,
-  Sparkles: <Sparkles size={24} color="#166534" />
-};
+import { Sprout } from 'lucide-react';
+import CategoryIcon from '../common/CategoryIcon';
 
 const ApplicationsGrid = ({ applications = [] }) => {
   if (!applications || applications.length === 0) return null;
@@ -16,7 +8,7 @@ const ApplicationsGrid = ({ applications = [] }) => {
   return (
     <div>
       <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
-        Agricultural Applications & Use Cases
+        Applications & Ideal Use Cases
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -37,7 +29,7 @@ const ApplicationsGrid = ({ applications = [] }) => {
               <img src={app.image} alt={app.name} style={{ width: '100%', height: '120px', objectFit: 'cover' }} />
             ) : (
               <div style={{ height: '70px', background: 'var(--primary-50)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {iconMap[app.icon] || <Sprout size={24} color="#166534" />}
+                <CategoryIcon icon={app.icon} size={24} color="#166534" fallback={<Sprout size={24} color="#166534" />} />
               </div>
             )}
 

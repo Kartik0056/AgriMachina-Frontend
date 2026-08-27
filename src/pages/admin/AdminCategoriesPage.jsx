@@ -31,15 +31,91 @@ import { useToast } from '../../context/ToastContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useLiveRefresh, useSync } from '../../context/SyncContext';
 import Modal from '../../components/common/Modal';
+import CategoryIcon from '../../components/common/CategoryIcon';
 
-// Preset icon suggestions for agricultural categories
-const PRESET_ICONS = ['🌱', '🚜', '⛏️', '☀️', '💧', '🌾', '⚙️', '🌿', '🌲', '🍎', '🌻', '⚡', '📦', '🔧'];
+// Preset icon suggestions grouped by industry
+const ICON_CATEGORIES = {
+  '🌾 Agri & Machinery': [
+    { icon: '🌱', label: 'Sprout' },
+    { icon: '🌾', label: 'Crops' },
+    { icon: 'Tractor', label: 'Tractor' },
+    { icon: 'Droplets', label: 'Irrigation' },
+    { icon: 'Sparkles', label: 'Sprayers' },
+    { icon: 'Scissors', label: 'Harvester' },
+    { icon: 'Layers', label: 'Thresher' },
+    { icon: 'Zap', label: 'Engines' },
+    { icon: '☀️', label: 'Solar' },
+    { icon: '⛏️', label: 'Auger' },
+    { icon: '🌲', label: 'Trees' },
+    { icon: '🍎', label: 'Orchard' },
+    { icon: '🌻', label: 'Sunflower' },
+    { icon: 'Axe', label: 'Axe/Tools' }
+  ],
+  '🌶️ Spices & Groceries': [
+    { icon: '🌶️', label: 'Chili' },
+    { icon: '🧂', label: 'Masala' },
+    { icon: 'Utensils', label: 'Cooking' },
+    { icon: 'CookingPot', label: 'Pot' },
+    { icon: 'Leaf', label: 'Organic' },
+    { icon: 'Apple', label: 'Fruits' },
+    { icon: 'Carrot', label: 'Vegetables' },
+    { icon: 'Milk', label: 'Dairy' },
+    { icon: 'Coffee', label: 'Coffee' },
+    { icon: 'ShoppingBag', label: 'Groceries' },
+    { icon: 'Boxes', label: 'Bulk Packs' },
+    { icon: 'Fish', label: 'Fish/Meat' },
+    { icon: 'Egg', label: 'Eggs' }
+  ],
+  '⚡ Electronics': [
+    { icon: 'Cpu', label: 'Processor' },
+    { icon: 'Tv', label: 'Television' },
+    { icon: 'Smartphone', label: 'Mobile' },
+    { icon: 'Laptop', label: 'Laptop' },
+    { icon: 'Tablet', label: 'Tablet' },
+    { icon: 'Radio', label: 'Audio' },
+    { icon: 'Camera', label: 'Camera' },
+    { icon: 'Watch', label: 'Watch' },
+    { icon: 'BatteryMedium', label: 'Battery' },
+    { icon: 'PlugZap', label: 'Appliances' },
+    { icon: 'Fan', label: 'Fan/Cooling' },
+    { icon: 'Refrigerator', label: 'Fridge' },
+    { icon: 'Headphones', label: 'Audio' },
+    { icon: 'Speaker', label: 'Speaker' }
+  ],
+  '👕 Fashion & Retail': [
+    { icon: 'Shirt', label: 'Apparel' },
+    { icon: 'Gem', label: 'Jewelry' },
+    { icon: 'Glasses', label: 'Eyewear' },
+    { icon: 'Footprints', label: 'Footwear' },
+    { icon: 'Scissors', label: 'Fabric' },
+    { icon: 'Sparkles', label: 'Beauty' },
+    { icon: 'ShoppingBag', label: 'Bags' }
+  ],
+  '🛠️ Hardware & Tools': [
+    { icon: 'Wrench', label: 'Wrench' },
+    { icon: 'Hammer', label: 'Hammer' },
+    { icon: 'Cog', label: 'Machinery' },
+    { icon: 'ShieldCheck', label: 'Safety' },
+    { icon: 'Package', label: 'Parts Box' },
+    { icon: 'Truck', label: 'Logistics' }
+  ],
+  '📦 General FMCG': [
+    { icon: 'Store', label: 'Store' },
+    { icon: 'Tag', label: 'Offers' },
+    { icon: 'Star', label: 'Featured' },
+    { icon: 'Award', label: 'Certified' },
+    { icon: 'Gift', label: 'Gift' },
+    { icon: 'ShoppingCart', label: 'Cart' }
+  ]
+};
 
 const INITIAL_FORM = {
   name: '',
   slug: '',
   description: '',
   tagline: '',
+  categoryType: 'Agricultural Machinery',
+  unitType: 'general',
   icon: '🌱',
   image: '',
   startingPrice: '',
@@ -71,6 +147,7 @@ const AdminCategoriesPage = () => {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState('BASIC'); // 'BASIC' | 'COMMERCIAL' | 'SUBCATEGORIES' | 'SEO'
+  const [iconCategoryTab, setIconCategoryTab] = useState('🌾 Agri & Machinery');
   const [editingCategory, setEditingCategory] = useState(null);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [autoSlug, setAutoSlug] = useState(true);
@@ -159,6 +236,8 @@ const AdminCategoriesPage = () => {
       slug: cat.slug || '',
       description: cat.description || '',
       tagline: cat.tagline || '',
+      categoryType: cat.categoryType || 'Agricultural Machinery',
+      unitType: cat.unitType || 'general',
       icon: cat.icon || '🌱',
       image: cat.image || '',
       startingPrice: cat.startingPrice || '',
@@ -822,9 +901,9 @@ const AdminCategoriesPage = () => {
                         }}
                       />
                     ) : null}
-                    <span style={{ fontSize: '1.75rem', position: cat.image ? 'absolute' : 'static' }}>
-                      {cat.icon || '🌱'}
-                    </span>
+                    <div style={{ position: cat.image ? 'absolute' : 'static', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CategoryIcon icon={cat.icon} size={28} color="var(--admin-accent)" />
+                    </div>
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -1045,7 +1124,9 @@ const AdminCategoriesPage = () => {
                   </td>
                   <td style={{ padding: '0.85rem 1rem' }}>
                     <div className="flex items-center gap-2.5">
-                      <span style={{ fontSize: '1.25rem' }}>{cat.icon || '🌱'}</span>
+                      <div style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(22, 101, 52, 0.12)', borderRadius: '6px', flexShrink: 0 }}>
+                        <CategoryIcon icon={cat.icon} size={18} color="var(--admin-accent)" />
+                      </div>
                       <div>
                         <div style={{ fontWeight: 800, color: 'var(--admin-text-main)', fontSize: '0.9rem' }}>{cat.name}</div>
                         {cat.tagline && <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>{cat.tagline}</div>}
@@ -1217,6 +1298,47 @@ const AdminCategoriesPage = () => {
                 </div>
               </div>
 
+              {/* Industry Type & Default Unit Recommendation */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="input-group">
+                  <label className="input-label" style={{ color: 'var(--admin-text-muted)', fontWeight: 700 }}>
+                    Category Industry / Department *
+                  </label>
+                  <select
+                    className="select-field"
+                    style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
+                    value={formData.categoryType || 'Agricultural Machinery'}
+                    onChange={(e) => setFormData((p) => ({ ...p, categoryType: e.target.value }))}
+                  >
+                    <option value="Agricultural Machinery">🌾 Agricultural Machinery & Implements</option>
+                    <option value="Spices & Groceries">🌶️ Spices, Masala & Grocery Products</option>
+                    <option value="Electronics & Appliances">⚡ Electronics, Motors & Gadgets</option>
+                    <option value="Fashion & Apparel">👕 Fashion, Workwear & Uniforms</option>
+                    <option value="Hardware & Tools">🛠️ Hardware, Spare Parts & Workshop</option>
+                    <option value="General FMCG">📦 General FMCG & Retail</option>
+                    <option value="Other">🏷️ Other Custom Category</option>
+                  </select>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label" style={{ color: 'var(--admin-text-muted)', fontWeight: 700 }}>
+                    Default Recommended Unit Type
+                  </label>
+                  <select
+                    className="select-field"
+                    style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
+                    value={formData.unitType || 'general'}
+                    onChange={(e) => setFormData((p) => ({ ...p, unitType: e.target.value }))}
+                  >
+                    <option value="general">📦 General / Units (pcs, pack, set, box)</option>
+                    <option value="weight">⚖️ Weight based (gm, kg, mg - Spices, Crops, Seeds)</option>
+                    <option value="volume">💧 Volume based (ml, ltr - Oils, Sprays, Liquids)</option>
+                    <option value="power">⚡ Power / Capacity (HP, kW, Watt, cc)</option>
+                    <option value="dimension">📏 Dimensions (meter, cm, feet, inch)</option>
+                  </select>
+                </div>
+              </div>
+
               {/* Tagline */}
               <div className="input-group">
                 <label className="input-label" style={{ color: 'var(--admin-text-muted)', fontWeight: 700 }}>
@@ -1226,44 +1348,90 @@ const AdminCategoriesPage = () => {
                   type="text"
                   className="input-field"
                   style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="e.g. High-torque petrol & diesel weeders for deep soil cultivation."
+                  placeholder="e.g. 100% Pure, authentic ground & whole spices directly from verified farms."
                   value={formData.tagline}
                   onChange={(e) => setFormData((p) => ({ ...p, tagline: e.target.value }))}
                 />
               </div>
 
-              {/* Icon Selector & Custom Icon Input */}
+              {/* Multi-Industry Categorized Icon Picker */}
               <div className="input-group">
-                <label className="input-label" style={{ color: 'var(--admin-text-muted)', fontWeight: 700 }}>
-                  Category Emoji / Icon
-                </label>
-                <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: '0.5rem' }}>
-                  {PRESET_ICONS.map((emoji) => (
+                <div className="flex items-center justify-between" style={{ marginBottom: '0.4rem' }}>
+                  <label className="input-label" style={{ color: 'var(--admin-text-muted)', fontWeight: 700, margin: 0 }}>
+                    Category Icon / Badge
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>Selected:</span>
+                    <div style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(22, 101, 52, 0.2)', border: '1px solid var(--admin-accent)', borderRadius: '6px' }}>
+                      <CategoryIcon icon={formData.icon} size={18} color="var(--admin-accent)" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Icon Category Tabs */}
+                <div className="flex gap-1 flex-wrap" style={{ marginBottom: '0.5rem', background: 'var(--admin-bg-main)', padding: '0.3rem', borderRadius: '8px', border: '1px solid var(--admin-border)' }}>
+                  {Object.keys(ICON_CATEGORIES).map((catTab) => (
                     <button
-                      key={emoji}
+                      key={catTab}
                       type="button"
-                      onClick={() => setFormData((p) => ({ ...p, icon: emoji }))}
+                      onClick={() => setIconCategoryTab(catTab)}
                       style={{
-                        fontSize: '1.35rem',
-                        padding: '0.35rem 0.5rem',
-                        borderRadius: '8px',
-                        border: formData.icon === emoji ? '2px solid var(--admin-accent)' : '1px solid var(--admin-border)',
-                        background: formData.icon === emoji ? 'rgba(22, 101, 52, 0.2)' : 'var(--admin-bg-main)',
-                        cursor: 'pointer'
+                        padding: '0.25rem 0.55rem',
+                        fontSize: '0.72rem',
+                        fontWeight: iconCategoryTab === catTab ? 800 : 600,
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        background: iconCategoryTab === catTab ? 'var(--admin-accent, #166534)' : 'transparent',
+                        color: iconCategoryTab === catTab ? '#ffffff' : 'var(--admin-text-muted)'
                       }}
                     >
-                      {emoji}
+                      {catTab}
                     </button>
                   ))}
                 </div>
-                <input
-                  type="text"
-                  className="input-field"
-                  style={{ maxWidth: '200px', background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="Or type custom emoji / icon"
-                  value={formData.icon}
-                  onChange={(e) => setFormData((p) => ({ ...p, icon: e.target.value }))}
-                />
+
+                {/* Preset Icon Grid */}
+                <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: '0.65rem', maxHeight: '110px', overflowY: 'auto', padding: '0.4rem', background: 'var(--admin-bg-main)', borderRadius: '8px', border: '1px solid var(--admin-border)' }}>
+                  {(ICON_CATEGORIES[iconCategoryTab] || []).map(({ icon, label }) => {
+                    const isCur = formData.icon === icon;
+                    return (
+                      <button
+                        key={icon}
+                        type="button"
+                        onClick={() => setFormData((p) => ({ ...p, icon }))}
+                        title={label}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.3rem',
+                          padding: '0.35rem 0.6rem',
+                          borderRadius: '6px',
+                          border: isCur ? '2px solid var(--admin-accent)' : '1px solid var(--admin-border)',
+                          background: isCur ? 'rgba(22, 101, 52, 0.25)' : 'var(--admin-bg-card)',
+                          color: isCur ? 'var(--admin-accent)' : 'var(--admin-text-main)',
+                          cursor: 'pointer',
+                          fontSize: '0.75rem',
+                          fontWeight: isCur ? 800 : 500
+                        }}
+                      >
+                        <CategoryIcon icon={icon} size={16} />
+                        <span>{label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    className="input-field"
+                    style={{ flex: 1, background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)', fontSize: '0.85rem' }}
+                    placeholder="Or type custom icon name (e.g. Droplets, Utensils, Cpu, Shirt) or Emoji (🌶️, 🧂)"
+                    value={formData.icon}
+                    onChange={(e) => setFormData((p) => ({ ...p, icon: e.target.value }))}
+                  />
+                </div>
               </div>
 
               {/* Image URL & Preview */}
@@ -1537,7 +1705,7 @@ const AdminCategoriesPage = () => {
               <div className="input-group">
                 <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem' }}>
                   <label className="input-label" style={{ color: 'var(--admin-text-muted)', fontWeight: 700, margin: 0 }}>
-                    Key Machinery Highlights / Bullet Points
+                    Key Category Highlights & Badges (e.g. 100% Pure, FSSAI Certified, 1 Year Warranty)
                   </label>
                   <button
                     type="button"
@@ -1562,7 +1730,7 @@ const AdminCategoriesPage = () => {
                         type="text"
                         className="input-field"
                         style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                        placeholder={`e.g. 32 Heat-Treated Boron Steel Blades`}
+                        placeholder={`e.g. 100% Natural & FSSAI Certified / OEM Certified Warranty`}
                         value={feat}
                         onChange={(e) => handleFeatureChange(idx, e.target.value)}
                       />

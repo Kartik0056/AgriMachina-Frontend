@@ -1,15 +1,6 @@
 import React from 'react';
-import { CheckCircle, Zap, Shield, Settings, Award, Cpu, Key, Compass } from 'lucide-react';
-
-const iconMap = {
-  Zap: <Zap size={20} color="#166534" />,
-  Shield: <Shield size={20} color="#166534" />,
-  Settings: <Settings size={20} color="#166534" />,
-  Award: <Award size={20} color="#166534" />,
-  Cpu: <Cpu size={20} color="#166534" />,
-  Key: <Key size={20} color="#166534" />,
-  CheckCircle: <CheckCircle size={20} color="#166534" />
-};
+import { CheckCircle } from 'lucide-react';
+import CategoryIcon from '../common/CategoryIcon';
 
 const FeaturesGrid = ({ features = [] }) => {
   if (!features || features.length === 0) return null;
@@ -17,7 +8,7 @@ const FeaturesGrid = ({ features = [] }) => {
   return (
     <div>
       <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
-        Key Engineering Features
+        Key Features & Quality Highlights
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -36,12 +27,16 @@ const FeaturesGrid = ({ features = [] }) => {
           >
             <div style={{
               background: 'var(--primary-50)',
-              padding: '0.65rem',
+              width: '42px',
+              height: '42px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               borderRadius: '10px',
               border: '1px solid #dcfce7',
               flexShrink: 0
             }}>
-              {iconMap[feat.icon] || <CheckCircle size={20} color="#166534" />}
+              <CategoryIcon icon={feat.icon} size={20} color="#166534" fallback={<CheckCircle size={20} color="#166534" />} />
             </div>
 
             <div>

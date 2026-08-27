@@ -97,17 +97,26 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('agri_recently_viewed', JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
 
-  const addToCart = (product, quantity = 1) => {
+  const getItemKey = (product, selectedVariant) => {
+    const prodId = product?._id || product?.id || 'unknown';
+    if (selectedVariant && selectedVariant.name) {
+      return `${prodId}_var_${selectedVariant.name.replace(/\s+/g, '_')}`;
+    }
+    return String(prodId);
+  };
+
+  const addToCart = (product, quantity = 1, selectedVariant = null) => {
     if (!product) return;
-    const prodId = product._id || product.id;
+    const key = getItemKey(product, selectedVariant);
     setCartItems((prev) => {
-      const existingIndex = prev.findIndex((item) => (item.product?._id || item.product?.id) === prodId);
+      const existingIndex = prev.findIndex((item) => (item.cartKey || item.product?._id || item.product?.id) === key);
       if (existingIndex > -1) {
         const updated = [...prev];
         updated[existingIndex].quantity += quantity;
+        if (selectedVariant) updated[existingIndex].selectedVariant = selectedVariant;
         return updated;
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { cartKey: key, product, quantity, selectedVariant }];
     });
   };
 
@@ -117,30 +126,32 @@ export const CartProvider = ({ children }) => {
       const updated = [...prev];
       for (const prod of products) {
         if (!prod) continue;
-        const prodId = prod._id || prod.id;
-        const idx = updated.findIndex((item) => (item.product?._id || item.product?.id) === prodId);
+        const key = getItemKey(prod, null);
+        const idx = updated.findIndex((item) => (item.cartKey || item.product?._id || item.product?.id) === key);
         if (idx > -1) {
           updated[idx].quantity += 1;
         } else {
-          updated.push({ product: prod, quantity: 1 });
+          updated.push({ cartKey: key, product: prod, quantity: 1, selectedVariant: null });
         }
       }
       return updated;
     });
   };
 
-  const removeFromCart = (productId) => {
-    setCartItems((prev) => prev.filter((item) => (item.product?._id || item.product?.id) !== productId));
+  const removeFromCart = (cartKeyOrId) => {
+    setCartItems((prev) => prev.filter((item) => item.cartKey !== cartKeyOrId && (item.product?._id || item.product?.id) !== cartKeyOrId));
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = (cartKeyOrId, quantity) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(cartKeyOrId);
       return;
     }
     setCartItems((prev) =>
       prev.map((item) =>
-        (item.product?._id || item.product?.id) === productId ? { ...item, quantity } : item
+        (item.cartKey === cartKeyOrId || (item.product?._id || item.product?.id) === cartKeyOrId)
+          ? { ...item, quantity }
+          : item
       )
     );
   };
@@ -163,15 +174,22 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // Calculations
+  // Authoritative Pricing Calculations with Variant Support
+  const getItemPrice = (item) => {
+    if (item.selectedVariant && item.selectedVariant.sellingPrice !== undefined) {
+      return Number(item.selectedVariant.sellingPrice) || 0;
+    }
+    return Number(item.product?.sellingPrice) || Number(item.product?.price) || 0;
+  };
+
   const cartSubtotal = cartItems.reduce(
-    (sum, item) => sum + ((item.product?.sellingPrice || item.product?.price || 0) * (item.quantity || 1)),
+    (sum, item) => sum + (getItemPrice(item) * (item.quantity || 1)),
     0
   );
 
   const gstTotal = cartItems.reduce((sum, item) => {
     const rate = item.product?.gstPercent || 12;
-    const itemSub = (item.product?.sellingPrice || item.product?.price || 0) * (item.quantity || 1);
+    const itemSub = getItemPrice(item) * (item.quantity || 1);
     return sum + Math.round((itemSub * rate) / 100);
   }, 0);
 
@@ -194,7 +212,8 @@ export const CartProvider = ({ children }) => {
         shippingFee,
         grandTotal,
         recentlyViewed,
-        trackRecentlyViewed
+        trackRecentlyViewed,
+        getItemPrice
       }}
     >
       {children}

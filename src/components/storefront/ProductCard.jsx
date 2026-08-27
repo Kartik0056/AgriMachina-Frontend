@@ -204,15 +204,33 @@ const ProductCard = ({ product }) => {
       {/* Product Info & Actions */}
       <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', gap: '0.85rem' }}>
         <div>
-          {/* Brand & Category */}
-          <div className="flex items-center justify-between" style={{ marginBottom: '0.35rem', fontSize: '0.75rem' }}>
-            <span style={{ fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {product.brand || 'AgriMachina'}
-            </span>
-            <span style={{ color: 'var(--text-muted)' }}>
-              {product.modelNumber ? `${t('model', 'Model')}: ${product.modelNumber}` : ''}
-            </span>
-          </div>
+          {/* Brand, Unit / Variants Badge & Model */}
+          {(() => {
+            const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+            const unitBadgeText = product.unitDisplay || (product.netQuantity && product.unit ? `${product.netQuantity} ${product.unit}` : (product.unit && product.unit !== 'unit' && product.unit !== 'pcs' ? product.unit : ''));
+            return (
+              <div className="flex items-center justify-between" style={{ marginBottom: '0.35rem', fontSize: '0.75rem', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {product.brand || 'AgriMachina'}
+                </span>
+                <div className="flex items-center gap-1">
+                  {hasVariants ? (
+                    <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', fontSize: '0.65rem', fontWeight: 800, padding: '0.1rem 0.4rem', border: '1px solid #bfdbfe' }}>
+                      {product.variants.length} Sizes
+                    </span>
+                  ) : unitBadgeText ? (
+                    <span className="badge" style={{ background: '#f0fdf4', color: '#166534', fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.4rem', border: '1px solid #bbf7d0' }}>
+                      {unitBadgeText}
+                    </span>
+                  ) : product.modelNumber ? (
+                    <span style={{ color: 'var(--text-muted)' }}>
+                      {product.modelNumber}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Title */}
           <Link to={`/product/${product.slug || product._id}`}>
@@ -247,19 +265,29 @@ const ProductCard = ({ product }) => {
 
         <div>
           {/* Price */}
-          <div className="flex items-baseline gap-2" style={{ marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-main)' }}>
-              {formatINR(product.sellingPrice)}
-            </span>
-            {product.mrp > product.sellingPrice && (
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
-                {formatINR(product.mrp)}
-              </span>
-            )}
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-              ({t('incl_gst', 'Incl. GST')})
-            </span>
-          </div>
+          {(() => {
+            const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+            const minVarPrice = hasVariants ? Math.min(...product.variants.map((v) => Number(v.sellingPrice) || product.sellingPrice)) : product.sellingPrice;
+            const displayPrice = hasVariants ? minVarPrice : product.sellingPrice;
+            return (
+              <div className="flex items-baseline gap-2" style={{ marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                {hasVariants && (
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>From</span>
+                )}
+                <span style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-main)' }}>
+                  {formatINR(displayPrice)}
+                </span>
+                {product.mrp > displayPrice && (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
+                    {formatINR(product.mrp)}
+                  </span>
+                )}
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                  ({t('incl_gst', 'Incl. GST')})
+                </span>
+              </div>
+            );
+          })()}
 
           {/* EMI Callout */}
           {product.emi?.enabled && product.emi?.minMonthlyEmi > 0 && (

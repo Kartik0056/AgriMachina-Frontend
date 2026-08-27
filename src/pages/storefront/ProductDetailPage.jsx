@@ -50,6 +50,7 @@ const ProductDetailPage = () => {
   const { t } = useLanguage();
 
   const [product, setProduct] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [bundleData, setBundleData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -63,6 +64,12 @@ const ProductDetailPage = () => {
       const res = await api.get(`/products/${slug}`);
       if (res.data.success) {
         setProduct(res.data.product);
+        if (res.data.product?.variants?.length > 0) {
+          const defVar = res.data.product.variants.find((v) => v.isDefault) || res.data.product.variants[0];
+          setSelectedVariant(defVar);
+        } else {
+          setSelectedVariant(null);
+        }
         trackRecentlyViewed(res.data.product);
         if (res.data.bundle) {
           setBundleData(res.data.bundle);
@@ -108,31 +115,38 @@ const ProductDetailPage = () => {
     );
   }
 
+  const currentPrice = (selectedVariant && selectedVariant.sellingPrice !== undefined) ? Number(selectedVariant.sellingPrice) : Number(product?.sellingPrice || product?.price || 0);
+  const currentMrp = (selectedVariant && selectedVariant.mrp !== undefined) ? Number(selectedVariant.mrp) : Number(product?.mrp || currentPrice);
+  const currentDiscountAmount = Math.max(0, currentMrp - currentPrice);
+  const currentDiscountPercent = currentMrp > 0 ? Math.round((currentDiscountAmount / currentMrp) * 100) : (product?.discountPercent || 0);
+  const currentSku = selectedVariant?.sku || product?.sku;
+  const currentStockQty = selectedVariant?.stockQuantity !== undefined ? selectedVariant.stockQuantity : product?.stockQuantity;
+  const isOutOfStock = currentStockQty <= 0 || product?.stockStatus === 'OUT OF STOCK';
+  const isLowStock = !isOutOfStock && (currentStockQty <= 5 || product?.stockStatus === 'LOW STOCK');
+
   const handleAddToCart = () => {
-    if (product.stockQuantity <= 0) {
-      addToast('Sorry, this machine is currently out of stock.', 'warning');
+    if (isOutOfStock) {
+      addToast('Sorry, this product / variant is currently out of stock.', 'warning');
       return;
     }
-    addToCart(product, quantity);
-    addToast(`Added ${quantity} x ${product.name} to your cart!`, 'success');
+    addToCart(product, quantity, selectedVariant);
+    const variantTxt = selectedVariant ? ` (${selectedVariant.name})` : '';
+    addToast(`Added ${quantity} x ${product.name}${variantTxt} to your cart!`, 'success');
   };
 
   const handleBuyNow = () => {
-    if (product.stockQuantity <= 0) {
-      addToast('Sorry, this machine is currently out of stock.', 'warning');
+    if (isOutOfStock) {
+      addToast('Sorry, this product / variant is currently out of stock.', 'warning');
       return;
     }
-    addToCart(product, quantity);
+    addToCart(product, quantity, selectedVariant);
     if (!isAuthenticated) {
-      addToast('Farmer login required to proceed to Buy Now & confirm order.', 'info');
+      addToast('Customer login required to proceed to Buy Now & confirm order.', 'info');
       navigate('/login?redirect=/checkout');
       return;
     }
     navigate('/checkout');
   };
-
-  const isLowStock = product.stockStatus === 'LOW STOCK';
-  const isOutOfStock = product.stockStatus === 'OUT OF STOCK' || product.stockQuantity <= 0;
 
   return (
     <div className="container" style={{ padding: '2rem 1.25rem 4rem 1.25rem' }}>
@@ -184,7 +198,7 @@ const ProductDetailPage = () => {
                 borderRadius: '6px',
                 fontWeight: 600
               }}>
-                {t('sku', 'SKU')}: <strong>{product.sku}</strong>
+                {t('sku', 'SKU')}: <strong>{currentSku}</strong>
               </span>
 
               {/* Upper Corner Share Logo Button with generous spacing */}
@@ -206,17 +220,24 @@ const ProductDetailPage = () => {
                   flexShrink: 0
                 }}
                 className="hover:scale-110"
-                title={t('share_product', 'Share Farm Equipment (WhatsApp, FB, Insta, Link)')}
+                title={t('share_product', 'Share Product (WhatsApp, FB, Insta, Link)')}
               >
                 <Share2 size={17} color="var(--primary-500, #16a34a)" />
               </button>
             </div>
           </div>
 
-          {/* Title */}
-          <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)', lineHeight: 1.25 }}>
-            {product.name}
-          </h1>
+          {/* Title and Unit Badge */}
+          <div>
+            <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)', lineHeight: 1.25, margin: '0 0 0.4rem 0' }}>
+              {product.name}
+            </h1>
+            {(selectedVariant?.quantity || product.unitDisplay || (product.netQuantity && product.unit)) && (
+              <span className="badge badge-primary" style={{ fontSize: '0.75rem', background: '#dcfce7', color: '#166534', fontWeight: 800, border: '1px solid #86efac', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                📦 Net Quantity / Size: <strong>{selectedVariant ? (selectedVariant.quantity && selectedVariant.unit ? `${selectedVariant.quantity} ${selectedVariant.unit}` : selectedVariant.name) : (product.unitDisplay || `${product.netQuantity} ${product.unit}`)}</strong>
+              </span>
+            )}
+          </div>
 
           {/* Ratings & Verified Reviews Summary */}
           <div className="flex items-center gap-3">
@@ -227,12 +248,53 @@ const ProductDetailPage = () => {
             />
             {product.ratings?.totalReviews > 0 && (
               <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
-                <ShieldCheck size={13} /> {t('verified_reviews', '100% Verified Farmer Reviews')}
+                <ShieldCheck size={13} /> {t('verified_reviews', '100% Verified Customer Reviews')}
               </span>
             )}
           </div>
 
-          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.5rem 0' }} />
+          {/* Pack Size / Variant Selection Pills */}
+          {product.variants && product.variants.length > 0 && (
+            <div style={{ background: 'var(--bg-surface-alt)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-color)', marginTop: '0.5rem' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Select Pack Size / Weight / Variant:</span>
+                <span style={{ color: '#166534', fontWeight: 800 }}>{selectedVariant?.name}</span>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {product.variants.map((v, vIdx) => {
+                  const isSelected = selectedVariant?.name === v.name;
+                  return (
+                    <button
+                      key={vIdx}
+                      type="button"
+                      onClick={() => setSelectedVariant(v)}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: '0.5rem 0.85rem',
+                        borderRadius: '8px',
+                        border: isSelected ? '2px solid #16a34a' : '1px solid var(--border-color)',
+                        background: isSelected ? 'rgba(22, 101, 52, 0.12)' : 'var(--bg-surface)',
+                        color: isSelected ? '#166534' : 'var(--text-main)',
+                        cursor: 'pointer',
+                        fontWeight: isSelected ? 800 : 600,
+                        boxShadow: isSelected ? '0 2px 8px rgba(22, 101, 52, 0.15)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.85rem' }}>{v.name}</span>
+                      <span style={{ fontSize: '0.72rem', color: isSelected ? '#15803d' : 'var(--text-muted)', marginTop: '2px', fontWeight: 700 }}>
+                        {formatINR(v.sellingPrice)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.25rem 0' }} />
 
           {/* Deal of the Day Banner */}
           {product.isDealOfTheDay && (
@@ -253,7 +315,7 @@ const ProductDetailPage = () => {
                   {product.dealBadge || '🔥 SUPER DEAL OF THE DAY'}
                 </span>
                 <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fef08a' }}>
-                  Special limited-quota farmer discount active!
+                  Special limited-quota discount active!
                 </span>
               </div>
             </div>
@@ -263,16 +325,16 @@ const ProductDetailPage = () => {
           <div style={{ background: 'var(--bg-surface-alt)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
             <div className="flex items-baseline gap-3" style={{ flexWrap: 'wrap' }}>
               <span style={{ fontSize: '2.25rem', fontWeight: 900, color: 'var(--text-main)' }}>
-                {formatINR(product.sellingPrice)}
+                {formatINR(currentPrice)}
               </span>
-              {product.mrp > product.sellingPrice && (
+              {currentMrp > currentPrice && (
                 <span style={{ fontSize: '1.15rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
-                  {formatINR(product.mrp)}
+                  {formatINR(currentMrp)}
                 </span>
               )}
-              {product.discountPercent > 0 && (
+              {currentDiscountPercent > 0 && (
                 <span className="badge badge-accent" style={{ fontSize: '0.85rem', background: '#f59e0b', color: '#ffffff' }}>
-                  {t('save', 'Save')} {product.discountPercent}% ({formatINR(product.discountAmount)})
+                  {t('save', 'Save')} {currentDiscountPercent}% ({formatINR(currentDiscountAmount)})
                 </span>
               )}
               {product.hasExtraDiscount && product.extraDiscountValue > 0 && (
@@ -334,14 +396,14 @@ const ProductDetailPage = () => {
           {/* Stock Availability */}
           <div className="flex items-center gap-2">
             {isOutOfStock ? (
-              <span className="badge badge-danger" style={{ background: 'var(--bg-surface)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>{t('out_of_stock', 'Out of Stock')}</span>
+              <span className="badge badge-danger" style={{ background: 'var(--bg-surface)', color: '#ef4444', border: '1px solid #fca5a5' }}>{t('out_of_stock', 'Out of Stock')}</span>
             ) : isLowStock ? (
-              <span className="badge badge-warning" style={{ background: 'var(--bg-surface)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>⚡ {t('low_stock', 'Low Stock: Only')} {product.stockQuantity} remaining</span>
+              <span className="badge badge-warning" style={{ background: 'var(--bg-surface)', color: '#f59e0b', border: '1px solid #fcd34d' }}>⚡ {t('low_stock', 'Low Stock: Only')} {currentStockQty} remaining</span>
             ) : (
-              <span className="badge badge-success" style={{ background: 'var(--bg-surface)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>✓ {t('in_stock', 'In Stock & Ready for Immediate Dispatch')}</span>
+              <span className="badge badge-success" style={{ background: 'var(--bg-surface)', color: '#16a34a', border: '1px solid #86efac' }}>✓ {t('in_stock', 'In Stock & Ready for Immediate Dispatch')}</span>
             )}
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              • Dispatches from {product.warehouse || 'Central Agro Hub'}
+              • Dispatches from {product.warehouse || 'Verified Fulfilment Hub'}
             </span>
           </div>
 
