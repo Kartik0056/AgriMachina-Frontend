@@ -87,15 +87,35 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
         </div>
 
         <div className="input-group">
-          <label className="input-label" style={{ color: '#cbd5e1' }}>Subcategory</label>
+          <div className="flex justify-between items-center" style={{ marginBottom: '0.25rem' }}>
+            <label className="input-label" style={{ color: '#cbd5e1', margin: 0 }}>Subcategory</label>
+            {(() => {
+              const currentCat = categories.find((c) => c.name === formData.category);
+              return currentCat?.subcategories?.length > 0 ? (
+                <span style={{ fontSize: '0.7rem', color: 'var(--admin-accent, #22c55e)', fontWeight: 600 }}>
+                  {currentCat.subcategories.length} suggestions available
+                </span>
+              ) : null;
+            })()}
+          </div>
           <input
             type="text"
+            list="subcategories-datalist"
             className="input-field"
             style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.subcategory || ''}
             onChange={(e) => updateField('subcategory', e.target.value)}
-            placeholder="e.g. Petrol Power Weeders"
+            placeholder="Select from suggestions or type custom subcategory"
           />
+          <datalist id="subcategories-datalist">
+            {(() => {
+              const currentCat = categories.find((c) => c.name === formData.category);
+              if (!currentCat?.subcategories) return null;
+              return currentCat.subcategories.map((sub, sIdx) => (
+                <option key={sIdx} value={sub.name}>{sub.name}</option>
+              ));
+            })()}
+          </datalist>
         </div>
 
         <div className="input-group">

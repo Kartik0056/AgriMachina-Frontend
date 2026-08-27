@@ -254,13 +254,42 @@ const Navbar = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
-  const [selectedCatId, setSelectedCatId] = useState(categoriesData[0].id);
+  const [categoriesList, setCategoriesList] = useState(categoriesData);
+  const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id || 'power-weeder-tiller');
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   const [tickerIndex, setTickerIndex] = useState(0);
   const navigate = useNavigate();
 
   const themeDropdownRef = useRef(null);
   const langDropdownRef = useRef(null);
+
+  const fetchLiveCategories = async () => {
+    try {
+      const res = await api.get('/categories');
+      if (res.data.success && Array.isArray(res.data.categories) && res.data.categories.length > 0) {
+        const mapped = res.data.categories.map((c) => ({
+          id: c.slug || c._id,
+          _id: c._id,
+          name: c.name,
+          param: c.name,
+          icon: c.icon || '🌱',
+          image: c.image || '/images/machinery/power_weeder.jpg',
+          tagline: c.tagline || c.description || '',
+          startingPrice: c.startingPrice || 'From ₹9,999',
+          emiStarting: c.emiStarting || '₹499/mo',
+          subcategories: Array.isArray(c.subcategories) ? c.subcategories : [],
+          features: Array.isArray(c.features) && c.features.length > 0
+            ? c.features
+            : ['OEM Certified Warranty', 'SMAM DBT Subsidy Approved', 'Free Doorstep Delivery']
+        }));
+        setCategoriesList(mapped);
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    fetchLiveCategories();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -322,6 +351,9 @@ const Navbar = () => {
       if (event.type === 'NEW_SUPPORT_QUERY' || event.type === 'TICKET_UPDATED') {
         checkUnreadMessages();
       }
+      if (event.type === 'CATEGORY_CHANGED' || event.type === 'CATALOG_CHANGED') {
+        fetchLiveCategories();
+      }
     });
     return unsubscribe;
   }, [subscribe, isAuthenticated]);
@@ -333,7 +365,10 @@ const Navbar = () => {
     }
   };
 
-  const activeCategory = categoriesData.find(c => c.id === selectedCatId) || categoriesData[0];
+  const activeCategory =
+    categoriesList.find((c) => c.id === selectedCatId || c._id === selectedCatId || c.name === selectedCatId) ||
+    categoriesList[0] ||
+    categoriesData[0];
   const curTicker = tickerAnnouncements[tickerIndex];
 
   return (
@@ -1100,8 +1135,8 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      {categoriesData.map((cat) => {
-                        const isSelected = selectedCatId === cat.id;
+                      {categoriesList.map((cat) => {
+                        const isSelected = selectedCatId === cat.id || selectedCatId === cat._id;
                         return (
                           <div
                             key={cat.id}
@@ -1173,10 +1208,10 @@ const Navbar = () => {
                       </div>
 
                       <div className="grid grid-cols-2 gap-2" style={{ marginBottom: '1rem' }}>
-                        {activeCategory.subcategories.map((sub, idx) => (
+                        {(activeCategory.subcategories || []).map((sub, idx) => (
                           <Link
                             key={idx}
-                            to={`/products?category=${encodeURIComponent(activeCategory.param)}&sub=${encodeURIComponent(sub.slug)}`}
+                            to={`/products?category=${encodeURIComponent(activeCategory.param || activeCategory.name)}&sub=${encodeURIComponent(sub.slug)}`}
                             onClick={() => setIsMegaMenuOpen(false)}
                             style={{
                               display: 'flex',
@@ -1201,7 +1236,7 @@ const Navbar = () => {
                       </div>
 
                       <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: '0.5rem' }}>
-                        {activeCategory.features.map((feat, idx) => (
+                        {(activeCategory.features || []).map((feat, idx) => (
                           <span
                             key={idx}
                             style={{
@@ -1535,10 +1570,10 @@ const Navbar = () => {
 
                   {mobileCategoriesOpen && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.5rem', paddingLeft: '0.5rem' }}>
-                      {categoriesData.map(cat => (
+                      {categoriesList.map((cat) => (
                         <Link
-                          key={cat.id}
-                          to={`/products?category=${encodeURIComponent(cat.param)}`}
+                          key={cat.id || cat._id}
+                          to={`/products?category=${encodeURIComponent(cat.param || cat.name)}`}
                           onClick={() => setMobileDrawerOpen(false)}
                           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0.75rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-main)', textDecoration: 'none' }}
                           className="hover:bg-green-50 dark:hover:bg-slate-800"

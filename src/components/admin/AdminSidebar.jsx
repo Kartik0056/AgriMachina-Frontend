@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   Tractor,
+  FolderTree,
   FileSpreadsheet,
   Layers,
   ShoppingBag,
@@ -25,6 +26,7 @@ const AdminSidebar = ({ pendingReviewsCount = 0, pendingOrdersCount = 0 }) => {
   const navItems = [
     { to: `${adminPanelPath}`, label: 'Dashboard', icon: <LayoutDashboard size={18} />, exact: true },
     { to: `${adminPanelPath}/products`, label: 'Machinery Catalog', icon: <Tractor size={18} />, perm: 'PRODUCT_CREATE' },
+    { to: `${adminPanelPath}/categories`, label: 'Categories & Taxonomy', icon: <FolderTree size={18} />, perm: 'PRODUCT_CREATE' },
     { to: `${adminPanelPath}/products/bulk-import`, label: 'Bulk Import & Export', icon: <FileSpreadsheet size={18} />, perm: 'PRODUCT_IMPORT' },
     { to: `${adminPanelPath}/inventory`, label: 'Inventory & Stock Logs', icon: <Layers size={18} />, perm: 'INVENTORY_UPDATE' },
     { to: `${adminPanelPath}/orders`, label: 'Orders & Shipments', icon: <ShoppingBag size={18} />, perm: 'ORDER_VIEW', badge: pendingOrdersCount },

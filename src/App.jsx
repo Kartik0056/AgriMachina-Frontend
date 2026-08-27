@@ -28,6 +28,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminProductsPage from './pages/admin/AdminProductsPage';
+import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminProductEditorPage from './pages/admin/AdminProductEditorPage';
 import AdminBulkImportPage from './pages/admin/AdminBulkImportPage';
 import AdminInventoryPage from './pages/admin/AdminInventoryPage';
@@ -96,6 +97,7 @@ function App() {
           <Route path={`/${portalPath}`} element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
             <Route path="products" element={<AdminProductsPage />} />
+            <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="products/new" element={<AdminProductEditorPage />} />
             <Route path="products/edit/:id" element={<AdminProductEditorPage />} />
             <Route path="products/bulk-import" element={<AdminBulkImportPage />} />
