@@ -775,7 +775,6 @@ const AdminCategoriesPage = () => {
           )}
         </div>
       ) : viewMode === 'GRID' ? (
-        /* GRID CARDS VIEW */
         <div
           style={{
             display: 'grid',
@@ -1391,7 +1390,6 @@ const AdminCategoriesPage = () => {
                   ))}
                 </div>
 
-                {/* Preset Icon Grid */}
                 <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: '0.65rem', maxHeight: '110px', overflowY: 'auto', padding: '0.4rem', background: 'var(--admin-bg-main)', borderRadius: '8px', border: '1px solid var(--admin-border)' }}>
                   {(ICON_CATEGORIES[iconCategoryTab] || []).map(({ icon, label }) => {
                     const isCur = formData.icon === icon;
@@ -1761,7 +1759,7 @@ const AdminCategoriesPage = () => {
                   type="text"
                   className="input-field"
                   style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="e.g. Buy Best Power Weeders & Tillers in India | AgriMachina"
+                  placeholder="e.g. Buy Best Products & Equipment in India | Siddhiva"
                   value={formData.seo.seoTitle}
                   onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, seoTitle: e.target.value } }))}
                 />
@@ -1775,7 +1773,7 @@ const AdminCategoriesPage = () => {
                   rows={2}
                   className="input-field"
                   style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="e.g. Explore certified petrol and diesel power weeders for intercultural tilling with 50% govt subsidy."
+                  placeholder="e.g. Explore certified products and equipment on Siddhiva with warranty and fast delivery."
                   value={formData.seo.metaDescription}
                   onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, metaDescription: e.target.value } }))}
                 />
@@ -1790,7 +1788,7 @@ const AdminCategoriesPage = () => {
                     type="text"
                     className="input-field"
                     style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                    placeholder="e.g. power weeder price"
+                    placeholder="e.g. power tools price"
                     value={formData.seo.focusKeyword}
                     onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, focusKeyword: e.target.value } }))}
                   />
@@ -1804,7 +1802,7 @@ const AdminCategoriesPage = () => {
                     type="text"
                     className="input-field"
                     style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                    placeholder="e.g. https://agrimachina.in/products?category=power-weeders"
+                    placeholder="e.g. https://siddhiva.in/products?category=tools"
                     value={formData.seo.canonicalUrl}
                     onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, canonicalUrl: e.target.value } }))}
                   />

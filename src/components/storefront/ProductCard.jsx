@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Eye, CreditCard, ShieldCheck, Heart, Share2 } from 'lucide-react';
+import { ShoppingCart, Eye, CreditCard, Heart, Share2 } from 'lucide-react';
 import StarRating from '../common/StarRating';
 import ShareProductModal from './ShareProductModal';
 import { formatINR } from '../../services/emiHelper';
@@ -11,7 +11,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 const ProductCard = ({ product }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, trackRecentlyViewed } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToast } = useToast();
   const { t, tr } = useLanguage();
@@ -59,9 +59,7 @@ const ProductCard = ({ product }) => {
       }}
       className="hover-card group"
     >
-      {/* Floating Badges & Action Icons */}
       <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 3, display: 'flex', flexDirection: 'column', gap: '4px', pointerEvents: 'none' }}>
-        {/* Deal Badge */}
         {product.isDealOfTheDay && (
           <span
             className="badge"
@@ -78,7 +76,6 @@ const ProductCard = ({ product }) => {
           </span>
         )}
 
-        {/* Extra Coupon / Discount Tag */}
         {product.hasExtraDiscount && product.extraDiscountValue > 0 && (
           <span
             className="badge"
@@ -94,7 +91,6 @@ const ProductCard = ({ product }) => {
           </span>
         )}
 
-        {/* Stock Badges */}
         {isOutOfStock ? (
           <span className="badge badge-danger" style={{ fontSize: '0.65rem', fontWeight: 800 }}>
             {t('out_of_stock', 'Sold Out')}
@@ -106,7 +102,6 @@ const ProductCard = ({ product }) => {
         ) : null}
       </div>
 
-      {/* Top Right Floating Action Badges (Wishlist & Share) */}
       <div
         style={{
           position: 'absolute',
@@ -118,7 +113,6 @@ const ProductCard = ({ product }) => {
           gap: '6px'
         }}
       >
-        {/* Wishlist Button */}
         <button
           type="button"
           onClick={handleWishlistToggle}
@@ -146,7 +140,6 @@ const ProductCard = ({ product }) => {
           />
         </button>
 
-        {/* Share Button */}
         <button
           type="button"
           onClick={handleShareClick}
@@ -172,9 +165,9 @@ const ProductCard = ({ product }) => {
         </button>
       </div>
 
-      {/* Product Image Stage */}
       <Link
         to={`/product/${product.slug || product._id}`}
+        onClick={() => trackRecentlyViewed && trackRecentlyViewed(product)}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -201,17 +194,15 @@ const ProductCard = ({ product }) => {
         />
       </Link>
 
-      {/* Product Info & Actions */}
       <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', gap: '0.85rem' }}>
         <div>
-          {/* Brand, Unit / Variants Badge & Model */}
           {(() => {
             const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
             const unitBadgeText = product.unitDisplay || (product.netQuantity && product.unit ? `${product.netQuantity} ${product.unit}` : (product.unit && product.unit !== 'unit' && product.unit !== 'pcs' ? product.unit : ''));
             return (
               <div className="flex items-center justify-between" style={{ marginBottom: '0.35rem', fontSize: '0.75rem', gap: '0.5rem' }}>
                 <span style={{ fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {product.brand || 'AgriMachina'}
+                  {product.brand || 'Siddhiva'}
                 </span>
                 <div className="flex items-center gap-1">
                   {hasVariants ? (
@@ -232,8 +223,10 @@ const ProductCard = ({ product }) => {
             );
           })()}
 
-          {/* Title */}
-          <Link to={`/product/${product.slug || product._id}`}>
+          <Link 
+            to={`/product/${product.slug || product._id}`}
+            onClick={() => trackRecentlyViewed && trackRecentlyViewed(product)}
+          >
             <h4
               style={{
                 fontSize: '0.95rem',
@@ -253,7 +246,6 @@ const ProductCard = ({ product }) => {
             </h4>
           </Link>
 
-          {/* Rating */}
           <div style={{ marginBottom: '0.5rem' }}>
             <StarRating
               rating={product.ratings?.averageRating || 0}
@@ -264,7 +256,6 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div>
-          {/* Price */}
           {(() => {
             const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
             const minVarPrice = hasVariants ? Math.min(...product.variants.map((v) => Number(v.sellingPrice) || product.sellingPrice)) : product.sellingPrice;
@@ -289,7 +280,6 @@ const ProductCard = ({ product }) => {
             );
           })()}
 
-          {/* EMI Callout */}
           {product.emi?.enabled && product.emi?.minMonthlyEmi > 0 && (
             <div
               style={{
@@ -311,10 +301,10 @@ const ProductCard = ({ product }) => {
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="flex gap-2">
             <Link
               to={`/product/${product.slug || product._id}`}
+              onClick={() => trackRecentlyViewed && trackRecentlyViewed(product)}
               className="btn btn-secondary btn-sm"
               style={{ flex: 1, textAlign: 'center', justifyContent: 'center' }}
             >
@@ -341,7 +331,6 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
 
-      {/* Share Modal Dialog */}
       <ShareProductModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}

@@ -1,8 +1,10 @@
+'use client';
+
 import React, { createContext, useContext, useEffect, useCallback, useRef, useMemo } from 'react';
 
 const SyncContext = createContext(null);
 
-const BROADCAST_CHANNEL_NAME = 'agrimachina_live_sync';
+const BROADCAST_CHANNEL_NAME = 'siddhiva_live_sync';
 
 export const SyncProvider = ({ children }) => {
   const listenersRef = useRef(new Set());
@@ -73,7 +75,7 @@ export const SyncProvider = ({ children }) => {
     window.addEventListener('storage', handleStorage);
 
     // 3. Setup Server-Sent Events (SSE) for server-initiated updates
-    const apiBase = import.meta.env.VITE_API_URL || '';
+    const apiBase = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || '';
     const sseUrl = `${apiBase}/api/sync/stream`;
 
     let reconnectTimer = null;

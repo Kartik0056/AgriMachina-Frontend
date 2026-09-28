@@ -60,7 +60,6 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* SECTION 1: IDEAL FOR (REQUIRED) */}
       <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Sprout size={18} color="#34d399" />
@@ -70,7 +69,6 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
           Select the farm sizes and crop categories where this machine operates at peak efficiency. Displays as visual chips on PDP.
         </p>
 
-        {/* Preset Chips */}
         <div className="flex flex-wrap gap-2" style={{ marginBottom: '1rem' }}>
           {idealPresets.map((preset) => {
             const isSelected = currentIdeal.includes(preset);
@@ -94,7 +92,6 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
           })}
         </div>
 
-        {/* Custom Ideal For Input */}
         <div className="flex gap-2" style={{ maxWidth: '400px' }}>
           <input
             type="text"
@@ -111,7 +108,6 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
         </div>
       </div>
 
-      {/* SECTION 2: COMPATIBILITY ATTACHMENTS & BRANDS */}
       <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Wrench size={18} color="#34d399" />

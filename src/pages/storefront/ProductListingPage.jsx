@@ -252,7 +252,6 @@ const ProductListingPage = () => {
         </div>
       )}
 
-      {/* Main Layout: Fixed-width Sidebar + Robust Auto-Fit Products Grid */}
       <div className="catalog-layout" style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
         {/* Filter Sidebar */}
         <div
@@ -524,7 +523,6 @@ const ProductListingPage = () => {
           </div>
         </div>
 
-        {/* Products Grid Column */}
         <div style={{ flex: 1, minWidth: '300px' }}>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>

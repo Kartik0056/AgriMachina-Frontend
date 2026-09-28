@@ -100,8 +100,6 @@ const LightningDealsSection = () => {
           </Link>
         </div>
       </div>
-
-      {/* Deals Cards Grid */}
       <div
         style={{
           background: 'var(--bg-surface)',

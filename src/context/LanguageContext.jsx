@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext();
@@ -260,7 +262,7 @@ const translations = {
     login: 'Farmer Login',
     logout: 'Logout',
     cart: 'Cart',
-    helpline: '1800-AGRI-FARM',
+    helpline: '+91 63952 11953',
     kisan_desk: 'Kisan Priority Desk',
     free_delivery_alert: 'Free Palletized Farm Delivery on orders over ₹4,999',
     add_to_cart: 'Add to Cart',
@@ -354,7 +356,7 @@ const translations = {
     login: 'किसान लॉगिन',
     logout: 'लॉगआउट',
     cart: 'कार्ट',
-    helpline: '1800-AGRI-FARM (टोल-फ्री)',
+    helpline: '+91 63952 11953 (24x7 सेवा)',
     kisan_desk: 'किसान प्राथमिकता सेवा',
     free_delivery_alert: '₹4,999 से अधिक के ऑर्डर पर पूरे भारत में मुफ्त फार्म डिलीवरी',
     add_to_cart: 'कार्ट में जोड़ें',
@@ -448,7 +450,7 @@ const translations = {
     login: 'ખેડૂત લૉગિન',
     logout: 'લૉગઆઉટ',
     cart: 'કાર્ટ',
-    helpline: '1800-AGRI-FARM',
+    helpline: '+91 63952 11953',
     kisan_desk: 'કિસાન પ્રાયોરિટી ડેસ્ક',
     free_delivery_alert: '₹4,999 થી વધુના ઓર્ડર પર સમગ્ર ગુજરાત અને ભારતમાં ફ્રી ડિલિવરી',
     add_to_cart: 'કાર્ટમાં ઉમેરો',
@@ -542,7 +544,7 @@ const translations = {
     login: 'ਕਿਸਾਨ ਲੌਗਇਨ',
     logout: 'ਲੌਗਆਉਟ',
     cart: 'ਕਾਰਟ',
-    helpline: '1800-AGRI-FARM',
+    helpline: '+91 63952 11953',
     kisan_desk: 'ਕਿਸਾਨ ਡੈਸਕ',
     free_delivery_alert: '₹4,999 ਤੋਂ ਵੱਧ ਦੇ ਆਰਡਰ ਤੇ ਮੁਫਤ ਫਾਰਮ ਡਿਲਿਵਰੀ',
     add_to_cart: 'ਕਾਰਟ ਵਿੱਚ ਪਾਓ',
@@ -636,7 +638,7 @@ const translations = {
     login: 'शेतकरी लॉगिन',
     logout: 'लॉगआउट',
     cart: 'कार्ट',
-    helpline: '1800-AGRI-FARM',
+    helpline: '+91 63952 11953',
     kisan_desk: 'किसान डेस्क',
     free_delivery_alert: '₹4,999 पेक्षा जास्त ऑर्डरवर मोफत फार्म डिलिव्हरी',
     add_to_cart: 'कार्टमध्ये जोडा',
@@ -730,7 +732,7 @@ const translations = {
     login: 'రైతు లాగిన్',
     logout: 'లాగౌట్',
     cart: 'కార్ట్',
-    helpline: '1800-AGRI-FARM',
+    helpline: '+91 63952 11953',
     kisan_desk: 'కిసాన్ డెస్క్',
     free_delivery_alert: '₹4,999 పైబడి ఉచిత ఫార్మ్ డెలివరీ',
     add_to_cart: 'కార్ట్‌కు జోడించు',
@@ -814,6 +816,7 @@ const translations = {
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
+    if (typeof window === 'undefined') return 'en';
     try {
       const saved = localStorage.getItem('agri_lang');
       if (saved && translations[saved]) {

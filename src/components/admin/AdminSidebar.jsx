@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Tractor,
   FolderTree,
   FileSpreadsheet,
   Layers,
@@ -19,19 +18,20 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import SiddhivaLogo from '../common/SiddhivaLogo';
 
-const AdminSidebar = ({ pendingReviewsCount = 0, pendingOrdersCount = 0 }) => {
-  const { admin, hasPermission, adminPanelPath } = useAdminAuth();
+const AdminSidebar = ({ isMobileOpen, closeMobileSidebar, pendingReviewsCount = 0, openSupportCount = 0 }) => {
+  const { hasPermission, adminPanelPath } = useAdminAuth();
 
   const navItems = [
-    { to: `${adminPanelPath}`, label: 'Dashboard', icon: <LayoutDashboard size={18} />, exact: true },
-    { to: `${adminPanelPath}/products`, label: 'Machinery Catalog', icon: <Tractor size={18} />, perm: 'PRODUCT_CREATE' },
-    { to: `${adminPanelPath}/categories`, label: 'Categories & Taxonomy', icon: <FolderTree size={18} />, perm: 'PRODUCT_CREATE' },
-    { to: `${adminPanelPath}/products/bulk-import`, label: 'Bulk Import & Export', icon: <FileSpreadsheet size={18} />, perm: 'PRODUCT_IMPORT' },
-    { to: `${adminPanelPath}/inventory`, label: 'Inventory & Stock Logs', icon: <Layers size={18} />, perm: 'INVENTORY_UPDATE' },
-    { to: `${adminPanelPath}/orders`, label: 'Orders & Shipments', icon: <ShoppingBag size={18} />, perm: 'ORDER_VIEW', badge: pendingOrdersCount },
-    { to: `${adminPanelPath}/support`, label: 'Support & Inquiries Desk', icon: <MessageSquare size={18} /> },
-    { to: `${adminPanelPath}/banners`, label: 'Hero Slides & Banners', icon: <Sparkles size={18} />, perm: 'PRODUCT_CREATE' },
+    { to: `${adminPanelPath}/dashboard`, label: 'Overview Dashboard', icon: <LayoutDashboard size={18} /> },
+    { to: `${adminPanelPath}/products`, label: 'Products & Catalog', icon: <Layers size={18} />, perm: 'PRODUCT_CREATE' },
+    { to: `${adminPanelPath}/categories`, label: 'Categories & Subcategories', icon: <FolderTree size={18} />, perm: 'CATEGORY_MANAGE' },
+    { to: `${adminPanelPath}/products/bulk-import`, label: 'Bulk Excel / CSV Import', icon: <FileSpreadsheet size={18} />, perm: 'PRODUCT_CREATE' },
+    { to: `${adminPanelPath}/inventory`, label: 'Inventory & Alerts', icon: <Layers size={18} />, perm: 'INVENTORY_MANAGE' },
+    { to: `${adminPanelPath}/orders`, label: 'Orders & Fulfillment', icon: <ShoppingBag size={18} />, perm: 'ORDER_VIEW' },
+    { to: `${adminPanelPath}/support`, label: 'Customer Support Desk', icon: <MessageSquare size={18} />, perm: 'SUPPORT_MANAGE', badge: openSupportCount },
+    { to: `${adminPanelPath}/banners`, label: 'Hero Banners & Slides', icon: <Layers size={18} />, perm: 'BANNER_MANAGE' },
     { to: `${adminPanelPath}/reviews`, label: 'Reviews Moderation', icon: <Star size={18} />, perm: 'REVIEW_MODERATE', badge: pendingReviewsCount },
     { to: `${adminPanelPath}/coupons`, label: 'Coupons & Promos', icon: <Tag size={18} />, perm: 'COUPON_MANAGE' },
     { to: `${adminPanelPath}/emi`, label: 'EMI Financing Plans', icon: <CreditCard size={18} />, perm: 'PRODUCT_CREATE' },
@@ -45,18 +45,17 @@ const AdminSidebar = ({ pendingReviewsCount = 0, pendingOrdersCount = 0 }) => {
   return (
     <aside className="admin-sidebar">
       {/* Brand Header */}
-      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--admin-border)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div style={{ background: 'var(--admin-accent, #166534)', padding: '0.45rem', borderRadius: '8px' }}>
-          <Tractor size={20} color="#ffffff" />
-        </div>
-        <div>
-          <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--admin-text-main)', letterSpacing: '-0.02em' }}>
-            AGRI<span style={{ color: 'var(--admin-accent)' }}>ADMIN</span>
-          </div>
-          <div style={{ fontSize: '0.65rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Operations CMS
-          </div>
-        </div>
+      <div style={{ padding: '1.15rem 1.25rem', borderBottom: '1px solid var(--admin-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <SiddhivaLogo size="sm" light={true} />
+        {isMobileOpen && (
+          <button
+            type="button"
+            onClick={closeMobileSidebar}
+            style={{ background: 'none', border: 'none', color: 'var(--admin-text-muted)', cursor: 'pointer' }}
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       {/* Navigation Links */}

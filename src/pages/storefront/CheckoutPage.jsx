@@ -259,11 +259,11 @@ const CheckoutPage = () => {
 
       // Launch Razorpay Standard Checkout modal
       const options = {
-        key: rzpOrder.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TSjrOFCBv53fsK',
+        key: rzpOrder.keyId || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RAZORPAY_KEY_ID) || 'rzp_test_TSjrOFCBv53fsK',
         amount: rzpOrder.amount,
         currency: rzpOrder.currency || 'INR',
-        name: 'AgriMachina India',
-        description: `Farm Equipment Order #${createdOrder.orderNumber}`,
+        name: 'Siddhiva Store',
+        description: `Order #${createdOrder.orderNumber}`,
         order_id: rzpOrder.id,
         prefill: {
           name: shippingAddress.fullName || user?.name,
@@ -340,8 +340,6 @@ const CheckoutPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Side: Auth Gate OR Delivery Address & Payment */}
         <div className="md:col-span-2 flex flex-col gap-6">
-
-          {/* STEP 1: AUTHENTICATION CHECK */}
           {!isAuthenticated ? (
             <div style={{
               background: 'var(--bg-surface)',

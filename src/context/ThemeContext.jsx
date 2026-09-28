@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
@@ -15,6 +17,7 @@ export const STORE_THEMES = THEMES;
 export const ThemeProvider = ({ children }) => {
   // Storefront theme (light / dark / forest / amber)
   const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light';
     try {
       const savedTheme = localStorage.getItem('agri_theme');
       if (['light', 'dark', 'forest', 'amber'].includes(savedTheme)) {
@@ -31,6 +34,7 @@ export const ThemeProvider = ({ children }) => {
 
   // Admin Portal Theme (light / dark / forest / amber)
   const [adminTheme, setAdminTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'dark';
     try {
       const savedAdminTheme = localStorage.getItem('agri_admin_theme');
       if (['light', 'dark', 'forest', 'amber'].includes(savedAdminTheme)) {

@@ -18,25 +18,26 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useToast } from '../../context/ToastContext';
+import SiddhivaLogo from '../common/SiddhivaLogo';
 
 const authTextByLang = {
   en: {
-    portalBadge: 'Farmer Priority Portal',
-    welcomeTitle: 'Welcome to AgriMachina',
-    registerTitle: 'Create Verified Farmer Account',
-    welcomeSubtitle: 'Sign in to access your farm machinery orders, subsidies & 0% EMI.',
-    registerSubtitle: 'Register to unlock DBT subsidies, live GPS shipping & OEM warranties.',
-    benefitTracking: 'Live GPS Tracking',
-    benefitSubsidy: '0% EMI & DBT Subsidy',
-    benefitInvoice: 'GST Tax Invoices',
+    portalBadge: 'Siddhiva Customer Portal',
+    welcomeTitle: 'Welcome to Siddhiva',
+    registerTitle: 'Create Your Siddhiva Account',
+    welcomeSubtitle: 'Sign in to access your orders, track shipments & manage 0% EMI.',
+    registerSubtitle: 'Register to unlock special discounts, live GPS delivery tracking & brand warranties.',
+    benefitTracking: 'Live GPS Delivery Tracking',
+    benefitSubsidy: '0% Interest No-Cost EMI',
+    benefitInvoice: 'Official GST Tax Invoices',
     tabSignIn: 'Sign In',
-    tabRegister: 'New Farmer (Register)',
+    tabRegister: 'New Customer (Register)',
     nameLabel: 'Full Name *',
-    namePlaceholder: 'e.g. Rampal Singh',
+    namePlaceholder: 'e.g. Rahul Sharma',
     phoneLabel: 'Mobile Number *',
-    phonePlaceholder: 'e.g. 7823354321',
-    emailLabel: 'Farmer Email Address *',
-    emailPlaceholder: 'e.g. rampal@gmail.com',
+    phonePlaceholder: 'e.g. 9876543210',
+    emailLabel: 'Email Address *',
+    emailPlaceholder: 'e.g. rahul@gmail.com',
     passwordLabel: 'Password *',
     passwordPlaceholder: 'Enter secure password',
     show: 'Show',
@@ -47,12 +48,12 @@ const authTextByLang = {
     guestDismiss: 'Skip for now & Continue Browsing as Guest →',
     fillRequired: 'Please fill all required fields.',
     enterEmailPass: 'Please enter both email and password.',
-    welcomeBack: 'Welcome back to AgriMachina!',
-    welcomeNew: (name) => `Welcome to AgriMachina, ${name}! 🌾`
+    welcomeBack: 'Welcome back to Siddhiva!',
+    welcomeNew: (name) => `Welcome to Siddhiva, ${name}! ✨`
   },
   hi: {
-    portalBadge: 'किसान प्राथमिकता पोर्टल',
-    welcomeTitle: 'AgriMachina में आपका स्वागत है',
+    portalBadge: 'प्राथमिकता ग्राहक पोर्टल',
+    welcomeTitle: 'Siddhiva में आपका स्वागत है',
     registerTitle: 'सत्यापित किसान खाता बनाएं',
     welcomeSubtitle: 'अपने कृषि मशीन ऑर्डर्स, सरकारी सब्सिडी और 0% EMI के लिए लॉगिन करें।',
     registerSubtitle: 'DBT सब्सिडी, लाइव GPS डिलीवरी और OEM वारंटी के लिए अभी रजिस्टर करें।',
@@ -77,12 +78,12 @@ const authTextByLang = {
     guestDismiss: 'अभी छोड़ें व अतिथि के रूप में ब्राउज़ करें →',
     fillRequired: 'कृपया सभी आवश्यक फ़ील्ड भरें।',
     enterEmailPass: 'कृपया ईमेल और पासवर्ड दोनों दर्ज करें।',
-    welcomeBack: 'AgriMachina में पुनः स्वागत है!',
-    welcomeNew: (name) => `AgriMachina में आपका स्वागत है, ${name}! 🌾`
+    welcomeBack: 'Siddhiva में पुनः स्वागत है!',
+    welcomeNew: (name) => `Siddhiva में आपका स्वागत है, ${name}! ✨`
   },
   gu: {
-    portalBadge: 'કિસાન પ્રાયોરિટી પોર્ટલ',
-    welcomeTitle: 'AgriMachina માં આપનું સ્વાગત છે',
+    portalBadge: 'પ્રાયોરિટી પોર્ટલ',
+    welcomeTitle: 'Siddhiva માં આપનું સ્વાગત છે',
     registerTitle: 'ખેડૂત એકાઉન્ટ બનાવો',
     welcomeSubtitle: 'તમારા મશીનરી ઓર્ડર, સબસિડી અને 0% EMI માટે લૉગિન કરો.',
     registerSubtitle: 'DBT સબસિડી, લાઈવ GPS ટ્રેકિંગ અને વોરંટી મેળવવા રજીસ્ટ્રેશન કરો.',
@@ -107,12 +108,12 @@ const authTextByLang = {
     guestDismiss: 'હમણાં માટે છોડો અને મુલાકાત ચાલુ રાખો →',
     fillRequired: 'કૃપા કરીને બધી વિગતો ભરો.',
     enterEmailPass: 'કૃપા કરીને ઈમેલ અને પાસવર્ડ દાખલ કરો.',
-    welcomeBack: 'AgriMachina માં આપનું સ્વાગત છે!',
-    welcomeNew: (name) => `AgriMachina માં આપનું સ્વાગત છે, ${name}! 🌾`
+    welcomeBack: 'Siddhiva માં આપનું સ્વાગત છે!',
+    welcomeNew: (name) => `Siddhiva માં આપનું સ્વાગત છે, ${name}! ✨`
   },
   pa: {
-    portalBadge: 'ਕਿਸਾਨ ਪ੍ਰਾਥਮਿਕਤਾ ਪੋਰਟਲ',
-    welcomeTitle: 'AgriMachina ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ',
+    portalBadge: 'ਪ੍ਰਾਥਮਿਕਤਾ ਪੋਰਟਲ',
+    welcomeTitle: 'Siddhiva ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ',
     registerTitle: 'ਕਿਸਾਨ ਖਾਤਾ ਬਣਾਓ',
     welcomeSubtitle: 'ਆਪਣੇ ਖੇਤੀ ਮਸ਼ੀਨਰੀ ਆਰਡਰ, ਸਬਸਿਡੀ ਅਤੇ 0% ਕਿਸ਼ਤਾਂ ਲਈ ਲੌਗਇਨ ਕਰੋ।',
     registerSubtitle: 'ਸਰਕਾਰੀ ਸਬਸਿਡੀ, ਲਾਈਵ GPS ਟਰੈਕਿੰਗ ਅਤੇ ਵਾਰੰਟੀ ਲਈ ਰਜਿਸਟਰ ਕਰੋ।',
@@ -137,12 +138,12 @@ const authTextByLang = {
     guestDismiss: 'ਹੁਣੇ ਛੱਡੋ ਤੇ ਮਹਿਮਾਨ ਵਜੋਂ ਵੇਖੋ →',
     fillRequired: 'ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਖਾਨੇ ਭਰੋ।',
     enterEmailPass: 'ਕਿਰਪਾ ਕਰਕੇ ਈਮੇਲ ਅਤੇ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ।',
-    welcomeBack: 'AgriMachina ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ!',
-    welcomeNew: (name) => `AgriMachina ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ, ${name}! 🌾`
+    welcomeBack: 'Siddhiva ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ!',
+    welcomeNew: (name) => `Siddhiva ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ, ${name}! ✨`
   },
   mr: {
-    portalBadge: 'शेतकरी प्राधान्य पोर्टल',
-    welcomeTitle: 'AgriMachina मध्ये आपले स्वागत आहे',
+    portalBadge: 'प्राधान्य पोर्टल',
+    welcomeTitle: 'Siddhiva मध्ये आपले स्वागत आहे',
     registerTitle: 'शेतकरी खाते तयार करा',
     welcomeSubtitle: 'आपल्या यंत्रसामग्री ऑर्डर्स, सबसिडी आणि 0% हप्त्यांसाठी लॉगिन करा.',
     registerSubtitle: 'शासकीय सबसिडी, थेट GPS ट्रॅकिंग आणि वॉरंटीसाठी नोंदणी करा.',
@@ -167,12 +168,12 @@ const authTextByLang = {
     guestDismiss: 'सध्या वगळा आणि पाहुणे म्हणून पहा →',
     fillRequired: 'कृपया सर्व माहिती भरा.',
     enterEmailPass: 'कृपया ईमेल आणि पासवर्ड दोन्ही भरा.',
-    welcomeBack: 'AgriMachina मध्ये पुन्हा स्वागत आहे!',
-    welcomeNew: (name) => `AgriMachina मध्ये स्वागत आहे, ${name}! 🌾`
+    welcomeBack: 'Siddhiva मध्ये पुन्हा स्वागत आहे!',
+    welcomeNew: (name) => `Siddhiva मध्ये स्वागत आहे, ${name}! ✨`
   },
   te: {
-    portalBadge: 'రైతు ప్రాధాన్యత పోర్టల్',
-    welcomeTitle: 'AgriMachina కు స్వాగతం',
+    portalBadge: 'ప్రాధాన్యత పోర్టల్',
+    welcomeTitle: 'Siddhiva కు స్వాగతం',
     registerTitle: 'రైతు ఖాతా సృష్టించండి',
     welcomeSubtitle: 'మీ వ్యవసాయ యంత్ర ఆర్డర్లు, సబ్సిడీ మరియు 0% EMI కోసం లాగిన్ అవ్వండి.',
     registerSubtitle: 'ప్రభుత్వ సబ్సిడీ, లైవ్ GPS ట్రాకింగ్ మరియు వారంటీ కోసం రిజిస్టర్ అవ్వండి.',
@@ -197,8 +198,8 @@ const authTextByLang = {
     guestDismiss: 'ఇప్పుడు దాటవేసి చూడండి →',
     fillRequired: 'దయచేసి అన్ని వివరాలు పూరించండి.',
     enterEmailPass: 'దయచేసి ఈమెయిల్ మరియు పాస్‌వర్డ్ నమోదు చేయండి.',
-    welcomeBack: 'AgriMachina కు తిరిగి స్వాగతం!',
-    welcomeNew: (name) => `AgriMachina కు స్వాగతం, ${name}! 🌾`
+    welcomeBack: 'Siddhiva కు తిరిగి స్వాగతం!',
+    welcomeNew: (name) => `Siddhiva కు స్వాగతం, ${name}! ✨`
   }
 };
 
@@ -299,15 +300,13 @@ const WelcomeAuthModal = () => {
   return (
     <div className="modal-overlay" onClick={handleClose}>
       <div
-        className="modal-content"
+        className="modal-content auth-modal-content"
         style={{
           maxWidth: '560px',
           width: '100%',
           borderRadius: '24px',
           padding: '2rem 1.75rem',
-          background: 'var(--bg-surface, #ffffff)',
-          border: '1px solid var(--border-color)',
-          boxShadow: '0 25px 60px -12px rgba(6, 36, 22, 0.4), 0 0 0 1px rgba(22, 101, 52, 0.15)',
+          boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.45)',
           position: 'relative'
         }}
         onClick={(e) => e.stopPropagation()}
@@ -326,7 +325,7 @@ const WelcomeAuthModal = () => {
             width: '36px',
             height: '36px',
             cursor: 'pointer',
-            color: 'var(--text-muted, #64748b)',
+            color: 'var(--text-main, #64748b)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -341,24 +340,13 @@ const WelcomeAuthModal = () => {
 
         {/* Welcome Header & Branding */}
         <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-          <div style={{
-            width: '54px',
-            height: '54px',
-            borderRadius: '16px',
-            background: 'linear-gradient(135deg, #166534, #15803d)',
-            color: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 0.75rem auto',
-            boxShadow: '0 8px 20px rgba(22, 101, 52, 0.25)'
-          }}>
-            <Tractor size={28} />
+          <div style={{ marginBottom: '0.85rem' }}>
+            <SiddhivaLogo size="lg" />
           </div>
 
           <div className="flex items-center justify-center gap-1.5" style={{ marginBottom: '0.25rem' }}>
             <Sparkles size={15} color="#f59e0b" />
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-400, #22c55e)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {txt.portalBadge}
             </span>
           </div>
@@ -373,76 +361,31 @@ const WelcomeAuthModal = () => {
         </div>
 
         {/* Benefits Ribbon */}
-        <div style={{
-          background: 'var(--primary-50, #f0fdf4)',
-          border: '1px solid var(--primary-100, #dcfce7)',
-          borderRadius: '12px',
-          padding: '0.6rem 0.85rem',
-          marginBottom: '1.25rem',
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '0.5rem',
-          fontSize: '0.725rem',
-          color: 'var(--primary-800, #14532d)',
-          fontWeight: 700
-        }}>
-          <span className="flex items-center gap-1">
-            <Truck size={13} color="#16a34a" /> {txt.benefitTracking}
+        <div className="auth-benefits-ribbon">
+          <span className="flex items-center gap-1.5">
+            <Truck size={14} color="#22c55e" /> {txt.benefitTracking}
           </span>
-          <span className="flex items-center gap-1">
-            <ShieldCheck size={13} color="#16a34a" /> {txt.benefitSubsidy}
+          <span className="flex items-center gap-1.5">
+            <ShieldCheck size={14} color="#22c55e" /> {txt.benefitSubsidy}
           </span>
-          <span className="flex items-center gap-1">
-            <Gift size={13} color="#16a34a" /> {txt.benefitInvoice}
+          <span className="flex items-center gap-1.5">
+            <Gift size={14} color="#22c55e" /> {txt.benefitInvoice}
           </span>
         </div>
 
         {/* Tab Switcher (Sign In vs Register) */}
-        <div style={{
-          display: 'flex',
-          background: 'var(--bg-surface-alt, #f1f5f9)',
-          borderRadius: '12px',
-          padding: '4px',
-          marginBottom: '1.25rem',
-          border: '1px solid var(--border-color)'
-        }}>
+        <div className="auth-tab-switcher">
           <button
             type="button"
             onClick={() => setIsRegister(false)}
-            style={{
-              flex: 1,
-              padding: '0.55rem',
-              borderRadius: '9px',
-              border: 'none',
-              fontWeight: 800,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              background: !isRegister ? 'var(--bg-surface, #ffffff)' : 'transparent',
-              color: !isRegister ? 'var(--primary-600, #166534)' : 'var(--text-muted, #64748b)',
-              boxShadow: !isRegister ? '0 2px 6px rgba(0,0,0,0.08)' : 'none',
-              transition: 'all 0.15s ease'
-            }}
+            className={`auth-tab-btn ${!isRegister ? 'active' : ''}`}
           >
             {txt.tabSignIn}
           </button>
           <button
             type="button"
             onClick={() => setIsRegister(true)}
-            style={{
-              flex: 1,
-              padding: '0.55rem',
-              borderRadius: '9px',
-              border: 'none',
-              fontWeight: 800,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              background: isRegister ? 'var(--bg-surface, #ffffff)' : 'transparent',
-              color: isRegister ? 'var(--primary-600, #166534)' : 'var(--text-muted, #64748b)',
-              boxShadow: isRegister ? '0 2px 6px rgba(0,0,0,0.08)' : 'none',
-              transition: 'all 0.15s ease'
-            }}
+            className={`auth-tab-btn ${isRegister ? 'active' : ''}`}
           >
             {txt.tabRegister}
           </button>
@@ -453,15 +396,17 @@ const WelcomeAuthModal = () => {
           {isRegister && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="input-group">
-                <label className="input-label flex items-center gap-1" style={{ fontSize: '0.785rem', fontWeight: 700, marginBottom: '0.25rem' }}>
-                  <UserIcon size={12} color="var(--primary-600)" />
-                  <span>{txt.nameLabel}</span>
+                <label className="auth-input-label">
+                  <span className="flex items-center gap-1">
+                    <UserIcon size={13} color="var(--primary-400, #22c55e)" />
+                    <span>{txt.nameLabel}</span>
+                  </span>
                 </label>
                 <input
                   type="text"
                   required={isRegister}
                   className="input-field"
-                  style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px' }}
+                  style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
                   placeholder={txt.namePlaceholder}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -469,15 +414,17 @@ const WelcomeAuthModal = () => {
               </div>
 
               <div className="input-group">
-                <label className="input-label flex items-center gap-1" style={{ fontSize: '0.785rem', fontWeight: 700, marginBottom: '0.25rem' }}>
-                  <Phone size={12} color="var(--primary-600)" />
-                  <span>{txt.phoneLabel}</span>
+                <label className="auth-input-label">
+                  <span className="flex items-center gap-1">
+                    <Phone size={13} color="var(--primary-400, #22c55e)" />
+                    <span>{txt.phoneLabel}</span>
+                  </span>
                 </label>
                 <input
                   type="tel"
                   required={isRegister}
                   className="input-field"
-                  style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px' }}
+                  style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
                   placeholder={txt.phonePlaceholder}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -487,15 +434,17 @@ const WelcomeAuthModal = () => {
           )}
 
           <div className="input-group">
-            <label className="input-label flex items-center gap-1" style={{ fontSize: '0.785rem', fontWeight: 700, marginBottom: '0.25rem' }}>
-              <Mail size={12} color="var(--primary-600)" />
-              <span>{txt.emailLabel}</span>
+            <label className="auth-input-label">
+              <span className="flex items-center gap-1">
+                <Mail size={13} color="var(--primary-400, #22c55e)" />
+                <span>{txt.emailLabel}</span>
+              </span>
             </label>
             <input
               type="email"
               required
               className="input-field"
-              style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px' }}
+              style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
               placeholder={txt.emailPlaceholder}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -503,15 +452,15 @@ const WelcomeAuthModal = () => {
           </div>
 
           <div className="input-group">
-            <label className="input-label flex items-center justify-between" style={{ fontSize: '0.785rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+            <label className="auth-input-label">
               <span className="flex items-center gap-1">
-                <Lock size={12} color="var(--primary-600)" />
+                <Lock size={13} color="var(--primary-400, #22c55e)" />
                 <span>{txt.passwordLabel}</span>
               </span>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                style={{ background: 'none', border: 'none', color: 'var(--primary-600)', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                className="auth-show-btn"
               >
                 {showPassword ? <EyeOff size={13} /> : <Eye size={13} />}
                 <span>{showPassword ? txt.hide : txt.show}</span>
@@ -521,7 +470,7 @@ const WelcomeAuthModal = () => {
               type={showPassword ? 'text' : 'password'}
               required
               className="input-field"
-              style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px' }}
+              style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
               placeholder={txt.passwordPlaceholder}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -557,16 +506,7 @@ const WelcomeAuthModal = () => {
           <button
             type="button"
             onClick={handleClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-muted, #64748b)',
-              fontSize: '0.825rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              textDecoration: 'underline'
-            }}
-            className="hover:text-green-700"
+            className="auth-guest-link"
           >
             {txt.guestDismiss}
           </button>

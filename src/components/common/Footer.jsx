@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Tractor, ShieldCheck, Truck, CreditCard, Headphones, Award } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, Headphones } from 'lucide-react';
+import SiddhivaLogo from './SiddhivaLogo';
 
 const Footer = () => {
   return (
@@ -13,8 +14,8 @@ const Footer = () => {
               <ShieldCheck size={28} color="#22c55e" />
             </div>
             <div>
-              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>100% Genuine Machinery</div>
-              <div style={{ fontSize: '0.8rem' }}>Direct OEM manufacturer warranty</div>
+              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>100% Genuine Products</div>
+              <div style={{ fontSize: '0.8rem' }}>Direct manufacturer warranty</div>
             </div>
           </div>
 
@@ -23,7 +24,7 @@ const Footer = () => {
               <CreditCard size={28} color="#f59e0b" />
             </div>
             <div>
-              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>Easy Kisan EMI</div>
+              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>Easy No-Cost EMI</div>
               <div style={{ fontSize: '0.8rem' }}>Flexible 3 to 36 months tenures</div>
             </div>
           </div>
@@ -33,8 +34,8 @@ const Footer = () => {
               <Truck size={28} color="#38bdf8" />
             </div>
             <div>
-              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>Pan-India Farm Delivery</div>
-              <div style={{ fontSize: '0.8rem' }}>Secure heavy machinery transport</div>
+              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>Pan-India Fast Delivery</div>
+              <div style={{ fontSize: '0.8rem' }}>Doorstep delivery with live tracking</div>
             </div>
           </div>
 
@@ -43,8 +44,8 @@ const Footer = () => {
               <Headphones size={28} color="#a855f7" />
             </div>
             <div>
-              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>Agronomy Expert Advisory</div>
-              <div style={{ fontSize: '0.8rem' }}>Field support & machinery guides</div>
+              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem' }}>24x7 Customer Support</div>
+              <div style={{ fontSize: '0.8rem' }}>Call, WhatsApp, & email advisory</div>
             </div>
           </div>
         </div>
@@ -54,52 +55,48 @@ const Footer = () => {
       <div style={{ padding: '3.5rem 0' }}>
         <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center gap-2" style={{ marginBottom: '1rem' }}>
-              <div style={{ background: '#166534', padding: '0.4rem', borderRadius: '8px' }}>
-                <Tractor size={22} color="#86efac" />
-              </div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#ffffff' }}>
-                AGRI<span style={{ color: '#22c55e' }}>MACHINA</span>
-              </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <SiddhivaLogo size="md" light={true} />
             </div>
             <p style={{ fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-              India's trusted commercial agricultural machinery marketplace. Empowering farmers with modern mechanization, genuine OEM parts, and affordable financing.
+              Siddhiva is India's premier multi-category online store and commercial marketplace. Providing top-quality equipment, tools, home essentials, electronics, and smart machinery with transparent pricing and verified warranties.
             </p>
-            <div style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 600, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-              <div>📞 Kisan Helpline: 1800-AGRI-FARM</div>
-              <div>💬 WhatsApp Support: +91 90277 99171</div>
+            <div style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 600, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              <div>📞 Helpline: <a href="tel:6395211953" style={{ color: '#86efac', textDecoration: 'none' }}>+91 63952 11953</a></div>
+              <div>💬 WhatsApp: <a href="https://wa.me/916395211953" target="_blank" rel="noreferrer" style={{ color: '#86efac', textDecoration: 'none' }}>+91 63952 11953</a></div>
+              <div>✉️ Email: <a href="mailto:kartikkumar151998@gmail.com" style={{ color: '#86efac', textDecoration: 'none' }}>kartikkumar151998@gmail.com</a></div>
             </div>
           </div>
 
           <div>
-            <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1rem' }}>Machinery Categories</div>
+            <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1rem' }}>Popular Categories</div>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem' }}>
               <li><Link to="/products?category=Power+Weeders" className="hover:text-white">Power Weeders & Tillers</Link></li>
-              <li><Link to="/products?category=Water+Pumps+%26+Solar+Irrigation" className="hover:text-white">Solar Submersible Pumps</Link></li>
-              <li><Link to="/products?category=Rotavators+%26+Tillers" className="hover:text-white">Tractor Rotavators</Link></li>
+              <li><Link to="/products?category=Water+Pumps+%26+Solar+Irrigation" className="hover:text-white">Water & Solar Pumps</Link></li>
+              <li><Link to="/products?category=Rotavators+%26+Tillers" className="hover:text-white">Tillers & Rotavators</Link></li>
               <li><Link to="/products?category=Brush+Cutters+%26+Harvesters" className="hover:text-white">Commercial Brush Cutters</Link></li>
               <li><Link to="/products?category=Agricultural+Sprayers" className="hover:text-white">Battery & Engine Sprayers</Link></li>
             </ul>
           </div>
 
           <div>
-            <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1rem' }}>Ideal Farm Solutions</div>
+            <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1rem' }}>Solutions & Applications</div>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem' }}>
-              <li><Link to="/products?idealFor=Vegetable+Farming" className="hover:text-white">Vegetable & Horticulture Farms</Link></li>
-              <li><Link to="/products?idealFor=Orchards" className="hover:text-white">Fruit Orchards & Vineyards</Link></li>
-              <li><Link to="/products?idealFor=Sugarcane" className="hover:text-white">Sugarcane Inter-Cultivation</Link></li>
-              <li><Link to="/products?idealFor=Cotton" className="hover:text-white">Cotton Crop Mechanization</Link></li>
-              <li><Link to="/products?idealFor=Small+Farms" className="hover:text-white">Small & Marginal Farm Kits</Link></li>
+              <li><Link to="/products?idealFor=Vegetable+Farming" className="hover:text-white">Gardening & Horticulture</Link></li>
+              <li><Link to="/products?idealFor=Orchards" className="hover:text-white">Orchards & Plantations</Link></li>
+              <li><Link to="/products?idealFor=Sugarcane" className="hover:text-white">Commercial Farming</Link></li>
+              <li><Link to="/products?idealFor=Small+Farms" className="hover:text-white">Home & Workshop Kits</Link></li>
+              <li><Link to="/products" className="hover:text-white">Explore All Catalog</Link></li>
             </ul>
           </div>
 
           <div>
-            <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1rem' }}>Kisan Finance & Services</div>
+            <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1rem' }}>Customer Services & Financing</div>
             <p style={{ fontSize: '0.85rem', marginBottom: '0.75rem' }}>
-              We partner with leading agricultural banks including SBI Kisan Credit, HDFC Agri Finance, and Bajaj Finserv to provide subsidized low-interest equipment loans.
+              We offer seamless payment options including UPI, Net Banking, Credit/Debit cards, and 0% No-Cost EMI through leading banks and Razorpay.
             </p>
             <div className="badge badge-gold" style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}>
-              GST Invoicing & Input Tax Credit
+              GST Invoicing & Safe Delivery Guaranteed
             </div>
           </div>
         </div>
@@ -107,7 +104,7 @@ const Footer = () => {
 
       <div style={{ borderTop: '1px solid #14532d', padding: '1.25rem 0', fontSize: '0.8rem', textAlign: 'center' }}>
         <div className="container">
-          © {new Date().getFullYear()} AgriMachina India Commercial Platform. All Rights Reserved. Built for Indian Agriculture.
+          © {new Date().getFullYear()} Siddhiva Commerce Platform. All Rights Reserved. Built for Consumers and Businesses.
         </div>
       </div>
     </footer>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Play, ZoomIn, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
@@ -10,7 +10,7 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
   }
 
   gallery.forEach((item, idx) => {
-    if (item.url && !allImages.some(img => img.url === item.url)) {
+    if (item.url && !allImages.some((img) => img.url === item.url)) {
       allImages.push({
         url: item.url,
         tag: item.tag || `0${idx + 2} View`,
@@ -26,11 +26,19 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  // Smooth Zoom Lens
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (allImages.length <= 1 || isZoomed || showVideo || isFullscreen) return;
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % allImages.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [allImages.length, isZoomed, showVideo, isFullscreen]);
 
   const activeMedia = allImages[activeIndex] || allImages[0];
 
@@ -68,7 +76,6 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
 
   return (
     <div className="flex flex-col gap-4" style={{ width: '100%' }}>
-      {/* Seamless Floating Machinery Showcase Frame */}
       <div
         ref={containerRef}
         onMouseEnter={() => !showVideo && setIsZoomed(true)}
@@ -93,7 +100,6 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
       >
         {showVideo && video?.url ? (
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#070d1a', zIndex: 10 }}>
-            {/* Close Video / Return to Photos Button */}
             <button
               type="button"
               onClick={() => setShowVideo(false)}
@@ -165,19 +171,19 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
           </div>
         )}
 
-        {/* Top Badges & Controls */}
-        <div style={{
-          position: 'absolute',
-          top: '16px',
-          left: '16px',
-          right: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          pointerEvents: 'none',
-          zIndex: 8
-        }}>
-          {/* Media Angle Tag */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '16px',
+            left: '16px',
+            right: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            pointerEvents: 'none',
+            zIndex: 8
+          }}
+        >
           {!showVideo && activeMedia.tag && (
             <span
               style={{
@@ -197,7 +203,6 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
             </span>
           )}
 
-          {/* Right Action Icons (Zoom & Fullscreen) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', pointerEvents: 'auto' }}>
             {!showVideo && !isZoomed && (
               <div
@@ -248,76 +253,8 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
             )}
           </div>
         </div>
-
-        {/* Carousel Arrow Navigation */}
-        {allImages.length > 1 && !isZoomed && (
-          <>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePrevImage();
-              }}
-              style={{
-                position: 'absolute',
-                left: '14px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'rgba(15, 23, 42, 0.65)',
-                backdropFilter: 'blur(6px)',
-                color: '#ffffff',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '50%',
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                zIndex: 8,
-                transition: 'all 0.15s ease'
-              }}
-              className="hover:scale-110"
-              title="Previous Photo"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNextImage();
-              }}
-              style={{
-                position: 'absolute',
-                right: '14px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'rgba(15, 23, 42, 0.65)',
-                backdropFilter: 'blur(6px)',
-                color: '#ffffff',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '50%',
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                zIndex: 8,
-                transition: 'all 0.15s ease'
-              }}
-              className="hover:scale-110"
-              title="Next Photo"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </>
-        )}
       </div>
 
-      {/* Thumbnails Row with Clean, Unobstructed Previews & No Clipping */}
       <div
         className="flex gap-3"
         style={{
@@ -368,7 +305,6 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
           );
         })}
 
-        {/* Video Thumbnail Button */}
         {video?.url && (
           <button
             type="button"
@@ -399,162 +335,159 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
         )}
       </div>
 
-      {/* Lightbox / Fullscreen High-Resolution Viewer Portal (Completely bypasses stacking context) */}
-      {isFullscreen && createPortal(
-        <div
-          onClick={() => setIsFullscreen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(3, 7, 18, 0.96)',
-            backdropFilter: 'blur(16px)',
-            zIndex: 99999999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-            animation: 'fadeIn 0.2s ease-out forwards'
-          }}
-        >
-          {/* Close Fullscreen Button */}
-          <button
-            type="button"
+      {isFullscreen &&
+        createPortal(
+          <div
             onClick={() => setIsFullscreen(false)}
             style={{
-              position: 'absolute',
-              top: '24px',
-              right: '24px',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '50%',
-              width: '46px',
-              height: '46px',
+              position: 'fixed',
+              inset: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(3, 7, 18, 0.96)',
+              backdropFilter: 'blur(16px)',
+              zIndex: 99999999,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#ffffff',
-              cursor: 'pointer',
-              zIndex: 100000000,
-              transition: 'all 0.15s ease'
-            }}
-            className="hover:scale-110 hover:bg-white/25"
-            title="Close Fullscreen View (Esc)"
-          >
-            <X size={26} />
-          </button>
-
-          {/* Left / Right Carousel Navigation in Fullscreen */}
-          {allImages.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrevImage();
-                }}
-                style={{
-                  position: 'absolute',
-                  left: '24px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  borderRadius: '50%',
-                  width: '52px',
-                  height: '52px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  cursor: 'pointer',
-                  zIndex: 100000000,
-                  transition: 'all 0.15s ease'
-                }}
-                className="hover:scale-110 hover:bg-white/25"
-                title="Previous Photo"
-              >
-                <ChevronLeft size={30} />
-              </button>
-
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNextImage();
-                }}
-                style={{
-                  position: 'absolute',
-                  right: '24px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  borderRadius: '50%',
-                  width: '52px',
-                  height: '52px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  cursor: 'pointer',
-                  zIndex: 100000000,
-                  transition: 'all 0.15s ease'
-                }}
-                className="hover:scale-110 hover:bg-white/25"
-                title="Next Photo"
-              >
-                <ChevronRight size={30} />
-              </button>
-            </>
-          )}
-
-          {/* Fullscreen High-Res Image Container */}
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '1rem',
-              maxWidth: '92vw',
-              maxHeight: '90vh'
+              padding: '1.5rem',
+              animation: 'fadeIn 0.2s ease-out forwards'
             }}
           >
-            <img
-              src={activeMedia.url}
-              alt={activeMedia.alt}
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(false)}
               style={{
-                maxWidth: '90vw',
-                maxHeight: '82vh',
-                objectFit: 'contain',
-                borderRadius: '16px',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.7)',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
+                position: 'absolute',
+                top: '24px',
+                right: '24px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '50%',
+                width: '46px',
+                height: '46px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                cursor: 'pointer',
+                zIndex: 100000000,
+                transition: 'all 0.15s ease'
               }}
-            />
+              className="hover:scale-110 hover:bg-white/25"
+              title="Close Fullscreen View (Esc)"
+            >
+              <X size={26} />
+            </button>
 
-            {activeMedia.tag && (
-              <div
-                style={{
-                  background: 'rgba(255, 255, 255, 0.12)',
-                  backdropFilter: 'blur(8px)',
-                  color: '#ffffff',
-                  padding: '0.4rem 1rem',
-                  borderRadius: '999px',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}
-              >
-                📷 {activeMedia.tag} ({activeIndex + 1} / {allImages.length})
-              </div>
+            {allImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrevImage();
+                  }}
+                  style={{
+                    position: 'absolute',
+                    left: '24px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    borderRadius: '50%',
+                    width: '52px',
+                    height: '52px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    cursor: 'pointer',
+                    zIndex: 100000000,
+                    transition: 'all 0.15s ease'
+                  }}
+                  className="hover:scale-110 hover:bg-white/25"
+                  title="Previous Photo"
+                >
+                  <ChevronLeft size={30} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNextImage();
+                  }}
+                  style={{
+                    position: 'absolute',
+                    right: '24px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    borderRadius: '50%',
+                    width: '52px',
+                    height: '52px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    cursor: 'pointer',
+                    zIndex: 100000000,
+                    transition: 'all 0.15s ease'
+                  }}
+                  className="hover:scale-110 hover:bg-white/25"
+                  title="Next Photo"
+                >
+                  <ChevronRight size={30} />
+                </button>
+              </>
             )}
-          </div>
-        </div>,
-        document.body
-      )}
+
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1rem',
+                maxWidth: '92vw',
+                maxHeight: '90vh'
+              }}
+            >
+              <img
+                src={activeMedia.url}
+                alt={activeMedia.alt}
+                style={{
+                  maxWidth: '90vw',
+                  maxHeight: '82vh',
+                  objectFit: 'contain',
+                  borderRadius: '16px',
+                  boxShadow: '0 25px 60px rgba(0,0,0,0.7)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}
+              />
+
+              {activeMedia.tag && (
+                <div
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.12)',
+                    backdropFilter: 'blur(8px)',
+                    color: '#ffffff',
+                    padding: '0.4rem 1rem',
+                    borderRadius: '999px',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}
+                >
+                  📷 {activeMedia.tag} ({activeIndex + 1} / {allImages.length})
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

@@ -11,10 +11,12 @@ const api = axios.create({
 // Request interceptor to automatically attach JWT token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('user_token');
-    if (token) {
-      config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('user_token');
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -28,7 +30,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // If token was invalid or expired on an authenticated route
       const isAuthRoute = error.config?.url?.includes('/users/login') || error.config?.url?.includes('/users/register');
-      if (!isAuthRoute && localStorage.getItem('user_token')) {
+      if (!isAuthRoute && typeof window !== 'undefined' && localStorage.getItem('user_token')) {
         localStorage.removeItem('user_token');
         localStorage.removeItem('user_data');
       }

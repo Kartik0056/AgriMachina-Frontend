@@ -1,31 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  ShieldCheck,
   CreditCard,
-  Flame,
   PhoneCall,
   Sparkles,
   CheckCircle2,
-  Timer,
-  Tractor,
-  Play,
-  X,
-  Volume2,
-  VolumeX,
-  Video,
-  Maximize2
+  Timer
 } from 'lucide-react';
 import api from '../../services/api';
 import { formatINR } from '../../services/emiHelper';
 import { useLanguage } from '../../context/LanguageContext';
 import { useLiveRefresh } from '../../context/SyncContext';
-import { extractYouTubeId, getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
+import { extractYouTubeId, isDirectVideoUrl } from '../../services/videoHelper';
 import EMICalculatorModal from './EMICalculatorModal';
 
 const FALLBACK_SLIDES = [
@@ -105,15 +95,12 @@ const HeroSlider = () => {
   const [slides, setSlides] = useState(FALLBACK_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted] = useState(true);
   const [selectedEmiProduct, setSelectedEmiProduct] = useState(null);
   const [isEmiModalOpen, setIsEmiModalOpen] = useState(false);
-  const [activeVideoModal, setActiveVideoModal] = useState(null);
 
-  // Live Deal Timer
   const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 42, seconds: 18 });
 
-  // DOM Refs for GSAP
   const sliderContainerRef = useRef(null);
   const contentBoxRef = useRef(null);
   const badgeRef = useRef(null);
@@ -138,7 +125,6 @@ const HeroSlider = () => {
     fetchDynamicSlides();
   }, []);
 
-  // Listen for real-time banner update events from Admin
   useLiveRefresh(() => {
     fetchDynamicSlides();
   }, ['BANNER_CHANGED', 'CATALOG_CHANGED']);
@@ -148,7 +134,6 @@ const HeroSlider = () => {
   const isDirectVideo = isDirectVideoUrl(slide.videoUrl);
   const hasBackgroundVideo = Boolean(slide.videoUrl && (isDirectVideo || ytVideoId));
 
-  // Deal Countdown Timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -161,10 +146,8 @@ const HeroSlider = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // GSAP Entrance Animations triggered on currentSlide change
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Badge pop
       if (badgeRef.current) {
         gsap.fromTo(
           badgeRef.current,
@@ -173,7 +156,6 @@ const HeroSlider = () => {
         );
       }
 
-      // 2. Title slide up
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
@@ -182,7 +164,6 @@ const HeroSlider = () => {
         );
       }
 
-      // 3. Description slide up
       if (descRef.current) {
         gsap.fromTo(
           descRef.current,
@@ -191,14 +172,12 @@ const HeroSlider = () => {
         );
       }
 
-      // 4. Spec chips stagger
       gsap.fromTo(
         '.gsap-spec-chip',
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, stagger: 0.07, duration: 0.45, ease: 'power2.out', delay: 0.25 }
       );
 
-      // 5. Price card entrance
       if (priceCardRef.current) {
         gsap.fromTo(
           priceCardRef.current,
@@ -207,14 +186,12 @@ const HeroSlider = () => {
         );
       }
 
-      // 6. Buttons stagger
       gsap.fromTo(
         '.gsap-hero-btn',
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, stagger: 0.08, duration: 0.45, ease: 'power2.out', delay: 0.35 }
       );
 
-      // 7. Progress Bar animation for current slide duration (6500ms)
       if (progressBarRef.current) {
         gsap.fromTo(
           progressBarRef.current,
@@ -227,9 +204,8 @@ const HeroSlider = () => {
     return () => ctx.revert();
   }, [currentSlide, slides]);
 
-  // Continuous Auto-Slide Interval
   useEffect(() => {
-    if (isPaused || activeVideoModal) {
+    if (isPaused) {
       if (progressBarRef.current) gsap.killTweensOf(progressBarRef.current);
       return;
     }
@@ -237,7 +213,7 @@ const HeroSlider = () => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6500);
     return () => clearInterval(interval);
-  }, [isPaused, slides.length, activeVideoModal]);
+  }, [isPaused, slides.length]);
 
   const handlePrev = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
@@ -266,18 +242,16 @@ const HeroSlider = () => {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Media Container (Live Background Video OR High-Res Image) */}
       <div
         style={{
           position: 'relative',
           minHeight: '650px',
           display: 'flex',
           alignItems: 'center',
-          backgroundcolor: 'var(--text-main)',
+          backgroundColor: 'var(--text-main)',
           overflow: 'hidden'
         }}
       >
-        {/* Layer 1: Background Video OR Static Image */}
         {hasBackgroundVideo ? (
           isDirectVideo ? (
             <video
@@ -352,7 +326,6 @@ const HeroSlider = () => {
           />
         )}
 
-        {/* Layer 2: Dark Cinematic Gradient Overlay for crisp text legibility */}
         <div
           style={{
             position: 'absolute',
@@ -363,10 +336,8 @@ const HeroSlider = () => {
           }}
         />
 
-        {/* Content Container Layer */}
         <div className="container" style={{ position: 'relative', zIndex: 10, padding: '3.5rem 1.25rem 7.5rem 1.25rem' }}>
           <div ref={contentBoxRef} style={{ maxWidth: '680px' }}>
-            {/* Top Deal & Countdown Badge */}
             <div ref={badgeRef} className="flex items-center gap-2" style={{ marginBottom: '0.85rem', flexWrap: 'wrap' }}>
               <span
                 className="badge"
@@ -404,7 +375,6 @@ const HeroSlider = () => {
               </div>
             </div>
 
-            {/* Title */}
             <h1
               ref={titleRef}
               style={{
@@ -420,7 +390,6 @@ const HeroSlider = () => {
               {tr(slideTitle)}
             </h1>
 
-            {/* Short Description */}
             {slideDesc && (
               <p
                 ref={descRef}
@@ -436,7 +405,6 @@ const HeroSlider = () => {
               </p>
             )}
 
-            {/* Key Spec Chips Layer */}
             {slideSpecs.length > 0 && (
               <div className="flex flex-wrap gap-2" style={{ marginBottom: '1.35rem' }}>
                 {slideSpecs.map((spec, idx) => (
@@ -464,7 +432,6 @@ const HeroSlider = () => {
               </div>
             )}
 
-            {/* Pricing & Razorpay EMI Layer */}
             {slide.price > 0 && (
               <div
                 ref={priceCardRef}
@@ -504,7 +471,6 @@ const HeroSlider = () => {
                   </div>
                 </div>
 
-                {/* Razorpay EMI Callout */}
                 {slide.monthlyEmi > 0 && (
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '0.75rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
@@ -520,7 +486,6 @@ const HeroSlider = () => {
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
               <Link to={targetLink} className="btn btn-accent btn-lg gsap-hero-btn">
                 <span>{t('explore_machine', slide.ctaText || 'Explore Full Machine Details')}</span>
@@ -540,8 +505,8 @@ const HeroSlider = () => {
               )}
 
               <a
-                href={`https://wa.me/919027799171?text=${encodeURIComponent(
-                  `Namaste AgriMachina! 🙏\nI am interested in ${slideTitle}.\n💰 Price: ${slide.price ? formatINR(slide.price) : 'Inquiry'}\n🔗 Product Link: ${window.location.origin}${targetLink}\n\nPlease share video demonstration and field advice!`
+                href={`https://wa.me/916395211953?text=${encodeURIComponent(
+                  `Hello Siddhiva! 👋\nI am interested in ${slideTitle}.\n💰 Price: ${slide.price ? formatINR(slide.price) : 'Inquiry'}\n🔗 Product Link: ${typeof window !== 'undefined' ? window.location.origin : ''}${targetLink}\n\nPlease share details and demo video!`
                 )}`}
                 target="_blank"
                 rel="noreferrer"
@@ -549,14 +514,13 @@ const HeroSlider = () => {
                 style={{ background: 'rgba(7, 94, 84, 0.85)', borderColor: '#075e54', color: '#ffffff' }}
               >
                 <PhoneCall size={18} color="#86efac" />
-                <span>{t('agronomy_advice', 'Agronomy Advice')}</span>
+                <span>{t('live_chat_support', 'WhatsApp Live')}</span>
               </a>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation Arrow Controls */}
       {slides.length > 1 && (
         <>
           <button
@@ -613,12 +577,10 @@ const HeroSlider = () => {
         </>
       )}
 
-      {/* GSAP Animated Progress Bar */}
       <div style={{ position: 'absolute', bottom: '66px', left: 0, right: 0, height: '3px', background: 'rgba(255,255,255,0.15)', zIndex: 25 }}>
         <div ref={progressBarRef} style={{ height: '100%', width: '0%', background: '#86efac' }} />
       </div>
 
-      {/* Bottom Thumbnail Selector Bar */}
       {slides.length > 1 && (
         <div
           style={{
@@ -680,7 +642,6 @@ const HeroSlider = () => {
         </div>
       )}
 
-      {/* EMI Calculator Modal */}
       {selectedEmiProduct && (
         <EMICalculatorModal
           isOpen={isEmiModalOpen}

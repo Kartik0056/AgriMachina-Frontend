@@ -21,6 +21,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import WriteReviewModal from '../../components/storefront/WriteReviewModal';
+import GSTInvoiceModal from '../../components/common/GSTInvoiceModal';
 import api from '../../services/api';
 import { formatINR } from '../../services/emiHelper';
 import { useCart } from '../../context/CartContext';
@@ -62,6 +63,7 @@ const UserOrdersPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [expandedTracking, setExpandedTracking] = useState({});
   const [reviewModalState, setReviewModalState] = useState({ isOpen: false, productId: null, productName: '' });
+  const [invoiceModalState, setInvoiceModalState] = useState({ isOpen: false, order: null });
   const { addToCart } = useCart();
   const { addToast } = useToast();
   const { subscribe } = useSync();
@@ -373,10 +375,21 @@ const UserOrdersPage = () => {
 
                     <button
                       type="button"
+                      onClick={() => setInvoiceModalState({ isOpen: true, order })}
+                      className="btn btn-secondary btn-sm"
+                      style={{ background: '#ffffff', borderColor: '#cbd5e1', color: '#166534', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                      title="Download or print official GST Tax Invoice"
+                    >
+                      <FileText size={14} color="#166534" />
+                      <span>Invoice</span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => handleReorderEntireOrder(order)}
                       className="btn btn-secondary btn-sm"
                       style={{ background: 'var(--primary-50)', borderColor: 'var(--primary-400, #86efac)', color: 'var(--primary-600)', fontWeight: 700 }}
-                      title="Reorder all machines in this order"
+                      title="Reorder all items in this order"
                     >
                       <RotateCcw size={14} />
                       <span className="hidden sm:inline">Reorder All</span>
@@ -676,6 +689,15 @@ const UserOrdersPage = () => {
         productName={reviewModalState.productName}
         onReviewSubmitted={fetchOrders}
       />
+
+      {/* GST Tax Invoice Modal */}
+      {invoiceModalState.order && (
+        <GSTInvoiceModal
+          isOpen={invoiceModalState.isOpen}
+          onClose={() => setInvoiceModalState({ isOpen: false, order: null })}
+          order={invoiceModalState.order}
+        />
+      )}
     </div>
   );
 };

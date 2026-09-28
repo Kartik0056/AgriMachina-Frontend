@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
@@ -6,7 +8,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import adminApi from '../../services/adminApi';
 
-const AdminLayout = () => {
+const AdminLayout = ({ children }) => {
   const { isAuthenticated, loading, adminPanelPath } = useAdminAuth();
   const { adminTheme } = useTheme();
   const location = useLocation();
@@ -38,7 +40,7 @@ const AdminLayout = () => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to={`${adminPanelPath}/login`} state={{ from: location }} replace />;
+    return <Navigate to={`${adminPanelPath || '/admin'}/login`} state={{ from: location }} replace />;
   }
 
   return (
@@ -50,7 +52,7 @@ const AdminLayout = () => {
       <div className="admin-main">
         <AdminTopBar />
         <main className="admin-content">
-          <Outlet />
+          {children || <Outlet />}
         </main>
       </div>
     </div>

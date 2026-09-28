@@ -667,7 +667,6 @@ const AdminSupportPage = () => {
           </div>
         </div>
 
-        {/* Inquiries Cards Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem', marginTop: '0.5rem' }}>
           {loading ? (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--admin-text-muted)' }}>
@@ -832,7 +831,7 @@ const AdminSupportPage = () => {
                         <span>Call</span>
                       </a>
                       <a
-                        href={`https://wa.me/${t.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${t.userName} ji! 🙏 AgriMachina Support Desk se hum aapki inquiry (${t.subject}) ke sambandh me sampark kar rahe hain.`)}`}
+                        href={`https://wa.me/${t.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${t.userName} ji! 🙏 Siddhiva Support Desk se hum aapki inquiry (${t.subject}) ke sambandh me sampark kar rahe hain.`)}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{
@@ -1094,7 +1093,7 @@ const AdminSupportPage = () => {
                     <span>Call</span>
                   </a>
                   <a
-                    href={`https://wa.me/${activeTicket.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${activeTicket.userName} ji! 🙏 AgriMachina Support Desk.`)}`}
+                    href={`https://wa.me/${activeTicket.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${activeTicket.userName} ji! 🙏 Siddhiva Support Desk.`)}`}
                     target="_blank"
                     rel="noreferrer"
                     style={{
@@ -1120,7 +1119,7 @@ const AdminSupportPage = () => {
 
                   {activeTicket.productTitle && (
                     <span style={{ color: '#38bdf8', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px', fontSize: '0.725rem', background: 'rgba(56, 189, 248, 0.1)', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
-                      🚜 {decodeText(activeTicket.productTitle)}
+                      ✨ {decodeText(activeTicket.productTitle)}
                     </span>
                   )}
                 </div>
@@ -1191,7 +1190,7 @@ const AdminSupportPage = () => {
                     >
                       <div style={{ fontSize: '0.68rem', color: '#64748b', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <strong style={{ color: isAdmin ? '#86efac' : '#38bdf8', fontWeight: 700 }}>
-                          {isAdmin ? 'AgriMachina Specialist (You)' : msg.senderName || activeTicket.userName}
+                          {isAdmin ? 'Siddhiva Specialist (You)' : msg.senderName || activeTicket.userName}
                         </strong>
                         <span>•</span>
                         <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>

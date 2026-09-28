@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+'use client';
 
-const particleEmojis = ['🍃', '🌱', '🌾', '✨', '🌼'];
+import React, { useEffect, useRef } from 'react';
 
-const FarmingCursorParticles = () => {
+/**
+ * WaterDropEffect
+ * Replaces trailing leaf/flower particles with a clean, realistic water drop
+ * ripple & splash effect strictly on click (mousedown), keeping cursor movement completely clean.
+ */
+const WaterDropEffect = () => {
   const canvasRef = useRef(null);
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
-
-  const [isHovered, setIsHovered] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const [isTextMode, setIsTextMode] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,13 +18,10 @@ const FarmingCursorParticles = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    let particles = [];
-    let mouseX = -100;
-    let mouseY = -100;
-    let ringX = -100;
-    let ringY = -100;
-    let lastParticleTime = 0;
-    let animationFrameId;
+    let ripples = [];
+    let droplets = [];
+    let animationFrameId = null;
+    let isRunning = false;
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
@@ -33,216 +29,174 @@ const FarmingCursorParticles = () => {
     };
     window.addEventListener('resize', handleResize);
 
-    const createParticle = (x, y, isClick = false) => {
-      const angle = isClick ? Math.random() * Math.PI * 2 : (Math.random() - 0.5) * 1.5 - Math.PI / 2;
-      const speed = isClick ? Math.random() * 3.5 + 2 : Math.random() * 1.2 + 0.6;
-
-      return {
+    const spawnWaterDrop = (x, y) => {
+      // 1. Concentric water ripple waves
+      // Primary leading wave
+      ripples.push({
         x,
         y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        gravity: isClick ? 0.08 : -0.02,
-        emoji: particleEmojis[Math.floor(Math.random() * particleEmojis.length)],
-        size: isClick ? Math.random() * 6 + 14 : Math.random() * 4 + 10,
-        rotation: Math.random() * Math.PI * 2,
-        vRot: (Math.random() - 0.5) * 0.12,
-        life: 1.0,
-        decay: isClick ? 0.04 : 0.03
-      };
-    };
+        radius: 2,
+        maxRadius: 65,
+        speed: 3.2,
+        opacity: 0.85,
+        decay: 0.024,
+        lineWidth: 2.5,
+        color: '56, 189, 248' // Sky cyan water
+      });
 
-    const handleMouseMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      // Secondary echo wave
+      setTimeout(() => {
+        ripples.push({
+          x,
+          y,
+          radius: 2,
+          maxRadius: 50,
+          speed: 2.6,
+          opacity: 0.65,
+          decay: 0.026,
+          lineWidth: 1.8,
+          color: '14, 165, 233' // Ocean blue
+        });
+      }, 70);
 
-      // Update instant precision dot immediately
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      // Third soft outer wave
+      setTimeout(() => {
+        ripples.push({
+          x,
+          y,
+          radius: 3,
+          maxRadius: 40,
+          speed: 2.0,
+          opacity: 0.45,
+          decay: 0.03,
+          lineWidth: 1.2,
+          color: '186, 230, 253' // Translucent light crest
+        });
+      }, 140);
+
+      // 2. Micro water splash droplets
+      const dropletCount = 6 + Math.floor(Math.random() * 4); // 6 to 9 droplets
+      for (let i = 0; i < dropletCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3.5 + 1.2;
+        droplets.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.2, // slight upward burst
+          radius: Math.random() * 2 + 1.5,
+          life: 1.0,
+          decay: Math.random() * 0.03 + 0.025,
+          gravity: 0.12
+        });
       }
 
-      // Check hovering targets
-      const target = e.target;
-      if (target) {
-        const isInteractive =
-          target.tagName === 'BUTTON' ||
-          target.tagName === 'A' ||
-          target.closest('button') ||
-          target.closest('a') ||
-          target.getAttribute('role') === 'button' ||
-          target.onclick;
-
-        const isInput =
-          target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.isContentEditable;
-
-        setIsHovered(!!isInteractive);
-        setIsTextMode(!!isInput);
-      }
-
-      // Spawn subtle trailing particles on movement
-      const now = performance.now();
-      if (now - lastParticleTime > 90) {
-        lastParticleTime = now;
-        if (particles.length < 24) {
-          particles.push(createParticle(mouseX, mouseY, false));
-        }
+      if (!isRunning) {
+        isRunning = true;
+        render();
       }
     };
 
     const handleMouseDown = (e) => {
-      setIsClicking(true);
-      for (let i = 0; i < 4; i++) {
-        if (particles.length < 24) {
-          particles.push(createParticle(e.clientX, e.clientY, true));
-        }
-      }
+      spawnWaterDrop(e.clientX, e.clientY);
     };
 
-    const handleMouseUp = () => {
-      setIsClicking(false);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mousedown', handleMouseDown, { passive: true });
-    window.addEventListener('mouseup', handleMouseUp, { passive: true });
 
-    // Smooth Lerp Render Loop for Fluid Magnetic Ring
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Lerp ring position with smooth trailing
-      ringX += (mouseX - ringX) * 0.22;
-      ringY += (mouseY - ringY) * 0.22;
+      let hasActive = false;
 
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
-      }
+      // Draw and update ripple waves
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.radius += r.speed;
+        r.opacity -= r.decay;
+        r.lineWidth = Math.max(0.5, r.lineWidth * 0.985);
 
-      // Render floating leaf / harvest sparkle particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += p.gravity;
-        p.rotation += p.vRot;
-        p.life -= p.decay;
-
-        if (p.life <= 0) {
-          particles.splice(i, 1);
+        if (r.opacity <= 0 || r.radius >= r.maxRadius) {
+          ripples.splice(i, 1);
         } else {
+          hasActive = true;
           ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rotation);
-          ctx.globalAlpha = p.life * 0.85;
-          ctx.font = `${p.size}px sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(p.emoji, 0, 0);
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(${r.color}, ${Math.max(0, r.opacity)})`;
+          ctx.lineWidth = r.lineWidth;
+          ctx.shadowColor = `rgba(${r.color}, 0.5)`;
+          ctx.shadowBlur = 6;
+          ctx.stroke();
           ctx.restore();
         }
       }
 
-      animationFrameId = requestAnimationFrame(render);
-    };
+      // Draw and update splash droplets
+      for (let i = droplets.length - 1; i >= 0; i--) {
+        const d = droplets[i];
+        d.x += d.vx;
+        d.y += d.vy;
+        d.vy += d.gravity;
+        d.life -= d.decay;
 
-    render();
+        if (d.life <= 0) {
+          droplets.splice(i, 1);
+        } else {
+          hasActive = true;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+
+          // Specular radial gradient for realistic water bead look
+          const grad = ctx.createRadialGradient(
+            d.x - d.radius * 0.35,
+            d.y - d.radius * 0.35,
+            0,
+            d.x,
+            d.y,
+            d.radius
+          );
+          grad.addColorStop(0, `rgba(255, 255, 255, ${d.life * 0.95})`);
+          grad.addColorStop(0.5, `rgba(56, 189, 248, ${d.life * 0.85})`);
+          grad.addColorStop(1, `rgba(14, 165, 233, ${d.life * 0.4})`);
+
+          ctx.fillStyle = grad;
+          ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+          ctx.shadowBlur = 4;
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      if (hasActive) {
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        isRunning = false;
+        ctx.clearRect(0, 0, width, height);
+      }
+    };
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <>
-      {/* Background Particle Canvas */}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          pointerEvents: 'none',
-          zIndex: 2147483640
-        }}
-      />
-
-      {/* Instant Precision Core Dot */}
-      <div
-        ref={dotRef}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          pointerEvents: 'none',
-          zIndex: 2147483647,
-          willChange: 'transform',
-          transform: 'translate3d(-100px, -100px, 0)'
-        }}
-      >
-        <div
-          style={{
-            width: isHovered ? '8px' : isTextMode ? '4px' : '6px',
-            height: isHovered ? '8px' : isTextMode ? '14px' : '6px',
-            borderRadius: isTextMode ? '2px' : '50%',
-            background: isHovered
-              ? '#f59e0b'
-              : 'linear-gradient(135deg, #10b981, #059669)',
-            boxShadow: isHovered
-              ? '0 0 10px #f59e0b, 0 0 4px #ffffff'
-              : '0 0 8px #10b981, 0 0 3px #ffffff',
-            transform: 'translate(-50%, -50%)',
-            transition: 'width 0.15s ease, height 0.15s ease, background 0.15s ease'
-          }}
-        />
-      </div>
-
-      {/* Smooth Magnetic Emerald Glowing Ring */}
-      <div
-        ref={ringRef}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          pointerEvents: 'none',
-          zIndex: 2147483646,
-          willChange: 'transform',
-          transform: 'translate3d(-100px, -100px, 0)'
-        }}
-      >
-        <div
-          style={{
-            width: isHovered ? '46px' : isClicking ? '22px' : isTextMode ? '0px' : '30px',
-            height: isHovered ? '46px' : isClicking ? '22px' : isTextMode ? '0px' : '30px',
-            borderRadius: '50%',
-            border: isHovered
-              ? '1.5px solid #34d399'
-              : isClicking
-              ? '2px solid #f59e0b'
-              : '1.5px solid rgba(16, 185, 129, 0.65)',
-            background: isHovered
-              ? 'rgba(16, 185, 129, 0.12)'
-              : isClicking
-              ? 'rgba(245, 158, 11, 0.2)'
-              : 'rgba(16, 185, 129, 0.04)',
-            boxShadow: isHovered
-              ? '0 0 16px rgba(52, 211, 153, 0.5), inset 0 0 8px rgba(52, 211, 153, 0.3)'
-              : '0 0 8px rgba(16, 185, 129, 0.2)',
-            transform: 'translate(-50%, -50%)',
-            transition: 'width 0.2s cubic-bezier(0.16, 1, 0.3, 1), height 0.2s cubic-bezier(0.16, 1, 0.3, 1), border 0.2s ease, background 0.2s ease, opacity 0.2s ease',
-            opacity: isTextMode ? 0 : 1
-          }}
-        />
-      </div>
-    </>
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        pointerEvents: 'none',
+        zIndex: 2147483647
+      }}
+    />
   );
 };
 
-export default FarmingCursorParticles;
+export default WaterDropEffect;

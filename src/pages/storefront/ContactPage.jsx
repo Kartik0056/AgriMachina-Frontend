@@ -97,9 +97,7 @@ const ContactPage = () => {
         </p>
       </div>
 
-      {/* 3 Quick Contact Helpline Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ marginBottom: '3rem' }}>
-        {/* Card 1: Toll-Free Helpline */}
         <div style={{
           background: 'var(--bg-surface)',
           borderRadius: '16px',
@@ -125,24 +123,23 @@ const ContactPage = () => {
             <PhoneCall size={26} color="#166534" />
           </div>
           <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
-            Toll-Free Kisan Helpline
+            24x7 Customer Helpline
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-            Call toll-free for product recommendations, warranty support, and delivery status.
+            Call directly for order tracking, product recommendations, warranty support, and delivery updates.
           </p>
           <a
-            href="tel:1800123456"
+            href="tel:6395211953"
             className="btn btn-primary btn-sm"
             style={{ width: '100%', textDecoration: 'none' }}
           >
-            📞 1800-AGRI-FARM (Toll-Free)
+            📞 +91 63952 11953
           </a>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
-            Mon - Sat: 8:00 AM to 8:00 PM
+            Mon - Sun: 24/7 Helpline Active
           </span>
         </div>
 
-        {/* Card 2: WhatsApp Engineer Chat */}
         <div style={{
           background: 'var(--bg-surface)',
           borderRadius: '16px',
@@ -168,26 +165,25 @@ const ContactPage = () => {
             <MessageSquare size={26} color="#16a34a" />
           </div>
           <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
-            WhatsApp Technical Support
+            WhatsApp Live Support
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-            Receive video field demonstrations, machine manuals, and spare parts catalogs on WhatsApp.
+            Receive product brochures, live demo videos, order invoices, and quick answers directly on WhatsApp.
           </p>
           <a
-            href="https://wa.me/919027799171?text=Hi%20AgriMachina,%20I%20need%20assistance%20with%20farm%20machinery."
+            href="https://wa.me/916395211953?text=Hi%20Siddhiva,%20I%20need%20assistance%20with%20products."
             target="_blank"
             rel="noreferrer"
             className="btn btn-accent btn-sm"
             style={{ width: '100%', textDecoration: 'none', background: '#22c55e', color: '#ffffff' }}
           >
-            💬 Chat on WhatsApp (+91 90277 99171)
+            💬 Chat on WhatsApp (+91 63952 11953)
           </a>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
             Average response time: 5 Minutes
           </span>
         </div>
 
-        {/* Card 3: Central Warehouse & Factory */}
         <div style={{
           background: 'var(--bg-surface)',
           borderRadius: '16px',
@@ -213,21 +209,20 @@ const ContactPage = () => {
             <MapPin size={26} color="#d97706" />
           </div>
           <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
-            Central Warehouse & Factory
+            Email & Operations Hub
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-            AgriMachina Industrial Zone, National Highway 27, Shapar-Veraval, Rajkot, Gujarat - 360024
+            Siddhiva Commercial Mart & Distribution Center, Industrial Zone, India
           </p>
-          <div style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700 }}>
-            ✉️ support@agrimachina.in
+          <div style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700 }}>
+            ✉️ <a href="mailto:kartikkumar151998@gmail.com" style={{ color: '#166534', textDecoration: 'none' }}>kartikkumar151998@gmail.com</a>
           </div>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
-            Central Depot & Testing Yard
+            Direct Business & Support Mail
           </span>
         </div>
       </div>
 
-      {/* Main Grid: Contact Form (Left) & FAQs (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Contact Form (7 cols) */}
         <div className="lg:col-span-7" style={{

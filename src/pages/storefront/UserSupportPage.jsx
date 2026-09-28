@@ -299,7 +299,7 @@ const formatFileSize = (bytes) => {
       });
 
       if (res.data.success) {
-        addToast('Message sent to AgriMachina specialists.', 'success');
+        addToast('Message sent to Siddhiva support specialists.', 'success');
         setActiveTicket(res.data.ticket);
         setReplyText('');
         setAttachmentsList([]);
@@ -326,8 +326,8 @@ const formatFileSize = (bytes) => {
       const images = newModalFiles.filter(a => a.fileType === 'image').map(a => a.url);
 
       const res = await api.post('/support/tickets', {
-        name: user?.name || 'Farmer Friend',
-        phone: user?.phone || '9027799171',
+        name: user?.name || 'Customer',
+        phone: user?.phone || '6395211953',
         email: user?.email || '',
         subject: newSubject.trim(),
         inquiryType: newTopic,
@@ -367,10 +367,10 @@ const formatFileSize = (bytes) => {
       <div className="container" style={{ padding: '5rem 1.5rem', textAlign: 'center' }}>
         <Headphones size={52} color="#166534" style={{ margin: '0 auto 1.25rem auto' }} />
         <h2 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900, marginBottom: '0.75rem' }}>
-          Farmer Support & Technical Advisory Chat
+          Customer Support & Advisory Chat
         </h2>
         <p style={{ color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 2rem auto', fontSize: '1rem' }}>
-          Please login to view your support conversations, chat directly with certified agricultural engineers, and receive field advice.
+          Please login to view your support conversations, chat directly with certified support advisors, and receive order assistance.
         </p>
         <Link to="/login" className="btn btn-primary btn-lg" style={{ padding: '0.85rem 2rem', fontWeight: 800 }}>
           Login to Access Support Chat
@@ -397,19 +397,19 @@ const formatFileSize = (bytes) => {
               </span>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0', lineHeight: 1.4 }}>
-              Chat directly with OEM Agricultural Engineers, request field demonstration videos, and track subsidy assistance.
+              Chat directly with Siddhiva support specialists, request demonstration videos, and track orders.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
           <a
-            href="tel:180024743276"
+            href="tel:6395211953"
             className="btn btn-secondary btn-sm"
             style={{ fontWeight: 700, fontSize: '0.8rem', padding: '0.5rem 0.85rem', flex: '1 1 auto', justifyContent: 'center' }}
           >
             <PhoneCall size={14} color="#166534" />
-            <span>1800-AGRI-FARM</span>
+            <span>+91 63952 11953</span>
           </a>
 
           <button
@@ -423,7 +423,6 @@ const formatFileSize = (bytes) => {
         </div>
       </div>
 
-      {/* Main Inquiries Cards Grid with generous breathing space */}
       <div
         style={{
           background: 'var(--bg-surface)',
@@ -436,7 +435,6 @@ const formatFileSize = (bytes) => {
           gap: '1.5rem'
         }}
       >
-        {/* Search Bar */}
         <div className="flex justify-between items-center flex-wrap gap-3">
           <div style={{ position: 'relative', flex: 1, minWidth: '260px', maxWidth: '420px' }}>
             <input
@@ -455,7 +453,6 @@ const formatFileSize = (bytes) => {
           </div>
         </div>
 
-        {/* Tickets Cards Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
           {loading ? (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
@@ -694,7 +691,7 @@ const formatFileSize = (bytes) => {
               </div>
               <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  AgriMachina Specialist Desk
+                  Siddhiva Specialist Desk
                 </div>
                 {!isMinimized && (
                   <div style={{ fontSize: '0.7rem', color: '#dcfce7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

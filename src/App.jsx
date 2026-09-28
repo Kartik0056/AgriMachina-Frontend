@@ -50,16 +50,17 @@ function App() {
   const { adminPanelPath } = useAdminAuth();
   const location = useLocation();
 
+  const currentAdminPath = adminPanelPath || '/secure-admin-portal';
   // Strip leading slash if any for relative route matching
-  const portalPath = adminPanelPath.startsWith('/') ? adminPanelPath.slice(1) : adminPanelPath;
-  const isAdminRoute = location.pathname.startsWith(adminPanelPath);
+  const portalPath = currentAdminPath.startsWith('/') ? currentAdminPath.slice(1) : currentAdminPath;
+  const isAdminRoute = location.pathname.startsWith(currentAdminPath);
 
   return (
     <div className="app-root">
       {/* Automatically reset window scroll to top on page navigation */}
       <ScrollToTop />
 
-      {/* Agricultural Farming Particles on Cursor Motion & Clicks */}
+      {/* Elegant Water Droplet & Ripple Effect on Clicks */}
       <FarmingCursorParticles />
 
       {/* Show public navbar ONLY on storefront routes, NEVER inside secret admin portal */}
@@ -96,6 +97,7 @@ function App() {
           {/* Dedicated Non-Obvious Protected Admin CMS Operations Suite */}
           <Route path={`/${portalPath}`} element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
+            <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="products" element={<AdminProductsPage />} />
             <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="products/new" element={<AdminProductEditorPage />} />
@@ -117,20 +119,13 @@ function App() {
             <Route path="*" element={<Navigate to={`/${portalPath}`} replace />} />
           </Route>
 
-          {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
-      {/* Free Intelligent Multilingual Agricultural Chatbot */}
       {!isAdminRoute && <KisanAIChatbot />}
-
-      {/* Guest Farmer Welcome Login / Register Popup on Initial Site Visit */}
       {!isAdminRoute && <WelcomeAuthModal />}
-
-      {/* Modern Cookie & Privacy Consent Banner */}
       {!isAdminRoute && <CookieConsentBanner />}
-
       {!isAdminRoute && <Footer />}
     </div>
   );

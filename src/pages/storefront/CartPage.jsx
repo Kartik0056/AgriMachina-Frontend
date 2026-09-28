@@ -28,7 +28,6 @@ const CartPage = () => {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
-  // Fetch active database coupons for smart farmer suggestions
   useEffect(() => {
     const fetchActiveCoupons = async () => {
       try {

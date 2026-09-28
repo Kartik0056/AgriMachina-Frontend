@@ -199,7 +199,7 @@ const EMICalculatorModal = ({ isOpen, onClose, productPrice = 38499, emiConfig =
             <div style={{ background: '#fef3c7', padding: '0.85rem 1.25rem', borderRadius: '10px', border: '1px solid #fde68a', fontSize: '0.85rem', color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Sparkles size={18} color="#d97706" style={{ flexShrink: 0 }} />
               <span>
-                <strong>Zero Interest Subvention:</strong> The entire bank interest for 3 and 6 month tenures is subsidized by AgriMachina. You pay exactly the machine price with ₹0 extra interest!
+                <strong>Zero Interest Subvention:</strong> The entire bank interest for 3 and 6 month tenures is subsidized by Siddhiva. You pay exactly the product price with ₹0 extra interest!
               </span>
             </div>
 

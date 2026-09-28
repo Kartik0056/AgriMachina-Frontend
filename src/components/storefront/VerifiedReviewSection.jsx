@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Star, ShieldCheck, PenSquare, Edit, Trash2, Camera, Video, Play, X } from 'lucide-react';
+import { ShieldCheck, PenSquare, Edit, Trash2, Camera, Video, Play, X } from 'lucide-react';
 import StarRating from '../common/StarRating';
 import WriteReviewModal from './WriteReviewModal';
 import api from '../../services/api';
@@ -103,7 +103,6 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
         </button>
       </div>
 
-      {/* Ratings Overview Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{
         background: 'var(--bg-surface-alt)',
         borderRadius: '12px',
@@ -111,7 +110,6 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
         border: '1px solid var(--border-color)',
         marginBottom: '2rem'
       }}>
-        {/* Big Rating Summary */}
         <div className="flex flex-col items-center justify-center text-center">
           <div style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--text-main)', lineHeight: 1 }}>
             {Number(stats.averageRating).toFixed(1)}
@@ -124,7 +122,6 @@ const VerifiedReviewSection = ({ productId, productName, initialRatings = {} }) 
           </div>
         </div>
 
-        {/* Breakdown Progress Bars */}
         <div className="flex flex-col gap-2 justify-center flex-1 md:col-span-2">
           {[5, 4, 3, 2, 1].map((star) => {
             const count = stats.breakdown[star] || 0;

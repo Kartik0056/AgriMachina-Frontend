@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+'use client';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
@@ -6,6 +8,11 @@ const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const addToast = (message, type = 'success', duration = 4000) => {
     const id = Date.now() + Math.random();
@@ -25,7 +32,7 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      {typeof document !== 'undefined' && createPortal(
+      {mounted && typeof document !== 'undefined' && createPortal(
         <div className="toast-container">
           {toasts.map((toast) => (
             <div key={toast.id} className={`toast toast-${toast.type}`}>

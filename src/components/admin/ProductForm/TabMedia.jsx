@@ -207,7 +207,6 @@ const TabMedia = ({ formData, updateField }) => {
         </div>
       </div>
 
-      {/* Video Demonstration Section with On-Platform Embedded Player */}
       <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1.05rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Video size={20} color="#f59e0b" />
@@ -243,7 +242,6 @@ const TabMedia = ({ formData, updateField }) => {
           </div>
         </div>
 
-        {/* MP4 File Upload Option */}
         <div className="flex items-center gap-3" style={{ marginBottom: '1.25rem' }}>
           <input
             type="file"
@@ -263,7 +261,6 @@ const TabMedia = ({ formData, updateField }) => {
           )}
         </div>
 
-        {/* Live On-Platform Video Preview Player */}
         {formData.video?.url && (
           <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
             <div style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>

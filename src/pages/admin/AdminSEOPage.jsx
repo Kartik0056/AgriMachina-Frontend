@@ -6,11 +6,11 @@ const AdminSEOPage = () => {
   const { addToast } = useToast();
 
   const [seoConfig, setSeoConfig] = useState({
-    siteTitle: 'AgriMachina India | Agricultural Machinery, Power Weeders & Solar Pumps',
-    metaDescription: "India's premier agricultural machinery e-commerce platform. Buy power weeders, solar submersible pumps, rotavators, sprayers, and brush cutters with genuine OEM warranty, doorstep delivery, and easy monthly Kisan EMI.",
-    canonicalBase: 'https://agrimachina.in',
+    siteTitle: 'Siddhiva | Smart Shopping, Tools, Machinery & Lifestyle Online Store',
+    metaDescription: "Shop high-quality equipment, power tools, home and garden essentials, machinery, and smart commercial products on Siddhiva with verified warranty, easy No-Cost EMI, and fast pan-India delivery.",
+    canonicalBase: 'https://siddhiva.in',
     ogImageUrl: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=1200&q=85',
-    googleAnalyticsId: 'G-AGRI2026IN',
+    googleAnalyticsId: 'G-SIDDHIVA2026IN',
     sitemapEnabled: true,
     schemaOrgProductEnabled: true
   });
@@ -47,7 +47,7 @@ const AdminSEOPage = () => {
         </div>
 
         <div style={{ fontSize: '0.85rem', color: '#202124', marginBottom: '2px' }}>
-          https://agrimachina.in
+          https://siddhiva.in
         </div>
         <div style={{ fontSize: '1.25rem', color: '#1a0dab', fontWeight: 600, lineHeight: 1.3, marginBottom: '6px', cursor: 'pointer' }}>
           {seoConfig.siteTitle}
@@ -116,7 +116,7 @@ const AdminSEOPage = () => {
   "@context": "https://schema.org/",
   "@type": "Product",
   "name": "Power Weeder 7HP Petrol 4-Stroke",
-  "image": "https://agrimachina.in/images/weeder.jpg",
+  "image": "https://siddhiva.in/images/product.jpg",
   "description": seoConfig.metaDescription,
   "brand": { "@type": "Brand", "name": "AgriPro Machinery" },
   "offers": { "@type": "Offer", "priceCurrency": "INR", "price": "38499", "availability": "https://schema.org/InStock" }

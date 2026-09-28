@@ -173,10 +173,8 @@ const AdminBulkImportPage = () => {
         </div>
       </div>
 
-      {/* STEP 1: UPLOAD FORM */}
       {activeStep === 1 && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Spreadsheet Upload Box */}
           <div className="admin-card lg:col-span-2">
             <h3 style={{ fontSize: '1.2rem', color: '#ffffff', marginBottom: '0.5rem' }}>
               Step 1: Upload Machinery Catalog Spreadsheet
@@ -224,7 +222,6 @@ const AdminBulkImportPage = () => {
             </form>
           </div>
 
-          {/* Side ZIP Image Mapper */}
           <div className="admin-card">
             <h3 style={{ fontSize: '1.1rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <FileArchive size={18} color="#f59e0b" />
@@ -261,10 +258,8 @@ const AdminBulkImportPage = () => {
         </div>
       )}
 
-      {/* STEP 2: PREVIEW & ERROR VALIDATION MATRIX */}
       {activeStep === 2 && validationResult && (
         <div className="flex flex-col gap-4">
-          {/* Metrics summary */}
           <div className="admin-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <div className="flex items-center gap-4">
               <div>
@@ -303,7 +298,6 @@ const AdminBulkImportPage = () => {
             </div>
           </div>
 
-          {/* Validation Rows Grid */}
           <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="admin-table-container" style={{ border: 'none' }}>
               <table className="admin-table">
@@ -361,7 +355,6 @@ const AdminBulkImportPage = () => {
         </div>
       )}
 
-      {/* STEP 3: SUCCESS INGESTION SUMMARY */}
       {activeStep === 3 && importSuccessResult && (
         <div className="admin-card" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
           <div style={{

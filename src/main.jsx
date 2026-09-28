@@ -13,26 +13,30 @@ import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { SyncProvider } from './context/SyncContext';
 
+import ErrorBoundary from './components/common/ErrorBoundary';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <SyncProvider>
-        <ThemeProvider>
-          <LanguageProvider>
-            <ToastProvider>
-              <AdminAuthProvider>
-                <AuthProvider>
-                  <CartProvider>
-                    <WishlistProvider>
-                      <App />
-                    </WishlistProvider>
-                  </CartProvider>
-                </AuthProvider>
-              </AdminAuthProvider>
-            </ToastProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </SyncProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <SyncProvider>
+          <ThemeProvider>
+            <LanguageProvider>
+              <ToastProvider>
+                <AdminAuthProvider>
+                  <AuthProvider>
+                    <CartProvider>
+                      <WishlistProvider>
+                        <App />
+                      </WishlistProvider>
+                    </CartProvider>
+                  </AuthProvider>
+                </AdminAuthProvider>
+              </ToastProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </SyncProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );

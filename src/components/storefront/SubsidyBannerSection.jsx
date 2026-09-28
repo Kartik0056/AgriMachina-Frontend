@@ -52,7 +52,7 @@ const SubsidyBannerSection = () => {
 
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://wa.me/919027799171?text=Hello%20AgriMachina,%20I%20need%20assistance%20with%20Government%20Agricultural%20Machinery%20Subsidy%20application"
+                href="https://wa.me/916395211953?text=Hello%20Siddhiva,%20I%20need%20product%20and%20order%20assistance"
                 target="_blank"
                 rel="noreferrer"
                 className="btn btn-accent btn-lg"

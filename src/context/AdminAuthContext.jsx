@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import adminApi from '../services/adminApi';
 
@@ -6,7 +8,9 @@ const AdminAuthContext = createContext();
 export const AdminAuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [adminPanelPath, setAdminPanelPath] = useState('/secure-admin-portal');
+  const [adminPanelPath, setAdminPanelPath] = useState(
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_PANEL_PATH) || '/secure-admin-portal'
+  );
 
   useEffect(() => {
     const initAdmin = async () => {

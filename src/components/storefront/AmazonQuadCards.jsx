@@ -157,7 +157,6 @@ const AmazonQuadCards = () => {
                 {tr(card.title)}
               </h3>
 
-              {/* 4 Quadrants Grid */}
               <div className="grid grid-cols-2 gap-3" style={{ marginBottom: '1.25rem' }}>
                 {card.items.map((item, itemIdx) => (
                   <Link

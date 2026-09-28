@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
@@ -10,6 +12,7 @@ export const WishlistProvider = ({ children }) => {
   const { addToast } = useToast();
 
   const [wishlistItems, setWishlistItems] = useState(() => {
+    if (typeof window === 'undefined') return [];
     try {
       const storedUser = localStorage.getItem('user_data');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;

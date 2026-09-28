@@ -46,10 +46,10 @@ const LoginPage = () => {
             state: 'Gujarat'
           }
         });
-        addToast('Farmer account created successfully! 🌾', 'success');
+        addToast('Account created successfully! ✨', 'success');
       } else {
         await login(email, password);
-        addToast('Welcome back to AgriMachina!', 'success');
+        addToast('Welcome back to Siddhiva!', 'success');
       }
       navigate(redirectParam, { replace: true });
     } catch (error) {

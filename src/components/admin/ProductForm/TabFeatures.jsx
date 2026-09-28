@@ -62,7 +62,6 @@ const TabFeatures = ({ formData, updateField }) => {
         </div>
       </div>
 
-      {/* Feature Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {features.map((feat, idx) => (
           <div

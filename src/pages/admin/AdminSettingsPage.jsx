@@ -66,11 +66,10 @@ const AdminSettingsPage = () => {
           </div>
         </div>
 
-        {/* System Architecture */}
         <div className="admin-card md:col-span-2">
           <div className="flex items-center gap-2" style={{ marginBottom: '1rem' }}>
             <Server size={22} color="#38bdf8" />
-            <h3 style={{ fontSize: '1.15rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Architecture & Microservices Status</h3>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>System Status</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" style={{ fontSize: '0.85rem' }}>

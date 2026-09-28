@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from './AuthContext';
 
@@ -8,6 +10,7 @@ export const CartProvider = ({ children }) => {
   const prevUserRef = useRef(user?._id || null);
 
   const [cartItems, setCartItems] = useState(() => {
+    if (typeof window === 'undefined') return [];
     try {
       const storedUser = localStorage.getItem('user_data');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
@@ -20,8 +23,9 @@ export const CartProvider = ({ children }) => {
   });
 
   const [recentlyViewed, setRecentlyViewed] = useState(() => {
+    if (typeof window === 'undefined') return [];
     try {
-      const saved = localStorage.getItem('agri_recently_viewed');
+      const saved = localStorage.getItem('siddhiva_recently_viewed') || localStorage.getItem('agri_recently_viewed');
       return saved ? JSON.parse(saved) : [];
     } catch (e) {
       return [];
@@ -94,7 +98,10 @@ export const CartProvider = ({ children }) => {
   }, [cartItems, user, authLoading]);
 
   useEffect(() => {
-    localStorage.setItem('agri_recently_viewed', JSON.stringify(recentlyViewed));
+    try {
+      localStorage.setItem('siddhiva_recently_viewed', JSON.stringify(recentlyViewed));
+      localStorage.setItem('agri_recently_viewed', JSON.stringify(recentlyViewed));
+    } catch (e) {}
   }, [recentlyViewed]);
 
   const getItemKey = (product, selectedVariant) => {
@@ -170,8 +177,21 @@ export const CartProvider = ({ children }) => {
     const prodId = product._id || product.id;
     setRecentlyViewed((prev) => {
       const filtered = prev.filter((p) => (p._id || p.id) !== prodId);
-      return [product, ...filtered].slice(0, 10);
+      const updated = [product, ...filtered].slice(0, 12);
+      try {
+        localStorage.setItem('siddhiva_recently_viewed', JSON.stringify(updated));
+        localStorage.setItem('agri_recently_viewed', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
     });
+  };
+
+  const clearRecentlyViewed = () => {
+    setRecentlyViewed([]);
+    try {
+      localStorage.removeItem('siddhiva_recently_viewed');
+      localStorage.removeItem('agri_recently_viewed');
+    } catch (e) {}
   };
 
   // Authoritative Pricing Calculations with Variant Support
@@ -213,6 +233,7 @@ export const CartProvider = ({ children }) => {
         grandTotal,
         recentlyViewed,
         trackRecentlyViewed,
+        clearRecentlyViewed,
         getItemPrice
       }}
     >

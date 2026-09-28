@@ -8,7 +8,6 @@ import Modal from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
 import { formatINR } from '../../services/emiHelper';
 
-// Real Official Brand SVG Icons
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
     <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.23.9 2.42 1.02 2.59.13.17 1.77 2.7 4.28 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.17-.48-.29z" />
@@ -102,7 +101,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
       try {
         await navigator.share({
           title: shareTitle,
-          text: `Check out ${product.name} on AgriMachina (${priceFormatted})`,
+          text: `Check out ${product.name} on Siddhiva (${priceFormatted})`,
           url: productUrl
         });
         addToast('Product shared successfully!', 'success');
@@ -117,25 +116,24 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
     }
   };
 
-  // Pre-formatted sharing URLs
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-    `🚜 *${product.name}*\n💰 *Price:* ${priceFormatted} (Incl. GST)\n🔖 *Brand:* ${product.brand || 'AgriMachina'}\n\n👉 *View Details & Order:* ${productUrl}`
+    `✨ *${product.name}*\n💰 *Price:* ${priceFormatted} (Incl. GST)\n🔖 *Brand:* ${product.brand || 'Siddhiva'}\n\n👉 *View Details & Order on Siddhiva:* ${productUrl}`
   )}`;
 
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
 
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    `Check out ${product.name} on AgriMachina! 🚜 Price: ${priceFormatted}`
+    `Check out ${product.name} on Siddhiva! ✨ Price: ${priceFormatted}`
   )}&url=${encodeURIComponent(productUrl)}`;
 
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(
-    `🚜 ${product.name} - ${priceFormatted} | AgriMachina India`
+    `✨ ${product.name} - ${priceFormatted} | Siddhiva Store`
   )}`;
 
   const mailtoUrl = `mailto:?subject=${encodeURIComponent(
-    `Recommended Farm Equipment: ${product.name}`
+    `Recommended on Siddhiva: ${product.name}`
   )}&body=${encodeURIComponent(
-    `Namaste,\n\nI thought you might be interested in this agricultural equipment:\n\nMachine: ${product.name}\nBrand: ${product.brand || 'AgriMachina'}\nPrice: ${priceFormatted}\n\nView details, subsidies, and specifications here:\n${productUrl}\n\nAgriMachina India - Farmer Direct Machinery`
+    `Hello,\n\nI thought you might be interested in this product on Siddhiva:\n\nProduct: ${product.name}\nBrand: ${product.brand || 'Siddhiva'}\nPrice: ${priceFormatted}\n\nView details and order here:\n${productUrl}\n\nSiddhiva - Smart Store & Mart`
   )}`;
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=${encodeURIComponent(productUrl)}`;
@@ -241,7 +239,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {product.brand || 'AgriMachina'} {product.sku ? `• SKU: ${product.sku}` : ''}
+              {product.brand || 'Siddhiva'} {product.sku ? `• SKU: ${product.sku}` : ''}
             </div>
             <div style={{
               fontWeight: 800,
@@ -260,7 +258,6 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
           </div>
         </div>
 
-        {/* Channels Grid with Real Official Logos & Micro-animations */}
         <div>
           <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
             Share directly via:

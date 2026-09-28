@@ -10,9 +10,11 @@ const adminApi = axios.create({
 
 // Request interceptor to attach Bearer token if stored in localStorage
 adminApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem('admin_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
@@ -23,8 +25,10 @@ adminApi.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Clear token and broadcast logout
-      localStorage.removeItem('admin_token');
-      localStorage.removeItem('admin_user');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
+      }
     }
     return Promise.reject(error);
   }

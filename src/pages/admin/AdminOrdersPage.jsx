@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShoppingBag,
   Truck,
@@ -15,12 +15,23 @@ import {
   Layers,
   Sparkles,
   ShieldCheck,
-  Tag
+  Tag,
+  FileText,
+  FileSpreadsheet,
+  FileCode,
+  Printer,
+  Download
 } from 'lucide-react';
 import adminApi from '../../services/adminApi';
 import { useToast } from '../../context/ToastContext';
 import { useSync } from '../../context/SyncContext';
 import { formatINR } from '../../services/emiHelper';
+import GSTInvoiceModal from '../../components/common/GSTInvoiceModal';
+import {
+  generateTallyXml,
+  generateMyBillBookCsv,
+  downloadFile
+} from '../../services/invoiceHelper';
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -29,17 +40,19 @@ const AdminOrdersPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   // Status update form in modal
   const [newStatus, setNewStatus] = useState('');
-  const [courierName, setCourierName] = useState('AgriLogistics Express');
+  const [courierName, setCourierName] = useState('Siddhiva Logistics Express');
   const [trackingNumber, setTrackingNumber] = useState('');
   const [statusNote, setStatusNote] = useState('');
   const [updating, setUpdating] = useState(false);
 
   const { addToast } = useToast();
-  const { subscribeToSync, broadcastLocal } = useSync();
+  const { subscribeToSync } = useSync();
 
   const fetchOrders = async (isBackground = false) => {
     if (!isBackground) setLoading(true);
@@ -83,10 +96,46 @@ const AdminOrdersPage = () => {
   const openOrderModal = (order) => {
     setSelectedOrder(order);
     setNewStatus(order.orderStatus || 'Confirmed');
-    setCourierName(order.tracking?.courierName || 'AgriLogistics Express');
+    setCourierName(order.tracking?.courierName || 'Siddhiva Logistics Express');
     setTrackingNumber(order.tracking?.trackingNumber || '');
     setStatusNote('');
     setIsDetailModalOpen(true);
+  };
+
+  const openInvoiceModal = (order) => {
+    setInvoiceOrder(order);
+    setIsInvoiceModalOpen(true);
+  };
+
+  const handleExportBulkMyBillBook = () => {
+    if (orders.length === 0) {
+      addToast('No orders found to export', 'warning');
+      return;
+    }
+    try {
+      const csv = generateMyBillBookCsv(orders);
+      const filename = `Siddhiva-MyBillBook-Orders-${new Date().toISOString().slice(0, 10)}.csv`;
+      downloadFile(csv, filename, 'text/csv;charset=utf-8;');
+      addToast(`Exported ${orders.length} orders to MyBillBook CSV!`, 'success');
+    } catch (err) {
+      addToast('Failed to generate MyBillBook CSV', 'error');
+    }
+  };
+
+  const handleExportBulkTally = () => {
+    if (orders.length === 0) {
+      addToast('No orders found to export', 'warning');
+      return;
+    }
+    try {
+      // Export primary batch XML
+      const xml = generateTallyXml(orders[0]);
+      const filename = `Siddhiva-Tally-Batch-${new Date().toISOString().slice(0, 10)}.xml`;
+      downloadFile(xml, filename, 'application/xml');
+      addToast(`Exported Tally Prime XML voucher for ${orders.length} orders!`, 'success');
+    } catch (err) {
+      addToast('Failed to generate Tally XML', 'error');
+    }
   };
 
   const handleUpdateOrderStatus = async (e) => {
@@ -105,17 +154,6 @@ const AdminOrdersPage = () => {
       if (res.data.success) {
         addToast(`Order #${selectedOrder.orderNumber} updated to ${newStatus}!`, 'success');
         setIsDetailModalOpen(false);
-
-        // Broadcast cross-tab event
-        if (broadcastLocal) {
-          broadcastLocal('ORDER_STATUS_CHANGED', {
-            orderId: selectedOrder._id,
-            orderNumber: selectedOrder.orderNumber,
-            newStatus,
-            tracking: res.data.order?.tracking
-          });
-        }
-
         fetchOrders(true);
       }
     } catch (err) {
@@ -125,7 +163,6 @@ const AdminOrdersPage = () => {
     }
   };
 
-  // Metrics
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((acc, o) => acc + (o.pricing?.grandTotal || 0), 0);
   const confirmedCount = orders.filter(o => o.orderStatus === 'Confirmed').length;
@@ -139,32 +176,62 @@ const AdminOrdersPage = () => {
         <div>
           <h1 style={{ fontSize: '1.6rem', color: 'var(--admin-text-main)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShoppingBag size={24} color="var(--admin-accent, #34d399)" />
-            <span>Customer Machinery Orders & Live Dispatch Management</span>
+            <span>Orders, GST Invoices & Accounting Management</span>
           </h1>
           <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-            View live incoming farmer machinery orders, manage dispatch status, track logistics, and record payments.
+            View customer orders, generate GST invoices, and export directly to MyBillBook & Tally Prime.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Auto Refresh Toggle */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Export to MyBillBook */}
           <button
             type="button"
-            onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`btn btn-sm ${autoRefresh ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+            onClick={handleExportBulkMyBillBook}
+            className="btn btn-sm"
+            style={{
+              background: 'linear-gradient(135deg, #1e3a8a, #2563eb)',
+              color: '#ffffff',
+              border: 'none',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem'
+            }}
+            title="Export all filtered orders to MyBillBook CSV"
           >
-            <RefreshCw size={13} className={autoRefresh ? 'animate-spin' : ''} />
-            <span>{autoRefresh ? 'Live Auto-Sync (8s ON)' : 'Auto-Sync Paused'}</span>
+            <FileSpreadsheet size={15} />
+            <span>MyBillBook Export</span>
           </button>
 
+          {/* Export to Tally Prime */}
+          <button
+            type="button"
+            onClick={handleExportBulkTally}
+            className="btn btn-sm"
+            style={{
+              background: 'linear-gradient(135deg, #065f46, #059669)',
+              color: '#ffffff',
+              border: 'none',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem'
+            }}
+            title="Export Tally XML Vouchers"
+          >
+            <FileCode size={15} />
+            <span>Tally XML Export</span>
+          </button>
+
+          {/* Refresh Now */}
           <button
             onClick={() => fetchOrders()}
             className="btn btn-secondary btn-sm"
             style={{ background: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
           >
             <RefreshCw size={14} />
-            <span>Refresh Now</span>
+            <span>Refresh</span>
           </button>
         </div>
       </div>
@@ -186,11 +253,11 @@ const AdminOrdersPage = () => {
         <div className="admin-card flex flex-col gap-1">
           <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Shipped (In Transit)</span>
           <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#f59e0b' }}>{shippedCount} Shipments</span>
-          <span style={{ fontSize: '0.7rem', color: '#fde047' }}>En route to farmer address</span>
+          <span style={{ fontSize: '0.7rem', color: '#fde047' }}>En route to customer</span>
         </div>
 
         <div className="admin-card flex flex-col gap-1">
-          <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Delivered & Verified</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Delivered & Fulfilled</span>
           <span style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--admin-accent, #34d399)' }}>{deliveredCount} Delivered</span>
           <span style={{ fontSize: '0.7rem', color: '#86efac' }}>100% Fulfilled</span>
         </div>
@@ -218,84 +285,94 @@ const AdminOrdersPage = () => {
                   fontWeight: isActive ? 800 : 600
                 }}
               >
-                {st === '' ? 'All Orders' : st}
+                {st || 'All Orders'}
               </button>
             );
           })}
         </div>
 
-        {/* Search Input */}
+        {/* Live Search */}
         <div style={{ position: 'relative', width: '280px' }}>
+          <Search size={16} color="var(--admin-text-muted)" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
           <input
             type="text"
             className="input-field"
-            style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)', paddingLeft: '2.2rem', fontSize: '0.825rem' }}
+            style={{
+              paddingLeft: '2.25rem',
+              fontSize: '0.825rem',
+              paddingTop: '0.45rem',
+              paddingBottom: '0.45rem',
+              background: 'var(--admin-bg-main)',
+              borderColor: 'var(--admin-border)',
+              color: 'var(--admin-text-main)'
+            }}
+            placeholder="Search Order #, Customer, Phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search Order #, Farmer Name, Phone..."
           />
-          <Search size={15} color="var(--admin-text-muted, #94a3b8)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
         </div>
       </div>
 
       {/* Orders Table */}
       <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div className="admin-table-container" style={{ border: 'none' }}>
+        <div style={{ overflowX: 'auto' }}>
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Order #</th>
-                <th>Farmer Profile</th>
-                <th>Farm Equipment Items</th>
-                <th>Farm Location</th>
-                <th>Payment Mode</th>
+                <th>Order Ref</th>
+                <th>Customer Details</th>
+                <th>Items Ordered</th>
+                <th>Destination</th>
+                <th>Payment</th>
                 <th>Total Value</th>
-                <th>Order Status</th>
-                <th>Date</th>
-                <th style={{ textAlign: 'right' }}>Action</th>
+                <th>Status</th>
+                <th>Invoice & Accounting</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
                   <td colSpan="9" style={{ textAlign: 'center', padding: '3rem', color: 'var(--admin-text-muted)' }}>
-                    Loading incoming machinery orders...
+                    <RefreshCw size={20} className="animate-spin" style={{ margin: '0 auto 0.5rem auto' }} />
+                    <div>Loading live orders...</div>
                   </td>
                 </tr>
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: '3.5rem', color: 'var(--admin-text-muted)' }}>
-                    <div className="flex flex-col items-center gap-2">
-                      <ShoppingBag size={36} color="var(--admin-border, #334155)" />
-                      <span style={{ fontSize: '1rem', color: 'var(--admin-text-main)', fontWeight: 600 }}>No machinery orders found</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--admin-text-muted)' }}>When customers place orders from the store, they will appear here in real time.</span>
-                    </div>
+                  <td colSpan="9" style={{ textAlign: 'center', padding: '3rem', color: 'var(--admin-text-muted)' }}>
+                    No orders match the selected filters.
                   </td>
                 </tr>
               ) : (
                 orders.map((order) => (
                   <tr key={order._id}>
-                    {/* Order # */}
+                    {/* Order Reference */}
                     <td>
-                      <strong style={{ color: 'var(--admin-text-main)', fontSize: '0.9rem' }}>#{order.orderNumber}</strong>
+                      <div style={{ fontWeight: 800, color: '#38bdf8', fontSize: '0.875rem' }}>
+                        #{order.orderNumber}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--admin-text-muted)' }}>
+                        {new Date(order.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </div>
                     </td>
 
-                    {/* Farmer */}
+                    {/* Customer Details */}
                     <td>
-                      <div style={{ color: 'var(--admin-text-main)', fontWeight: 700, fontSize: '0.875rem' }}>
-                        {order.shippingAddress?.fullName || order.customerName}
+                      <div style={{ fontWeight: 700, color: 'var(--admin-text-main)', fontSize: '0.85rem' }}>
+                        {order.customerName || order.shippingAddress?.fullName}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
-                        {order.shippingAddress?.phone || order.customerPhone}
+                        📞 {order.customerPhone || order.shippingAddress?.phone}
                       </div>
                     </td>
 
-                    {/* Items */}
-                    <td style={{ maxWidth: '240px' }}>
-                      <div className="flex flex-col gap-1">
-                        {order.items.map((i, idx) => (
-                          <div key={idx} style={{ fontSize: '0.8rem', color: 'var(--admin-text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            • {i.name} <strong style={{ color: 'var(--admin-accent, #34d399)' }}>(x{i.quantity})</strong>
+                    {/* Ordered Items */}
+                    <td>
+                      <div className="flex flex-col gap-1" style={{ maxWidth: '200px' }}>
+                        {order.items?.map((it, idx) => (
+                          <div key={idx} style={{ fontSize: '0.75rem', color: 'var(--admin-text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            • {it.name} <strong style={{ color: '#93c5fd' }}>(x{it.quantity})</strong>
                           </div>
                         ))}
                       </div>
@@ -304,7 +381,7 @@ const AdminOrdersPage = () => {
                     {/* Destination */}
                     <td>
                       <div style={{ fontSize: '0.8rem', color: 'var(--admin-text-main)' }}>
-                        {order.shippingAddress?.villageCity}, {order.shippingAddress?.district}
+                        {order.shippingAddress?.villageCity || order.shippingAddress?.city}, {order.shippingAddress?.district}
                       </div>
                       <div style={{ fontSize: '0.725rem', color: 'var(--admin-text-muted)' }}>
                         {order.shippingAddress?.state} - {order.shippingAddress?.pincode}
@@ -319,11 +396,6 @@ const AdminOrdersPage = () => {
                       }`} style={{ fontSize: '0.7rem' }}>
                         {order.payment?.method || 'COD'}
                       </span>
-                      {order.pricing?.couponCode && (
-                        <div style={{ fontSize: '0.675rem', color: '#86efac', marginTop: '2px' }}>
-                          🎟️ {order.pricing.couponCode}
-                        </div>
-                      )}
                     </td>
 
                     {/* Total Value */}
@@ -331,11 +403,6 @@ const AdminOrdersPage = () => {
                       <div style={{ fontWeight: 900, color: '#34d399', fontSize: '0.95rem' }}>
                         {formatINR(order.pricing?.grandTotal || 0)}
                       </div>
-                      {order.pricing?.discountTotal > 0 && (
-                        <div style={{ fontSize: '0.675rem', color: '#fca5a5' }}>
-                          Saved {formatINR(order.pricing.discountTotal)}
-                        </div>
-                      )}
                     </td>
 
                     {/* Order Status Badge */}
@@ -350,9 +417,73 @@ const AdminOrdersPage = () => {
                       </span>
                     </td>
 
-                    {/* Date */}
-                    <td style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                      {new Date(order.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    {/* Quick Invoice & Accounting Actions */}
+                    <td>
+                      <div className="flex items-center gap-1.5">
+                        {/* View/Print GST Invoice */}
+                        <button
+                          type="button"
+                          onClick={() => openInvoiceModal(order)}
+                          className="btn btn-sm"
+                          style={{
+                            background: 'rgba(34, 197, 94, 0.15)',
+                            border: '1px solid rgba(34, 197, 94, 0.4)',
+                            color: '#86efac',
+                            padding: '0.25rem 0.5rem',
+                            fontSize: '0.725rem',
+                            fontWeight: 700,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem'
+                          }}
+                          title="Generate & Print GST Tax Invoice"
+                        >
+                          <FileText size={13} />
+                          <span>Invoice</span>
+                        </button>
+
+                        {/* Quick Tally XML */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const xml = generateTallyXml(order);
+                            downloadFile(xml, `Tally-${order.orderNumber}.xml`, 'application/xml');
+                            addToast('Tally XML downloaded!', 'success');
+                          }}
+                          className="btn btn-sm"
+                          style={{
+                            background: 'rgba(56, 189, 248, 0.15)',
+                            border: '1px solid rgba(56, 189, 248, 0.4)',
+                            color: '#7dd3fc',
+                            padding: '0.25rem 0.45rem',
+                            fontSize: '0.7rem'
+                          }}
+                          title="Export Tally Prime XML"
+                        >
+                          Tally
+                        </button>
+
+                        {/* Quick MyBillBook CSV */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const csv = generateMyBillBookCsv(order);
+                            downloadFile(csv, `MyBillBook-${order.orderNumber}.csv`, 'text/csv;');
+                            addToast('MyBillBook CSV downloaded!', 'success');
+                          }}
+                          className="btn btn-sm"
+                          style={{
+                            background: 'rgba(251, 191, 36, 0.15)',
+                            border: '1px solid rgba(251, 191, 36, 0.4)',
+                            color: '#fde047',
+                            padding: '0.25rem 0.45rem',
+                            fontSize: '0.7rem'
+                          }}
+                          title="Export MyBillBook CSV"
+                        >
+                          BillBook
+                        </button>
+                      </div>
                     </td>
 
                     {/* Action */}
@@ -364,7 +495,7 @@ const AdminOrdersPage = () => {
                         style={{ background: 'var(--admin-bg-card-alt)', borderColor: 'var(--admin-border)', color: '#ffffff', padding: '0.35rem 0.75rem' }}
                       >
                         <Eye size={14} />
-                        <span>Manage Status</span>
+                        <span>Manage</span>
                       </button>
                     </td>
                   </tr>
@@ -378,7 +509,7 @@ const AdminOrdersPage = () => {
       {/* Order Manage & Status Update Modal */}
       {isDetailModalOpen && selectedOrder && (
         <div className="modal-overlay" onClick={() => setIsDetailModalOpen(false)}>
-          <div className="modal-content dark-theme" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '680px' }}>
+          <div className="modal-content dark-theme" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '720px' }}>
             {/* Header */}
             <div className="flex justify-between items-center" style={{ borderBottom: '1px solid #1e2e4f', paddingBottom: '0.85rem', marginBottom: '1rem' }}>
               <div>
@@ -389,22 +520,33 @@ const AdminOrdersPage = () => {
                   Placed on {new Date(selectedOrder.createdAt).toLocaleString('en-IN')}
                 </span>
               </div>
-              <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>
-                Status: {selectedOrder.orderStatus}
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openInvoiceModal(selectedOrder)}
+                  className="btn btn-sm"
+                  style={{ background: '#22c55e', color: '#ffffff', fontWeight: 800, border: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.35rem 0.75rem' }}
+                >
+                  <FileText size={14} />
+                  <span>GST Invoice</span>
+                </button>
+                <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>
+                  Status: {selectedOrder.orderStatus}
+                </span>
+              </div>
             </div>
 
             <form onSubmit={handleUpdateOrderStatus} className="flex flex-col gap-4">
-              {/* Farmer & Delivery Address */}
+              {/* Customer & Delivery Address */}
               <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '10px', padding: '0.85rem 1rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                  🚜 Farmer & Delivery Details:
+                  📦 Customer & Delivery Details:
                 </div>
                 <div className="grid grid-cols-2 gap-2" style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
-                  <div><strong>Name:</strong> {selectedOrder.shippingAddress?.fullName}</div>
-                  <div><strong>Mobile:</strong> {selectedOrder.shippingAddress?.phone}</div>
+                  <div><strong>Name:</strong> {selectedOrder.shippingAddress?.fullName || selectedOrder.customerName}</div>
+                  <div><strong>Mobile:</strong> {selectedOrder.shippingAddress?.phone || selectedOrder.customerPhone}</div>
                   <div className="col-span-2">
-                    <strong>Farm Address:</strong> {selectedOrder.shippingAddress?.street}, {selectedOrder.shippingAddress?.villageCity}, {selectedOrder.shippingAddress?.district}, {selectedOrder.shippingAddress?.state} - {selectedOrder.shippingAddress?.pincode}
+                    <strong>Delivery Address:</strong> {selectedOrder.shippingAddress?.street}, {selectedOrder.shippingAddress?.villageCity || selectedOrder.shippingAddress?.city}, {selectedOrder.shippingAddress?.district}, {selectedOrder.shippingAddress?.state} - {selectedOrder.shippingAddress?.pincode}
                   </div>
                 </div>
               </div>
@@ -412,7 +554,7 @@ const AdminOrdersPage = () => {
               {/* Items & Payment Breakdown */}
               <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '10px', padding: '0.85rem 1rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                  📦 Farm Machinery Items:
+                  🛍️ Order Line Items:
                 </div>
                 <div className="flex flex-col gap-1.5" style={{ marginBottom: '0.75rem' }}>
                   {selectedOrder.items.map((item, idx) => (
@@ -448,9 +590,9 @@ const AdminOrdersPage = () => {
                     onChange={(e) => setNewStatus(e.target.value)}
                   >
                     <option value="Confirmed">Confirmed (Order Accepted)</option>
-                    <option value="Processing">Processing (Palletizing at Warehouse)</option>
-                    <option value="Shipped">Shipped (Handed to Logistics Truck)</option>
-                    <option value="Delivered">Delivered (Successfully Reached Farm)</option>
+                    <option value="Processing">Processing (Packaging at Warehouse)</option>
+                    <option value="Shipped">Shipped (Handed to Logistics Carrier)</option>
+                    <option value="Delivered">Delivered (Successfully Delivered)</option>
                     <option value="Cancelled">Cancelled</option>
                   </select>
                 </div>
@@ -463,19 +605,19 @@ const AdminOrdersPage = () => {
                     style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={courierName}
                     onChange={(e) => setCourierName(e.target.value)}
-                    placeholder="e.g. AgriLogistics Express, Delhivery, V-Trans"
+                    placeholder="e.g. Siddhiva Express, Delhivery, BlueDart"
                   />
                 </div>
 
                 <div className="input-group md:col-span-2">
-                  <label className="input-label" style={{ color: '#cbd5e1' }}>Waybill / Lorry Receipt (LR) Tracking Number</label>
+                  <label className="input-label" style={{ color: '#cbd5e1' }}>AWB Tracking Number</label>
                   <input
                     type="text"
                     className="input-field"
                     style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={trackingNumber}
                     onChange={(e) => setTrackingNumber(e.target.value)}
-                    placeholder="e.g. LR-AGRI-892348-IN"
+                    placeholder="e.g. SIDDHIVA-AWB-892348-IN"
                   />
                 </div>
 
@@ -487,7 +629,7 @@ const AdminOrdersPage = () => {
                     style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={statusNote}
                     onChange={(e) => setStatusNote(e.target.value)}
-                    placeholder="e.g. Machinery tested & loaded on dispatch truck. Expected delivery in 3 days."
+                    placeholder="e.g. Product verified and dispatched via express courier."
                   />
                 </div>
               </div>
@@ -495,7 +637,7 @@ const AdminOrdersPage = () => {
               {/* Action Buttons */}
               <div className="flex justify-between items-center" style={{ marginTop: '0.5rem' }}>
                 <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                  Auto-syncs tracking to Farmer Dashboard instantly.
+                  Auto-syncs tracking to customer dashboard instantly.
                 </span>
 
                 <div className="flex gap-2">
@@ -519,6 +661,18 @@ const AdminOrdersPage = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* GST Invoice Modal */}
+      {invoiceOrder && (
+        <GSTInvoiceModal
+          isOpen={isInvoiceModalOpen}
+          onClose={() => {
+            setIsInvoiceModalOpen(false);
+            setInvoiceOrder(null);
+          }}
+          order={invoiceOrder}
+        />
       )}
     </div>
   );

@@ -12,8 +12,6 @@ import {
   Package,
   Wrench,
   AlertTriangle,
-  Play,
-  Download,
   Share2,
   Heart
 } from 'lucide-react';
@@ -484,8 +482,8 @@ const ProductDetailPage = () => {
               </button>
 
               <a
-                href={`https://wa.me/919027799171?text=${encodeURIComponent(
-                  `Namaste AgriMachina! 🙏\n\nI am interested in this farm machine:\n🚜 *Product:* ${product.name}\n🔖 *SKU:* ${product.sku}\n💰 *Price:* ₹${product.sellingPrice?.toLocaleString('en-IN')}\n🔗 *Direct Link:* ${window.location.origin}/product/${product.slug}\n\nPlease share field demo videos, subsidy assistance, and best discount options!`
+                href={`https://wa.me/916395211953?text=${encodeURIComponent(
+                  `Hello Siddhiva! 👋\n\nI am interested in this product:\n✨ *Product:* ${product.name}\n🔖 *SKU:* ${product.sku || 'N/A'}\n💰 *Price:* ₹${product.sellingPrice?.toLocaleString('en-IN')}\n🔗 *Direct Link:* ${typeof window !== 'undefined' ? window.location.origin : ''}/product/${product.slug || product._id}\n\nPlease share demonstration details, availability, and discount options!`
                 )}`}
                 target="_blank"
                 rel="noreferrer"
@@ -493,7 +491,7 @@ const ProductDetailPage = () => {
                 style={{ background: '#075e54', borderColor: '#075e54', color: '#ffffff', padding: '0.65rem 1rem' }}
               >
                 <PhoneCall size={16} />
-                <span>{t('whatsapp_advisor', 'WhatsApp Advisor')}</span>
+                <span>{t('whatsapp_advisor', 'WhatsApp Support')}</span>
               </a>
             </div>
           </div>
@@ -512,19 +510,16 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      {/* SECTION 1: IDEAL FOR CHIPS (REQUIRED) */}
       <div style={{ marginBottom: '2.5rem' }}>
         <IdealForChips idealFor={product.idealFor} />
       </div>
 
-      {/* SECTION 2: FREQUENTLY BOUGHT TOGETHER BUNDLE */}
       {bundleData && bundleData.bundle && bundleData.bundle.length > 0 && (
         <div style={{ marginBottom: '3.5rem' }}>
           <FrequentlyBoughtTogether bundleData={bundleData} />
         </div>
       )}
 
-      {/* SECTION 3: TECHNICAL DESCRIPTION & WORKING OVERVIEW */}
       <div style={{
         background: 'var(--bg-surface)',
         border: '1px solid var(--border-color)',
@@ -543,7 +538,6 @@ const ProductDetailPage = () => {
         )}
       </div>
 
-      {/* SECTION 4: DYNAMIC SPECIFICATIONS BUILDER TABLE */}
       {product.specifications && product.specifications.length > 0 && (
         <div style={{ marginBottom: '3rem' }}>
           <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)', marginBottom: '1.25rem' }}>
@@ -553,21 +547,18 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-      {/* SECTION 5: APPLICATIONS GRID */}
       {product.applications && product.applications.length > 0 && (
         <div style={{ marginBottom: '3rem' }}>
           <ApplicationsGrid applications={product.applications} />
         </div>
       )}
 
-      {/* SECTION 6: KEY FEATURES */}
       {product.features && product.features.length > 0 && (
         <div style={{ marginBottom: '3rem' }}>
           <FeaturesGrid features={product.features} />
         </div>
       )}
 
-      {/* SECTION 7: WHAT'S INCLUDED IN THE BOX */}
       {product.whatsIncluded && product.whatsIncluded.length > 0 && (
         <div style={{ background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.75rem', marginBottom: '3rem' }}>
           <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -586,7 +577,6 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-      {/* SECTION 8: COMPATIBILITY ATTACHMENTS */}
       {product.compatibility && (product.compatibility.compatibleAttachments?.length > 0 || product.compatibility.compatibleBrands?.length > 0) && (
         <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.75rem', marginBottom: '3rem' }}>
           <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -619,7 +609,6 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-      {/* SECTION 9: WARRANTY & SHIPPING DETAILS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginBottom: '3.5rem' }}>
         {/* Warranty */}
         <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.5rem' }}>
@@ -658,7 +647,6 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      {/* SECTION 10: FREQUENTLY ASKED QUESTIONS */}
       {product.faqs && product.faqs.length > 0 && (
         <div style={{ background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '2rem', marginBottom: '3.5rem' }}>
           <h3 style={{ fontSize: '1.35rem', color: 'var(--text-main)', marginBottom: '1.25rem' }}>
@@ -679,7 +667,6 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-      {/* SECTION 11: VERIFIED CUSTOMER REVIEWS */}
       <div style={{ marginBottom: '3.5rem' }}>
         <VerifiedReviewSection
           productId={product._id}
@@ -688,13 +675,10 @@ const ProductDetailPage = () => {
         />
       </div>
 
-      {/* SECTION 12: RECOMMENDATION CAROUSELS */}
       <RecommendedProducts productId={product._id} title="You May Also Like" />
 
-      {/* SECTION 13: RECENTLY VIEWED */}
-      <RecentlyViewed currentProductId={product._id} />
+      <RecentlyViewed currentProductId={product._id} hideWhenEmpty={true} />
 
-      {/* EMI CALCULATOR MODAL */}
       <EMICalculatorModal
         isOpen={isEMIModalOpen}
         onClose={() => setIsEMIModalOpen(false)}
@@ -702,14 +686,12 @@ const ProductDetailPage = () => {
         emiConfig={product.emi || {}}
       />
 
-      {/* PRODUCT QUERY / TECHNICAL ADVISORY MODAL */}
       <ProductQueryModal
         isOpen={isQueryModalOpen}
         onClose={() => setIsQueryModalOpen(false)}
         product={product}
       />
 
-      {/* SHARE FARM EQUIPMENT MODAL */}
       <ShareProductModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
