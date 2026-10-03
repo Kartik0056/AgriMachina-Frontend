@@ -4,7 +4,7 @@ import { Tag, Package } from 'lucide-react';
 
 // Common synonyms and aliases mapping to Lucide icon component names or emojis
 const ICON_ALIASES = {
-  // Machinery & Agro
+  // Hardware & Home
   tractor: 'Tractor',
   droplets: 'Droplets',
   droplet: 'Droplets',
@@ -141,7 +141,7 @@ const toPascalCase = (str) => {
  * Handles:
  * 1. Lucide icon names (e.g., 'Droplets', 'Sparkles', 'Scissors', 'Tractor', 'Cpu', 'Utensils')
  * 2. Emojis (e.g., '🌱', '🌶️', '🚜', '🌾', '💻', '🧂', '👕')
- * 3. Image URLs (e.g., '/images/machinery/power_weeder.jpg', 'https://...')
+ * 3. Image URLs (e.g., '/images/placeholder.svg', 'https://...')
  * 4. Aliases and case-insensitive matching
  */
 const CategoryIcon = ({

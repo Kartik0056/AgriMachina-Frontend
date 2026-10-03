@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   Building,
   Home,
-  Tractor,
   KeyRound,
   Mail,
   Phone,
@@ -49,7 +48,7 @@ const UserProfilePage = () => {
     email: user?.email || '',
     phone: user?.phone || '',
     avatar: user?.avatar || '',
-    farmType: user?.farmDetails?.farmType || 'Vegetable & Crop Farming',
+    farmType: user?.farmDetails?.farmType || 'All Categories',
     farmSizeAcres: user?.farmDetails?.farmSizeAcres || 5,
     state: user?.farmDetails?.state || 'Gujarat',
     district: user?.farmDetails?.district || '',
@@ -96,7 +95,7 @@ const UserProfilePage = () => {
         email: user.email || '',
         phone: user.phone || '',
         avatar: user.avatar || '',
-        farmType: user.farmDetails?.farmType || 'Vegetable & Crop Farming',
+        farmType: user.farmDetails?.farmType || 'All Categories',
         farmSizeAcres: user.farmDetails?.farmSizeAcres || 5,
         state: user.farmDetails?.state || 'Gujarat',
         district: user.farmDetails?.district || '',
@@ -140,7 +139,7 @@ const UserProfilePage = () => {
       });
       if (res.data.success) {
         updateUserData(res.data.user);
-        addToast('Farmer profile & photo updated successfully! 🌾', 'success');
+        addToast('Profile & photo updated successfully! ✨', 'success');
       }
     } catch (err) {
       addToast(err.response?.data?.message || 'Failed to update profile.', 'error');
@@ -310,12 +309,12 @@ const UserProfilePage = () => {
     return (
       <div className="container" style={{ padding: '4rem 1.25rem', textAlign: 'center' }}>
         <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '3rem', maxWidth: '500px', margin: '0 auto' }}>
-          <User size={48} color="#166534" style={{ margin: '0 auto 1rem auto' }} />
-          <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Farmer Account Login Required</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-            Please login to view your profile details, farm addresses, order history, and security settings.
+          <User size={38} color="#166534" style={{ margin: '0 auto 0.75rem auto' }} />
+          <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', marginBottom: '0.4rem', fontWeight: 700 }}>Customer Account Login Required</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+            Please login to view your profile details, delivery addresses, order history, and security settings.
           </p>
-          <Link to="/login?redirect=/profile" className="btn btn-primary btn-lg" style={{ width: '100%' }}>
+          <Link to="/login?redirect=/profile" className="btn btn-primary btn-md" style={{ width: '100%' }}>
             <span>Login to Your Account</span>
           </Link>
         </div>
@@ -366,26 +365,26 @@ const UserProfilePage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '1.75rem',
+                fontSize: '1.25rem',
                 fontWeight: 900,
                 boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
               }}
             >
-              {user?.name?.charAt(0)?.toUpperCase() || 'F'}
+              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
             </div>
           )}
           <div>
             <div className="flex items-center gap-2">
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff', margin: 0 }}>
+              <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
                 {user?.name}
               </h1>
-              <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>VERIFIED FARMER</span>
+              <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>VERIFIED CUSTOMER</span>
             </div>
             <div style={{ fontSize: '0.85rem', color: '#dcfce7', marginTop: '0.2rem' }}>
               {user?.email} • {user?.phone || 'No phone added'}
             </div>
             <div style={{ fontSize: '0.75rem', color: '#a7f3d0', marginTop: '0.15rem' }}>
-              {user?.farmDetails?.farmType} ({user?.farmDetails?.farmSizeAcres || 5} Acres in {user?.farmDetails?.state})
+              {user?.farmDetails?.state ? `${user?.farmDetails?.city || ''} ${user?.farmDetails?.state}` : 'Valued Customer'}
             </div>
           </div>
         </div>
@@ -393,7 +392,7 @@ const UserProfilePage = () => {
         <div className="flex items-center gap-3">
           <Link to="/orders" className="btn btn-secondary btn-sm" style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', color: '#ffffff' }}>
             <Package size={16} />
-            <span>My Machinery Orders</span>
+            <span>My Orders & Invoices</span>
           </Link>
           <button onClick={logout} className="btn btn-danger btn-sm">
             <span>Logout</span>
@@ -425,7 +424,7 @@ const UserProfilePage = () => {
             }}
           >
             <User size={18} color={activeTab === 'profile' ? '#166534' : '#64748b'} />
-            <span>Farmer Profile & Details</span>
+            <span>Customer Profile & Details</span>
           </button>
 
           <button
@@ -489,7 +488,7 @@ const UserProfilePage = () => {
             }}
           >
             <Package size={18} color="#64748b" />
-            <span>My Machinery Orders</span>
+            <span>My Orders</span>
           </Link>
         </div>
 
@@ -499,14 +498,14 @@ const UserProfilePage = () => {
           {activeTab === 'profile' && (
             <div style={{ background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800 }}>Farmer Profile Information</h3>
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800 }}>Customer Profile Information</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                  Update your contact details, farm profile, and land cultivation information.
+                  Update your contact details, personal profile, and preferences.
                 </p>
               </div>
 
               <form onSubmit={handleUpdateProfile} className="flex flex-col gap-6">
-                {/* Farmer Profile Avatar Photo Upload Card */}
+                {/* Customer Profile Avatar Photo Upload Card */}
                 <div style={{
                   background: 'var(--bg-surface-alt)',
                   border: '1px solid var(--border-color)',
@@ -541,20 +540,20 @@ const UserProfilePage = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '1.75rem',
-                        fontWeight: 900
+                        fontSize: '1.25rem',
+                        fontWeight: 800
                       }}>
-                        {profileForm.name?.charAt(0)?.toUpperCase() || 'F'}
+                        {profileForm.name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
                     )}
                   </div>
 
                   <div className="flex-1" style={{ minWidth: '220px' }}>
                     <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '0.95rem', marginBottom: '0.25rem' }}>
-                      Profile Photo / Kisan Avatar
+                      Profile Photo / Avatar
                     </div>
                     <p style={{ fontSize: '0.785rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-                      Upload your farm photo or portrait. Supported: JPG, PNG, WebP (Max 5MB).
+                      Upload your profile photo or avatar. Supported: JPG, PNG, WebP (Max 5MB).
                     </p>
 
                     <div className="flex items-center gap-3 flex-wrap">
@@ -619,30 +618,19 @@ const UserProfilePage = () => {
                   </div>
 
                   <div className="input-group">
-                    <label className="input-label">Primary Farm Type</label>
+                    <label className="input-label">Preferred Shopping Category</label>
                     <select
                       className="select-field"
                       value={profileForm.farmType}
                       onChange={(e) => setProfileForm({ ...profileForm, farmType: e.target.value })}
                     >
-                      <option value="Vegetable & Crop Farming">Vegetable & Crop Farming</option>
-                      <option value="Cotton & Sugarcane">Cotton & Sugarcane</option>
-                      <option value="Paddy & Wheat">Paddy & Wheat</option>
-                      <option value="Horticulture Orchards">Horticulture Orchards</option>
-                      <option value="Multi-Crop Integrated Farm">Multi-Crop Integrated Farm</option>
+                      <option value="All Categories">All Categories & Curated Collections</option>
+                      <option value="Spices & Masale">🌶️ Pure Spices, Masale & Groceries</option>
+                      <option value="Electronics & Smart Tech">⚡ Smart Electronics & Audio</option>
+                      <option value="Home Decor & Living">🏺 Luxury Home Decor & Ceramics</option>
+                      <option value="Kitchen & Home Appliances">🍳 Kitchen & Home Appliances</option>
+                      <option value="Hardware & Power Tools">🛠️ Hardware, Tools & Workshop</option>
                     </select>
-                  </div>
-
-                  <div className="input-group">
-                    <label className="input-label">Cultivated Land Area (Acres)</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="1000"
-                      className="input-field"
-                      value={profileForm.farmSizeAcres}
-                      onChange={(e) => setProfileForm({ ...profileForm, farmSizeAcres: e.target.value })}
-                    />
                   </div>
 
                   <div className="input-group">
@@ -670,7 +658,7 @@ const UserProfilePage = () => {
                   </div>
 
                   <div className="input-group">
-                    <label className="input-label">Preferred Advisory Language</label>
+                    <label className="input-label">Preferred Communication Language</label>
                     <select
                       className="select-field"
                       value={profileForm.preferredLanguage}
@@ -742,7 +730,7 @@ const UserProfilePage = () => {
                       <div>
                         <div className="flex justify-between items-start" style={{ marginBottom: '0.5rem' }}>
                           <span className="badge" style={{ background: '#e2e8f0', color: 'var(--text-main)', fontSize: '0.7rem' }}>
-                            {addr.addressType || 'Farm'} Address
+                            {addr.addressType || 'Home'} Address
                           </span>
                           {addr.isDefault && (
                             <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
@@ -878,12 +866,12 @@ const UserProfilePage = () => {
       <Modal
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
-        title={editingAddressId ? 'Edit Farm Delivery Address' : 'Add New Farm Delivery Address'}
+        title={editingAddressId ? 'Edit Delivery Address' : 'Add New Delivery Address'}
       >
         <form onSubmit={handleSaveAddress} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="input-group">
-              <label className="input-label">Recipient / Farmer Name *</label>
+              <label className="input-label">Recipient / Customer Name *</label>
               <input
                 type="text"
                 required
@@ -905,14 +893,14 @@ const UserProfilePage = () => {
             </div>
 
             <div className="input-group sm:col-span-2">
-              <label className="input-label">Farm Plot / Survey No. / Street Address *</label>
+              <label className="input-label">House / Flat No. / Street Address *</label>
               <input
                 type="text"
                 required
                 className="input-field"
                 value={addressForm.street}
                 onChange={(e) => setAddressForm({ ...addressForm, street: e.target.value })}
-                placeholder="e.g. Survey No. 42, Near Primary School"
+                placeholder="e.g. Flat 402, Green Park Apartments"
               />
             </div>
 
@@ -972,7 +960,7 @@ const UserProfilePage = () => {
                 className="input-field"
                 value={addressForm.landmark}
                 onChange={(e) => setAddressForm({ ...addressForm, landmark: e.target.value })}
-                placeholder="e.g. Near Kisan Cooperative Bank"
+                placeholder="e.g. Near City Center / Post Office"
               />
             </div>
 
@@ -983,10 +971,10 @@ const UserProfilePage = () => {
                 value={addressForm.addressType}
                 onChange={(e) => setAddressForm({ ...addressForm, addressType: e.target.value })}
               >
-                <option value="Farm">Farm Land Plot</option>
-                <option value="Home">Home Residence</option>
-                <option value="Warehouse">Warehouse / Godown</option>
-                <option value="Cooperative">Village Cooperative Center</option>
+                <option value="Home">Home (7 AM - 9 PM Delivery)</option>
+                <option value="Office">Office / Commercial (9 AM - 6 PM)</option>
+                <option value="Warehouse">Warehouse / Shop / Business</option>
+                <option value="Other">Other / Alternative Address</option>
               </select>
             </div>
           </div>
@@ -997,7 +985,7 @@ const UserProfilePage = () => {
               checked={addressForm.isDefault}
               onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
             />
-            <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>Make this my default farm delivery address</span>
+            <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>Make this my default delivery address</span>
           </label>
 
           <div className="flex justify-end gap-2" style={{ marginTop: '1rem' }}>

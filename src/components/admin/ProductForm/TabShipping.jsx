@@ -58,7 +58,7 @@ const TabShipping = ({ formData, updateField }) => {
             checked={shipping.panIndia !== false}
             onChange={(e) => updateShipping('panIndia', e.target.checked)}
           />
-          <span>Pan-India Doorstep Farm Logistics Delivery Enabled</span>
+          <span>Pan-India Express Doorstep Delivery Enabled</span>
         </label>
 
         <label className="flex items-center gap-2" style={{ cursor: 'pointer', color: '#ffffff', fontSize: '0.9rem' }}>
@@ -67,7 +67,7 @@ const TabShipping = ({ formData, updateField }) => {
             checked={shipping.installationAvailable !== false}
             onChange={(e) => updateShipping('installationAvailable', e.target.checked)}
           />
-          <span>Free Field Installation, Assembly & Operating Demonstration Supported</span>
+          <span>Quality Assurance &amp; Sealed Tamper-Evident Packaging Guaranteed</span>
         </label>
       </div>
     </div>

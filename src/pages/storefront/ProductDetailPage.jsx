@@ -98,7 +98,7 @@ const ProductDetailPage = () => {
   if (loading) {
     return (
       <div className="container" style={{ padding: '5rem 0', textAlign: 'center', color: 'var(--text-muted)' }}>
-        <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>Loading agricultural machinery details...</div>
+        <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>Loading product details...</div>
       </div>
     );
   }
@@ -107,8 +107,8 @@ const ProductDetailPage = () => {
     return (
       <div className="container" style={{ padding: '5rem 0', textAlign: 'center' }}>
         <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Product Not Found</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>The requested equipment listing may have been moved or archived.</p>
-        <Link to="/products" className="btn btn-primary">Browse Machinery</Link>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>The requested product listing may have been moved or archived.</p>
+        <Link to="/products" className="btn btn-primary">Browse All Products</Link>
       </div>
     );
   }
@@ -149,10 +149,10 @@ const ProductDetailPage = () => {
   return (
     <div className="container" style={{ padding: '2rem 1.25rem 4rem 1.25rem' }}>
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.75rem', flexWrap: 'wrap' }}>
+      <div className="flex items-center gap-2" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <Link to="/" className="hover:underline">Home</Link>
         <span>/</span>
-        <Link to="/products" className="hover:underline">Machinery</Link>
+        <Link to="/products" className="hover:underline">All Products</Link>
         <span>/</span>
         <Link to={`/products?category=${encodeURIComponent(product.category)}`} className="hover:underline">{product.category}</Link>
         <span>/</span>
@@ -164,9 +164,9 @@ const ProductDetailPage = () => {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-          gap: '3.5rem',
+          gap: '3rem',
           alignItems: 'start',
-          marginBottom: '4rem'
+          marginBottom: '3.5rem'
         }}
       >
         {/* Left: Gallery Showcase */}
@@ -179,36 +179,36 @@ const ProductDetailPage = () => {
         </div>
 
         {/* Right: Technical Summary & Purchasing Actions */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
           {/* Brand, Model, SKU & Upper Corner Share Button */}
-          <div className="flex items-center justify-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="flex items-center justify-between" style={{ flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.2rem' }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               {product.brand} {product.modelNumber ? `• ${t('model', 'Model')}: ${product.modelNumber}` : ''}
             </span>
 
-            <div className="flex items-center" style={{ gap: '0.85rem' }}>
+            <div className="flex items-center" style={{ gap: '0.5rem' }}>
               <span style={{
-                fontSize: '0.75rem',
+                fontSize: '0.65rem',
                 color: 'var(--text-muted)',
                 background: 'var(--bg-surface-alt)',
                 border: '1px solid var(--border-color)',
-                padding: '0.25rem 0.65rem',
-                borderRadius: '6px',
+                padding: '0.15rem 0.5rem',
+                borderRadius: '5px',
                 fontWeight: 600
               }}>
                 {t('sku', 'SKU')}: <strong>{currentSku}</strong>
               </span>
 
-              {/* Upper Corner Share Logo Button with generous spacing */}
+              {/* Upper Corner Share Logo Button */}
               <button
                 type="button"
                 onClick={() => setIsShareModalOpen(true)}
                 style={{
                   background: 'var(--bg-surface)',
-                  border: '1.5px solid var(--border-color)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
+                  width: '30px',
+                  height: '30px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -220,45 +220,45 @@ const ProductDetailPage = () => {
                 className="hover:scale-110"
                 title={t('share_product', 'Share Product (WhatsApp, FB, Insta, Link)')}
               >
-                <Share2 size={17} color="var(--primary-500, #16a34a)" />
+                <Share2 size={13} color="var(--primary-500, #16a34a)" />
               </button>
             </div>
           </div>
 
           {/* Title and Unit Badge */}
           <div>
-            <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)', lineHeight: 1.25, margin: '0 0 0.4rem 0' }}>
+            <h1 style={{ fontSize: '1.15rem', color: 'var(--text-main)', lineHeight: 1.35, margin: '0 0 0.3rem 0', fontWeight: 650, letterSpacing: '-0.01em' }}>
               {product.name}
             </h1>
             {(selectedVariant?.quantity || product.unitDisplay || (product.netQuantity && product.unit)) && (
-              <span className="badge badge-primary" style={{ fontSize: '0.75rem', background: '#dcfce7', color: '#166534', fontWeight: 800, border: '1px solid #86efac', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+              <span className="badge badge-primary" style={{ fontSize: '0.65rem', background: 'var(--primary-50, #dcfce7)', color: 'var(--primary-600, #166534)', fontWeight: 700, border: '1px solid var(--border-color, #86efac)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
                 📦 Net Quantity / Size: <strong>{selectedVariant ? (selectedVariant.quantity && selectedVariant.unit ? `${selectedVariant.quantity} ${selectedVariant.unit}` : selectedVariant.name) : (product.unitDisplay || `${product.netQuantity} ${product.unit}`)}</strong>
               </span>
             )}
           </div>
 
           {/* Ratings & Verified Reviews Summary */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <StarRating
               rating={product.ratings?.averageRating || 0}
               totalReviews={product.ratings?.totalReviews}
-              size={18}
+              size={13}
             />
             {product.ratings?.totalReviews > 0 && (
-              <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
-                <ShieldCheck size={13} /> {t('verified_reviews', '100% Verified Customer Reviews')}
+              <span className="badge badge-success" style={{ fontSize: '0.62rem', padding: '0.12rem 0.4rem' }}>
+                <ShieldCheck size={10} /> {t('verified_reviews', '100% Verified Customer Reviews')}
               </span>
             )}
           </div>
 
           {/* Pack Size / Variant Selection Pills */}
           {product.variants && product.variants.length > 0 && (
-            <div style={{ background: 'var(--bg-surface-alt)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-color)', marginTop: '0.5rem' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ background: 'var(--bg-surface-alt)', padding: '0.85rem', borderRadius: '10px', border: '1px solid var(--border-color)', marginTop: '0.35rem' }}>
+              <div style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.45rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>Select Pack Size / Weight / Variant:</span>
-                <span style={{ color: '#166534', fontWeight: 800 }}>{selectedVariant?.name}</span>
+                <span style={{ color: 'var(--primary-600, #166534)', fontWeight: 800 }}>{selectedVariant?.name}</span>
               </div>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-1.5 flex-wrap">
                 {product.variants.map((v, vIdx) => {
                   const isSelected = selectedVariant?.name === v.name;
                   return (
@@ -270,19 +270,19 @@ const ProductDetailPage = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        padding: '0.5rem 0.85rem',
-                        borderRadius: '8px',
-                        border: isSelected ? '2px solid #16a34a' : '1px solid var(--border-color)',
-                        background: isSelected ? 'rgba(22, 101, 52, 0.12)' : 'var(--bg-surface)',
-                        color: isSelected ? '#166534' : 'var(--text-main)',
+                        padding: '0.4rem 0.75rem',
+                        borderRadius: '7px',
+                        border: isSelected ? '2px solid var(--primary-500, #16a34a)' : '1px solid var(--border-color)',
+                        background: isSelected ? 'var(--primary-50, rgba(22, 101, 52, 0.12))' : 'var(--bg-surface)',
+                        color: isSelected ? 'var(--primary-600, #166534)' : 'var(--text-main)',
                         cursor: 'pointer',
                         fontWeight: isSelected ? 800 : 600,
-                        boxShadow: isSelected ? '0 2px 8px rgba(22, 101, 52, 0.15)' : 'none',
+                        boxShadow: isSelected ? '0 2px 6px rgba(0, 0, 0, 0.12)' : 'none',
                         transition: 'all 0.15s ease'
                       }}
                     >
-                      <span style={{ fontSize: '0.85rem' }}>{v.name}</span>
-                      <span style={{ fontSize: '0.72rem', color: isSelected ? '#15803d' : 'var(--text-muted)', marginTop: '2px', fontWeight: 700 }}>
+                      <span style={{ fontSize: '0.78rem' }}>{v.name}</span>
+                      <span style={{ fontSize: '0.68rem', color: isSelected ? 'var(--primary-500, #15803d)' : 'var(--text-muted)', marginTop: '1px', fontWeight: 700 }}>
                         {formatINR(v.sellingPrice)}
                       </span>
                     </button>
@@ -292,7 +292,7 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.25rem 0' }} />
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.15rem 0' }} />
 
           {/* Deal of the Day Banner */}
           {product.isDealOfTheDay && (
@@ -300,19 +300,19 @@ const ProductDetailPage = () => {
               style={{
                 background: 'linear-gradient(135deg, #7c2d12, #991b1b)',
                 color: '#ffffff',
-                padding: '0.75rem 1.25rem',
-                borderRadius: '12px',
+                padding: '0.6rem 1rem',
+                borderRadius: '9px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '0.75rem'
+                gap: '0.5rem'
               }}
             >
               <div className="flex items-center gap-2">
-                <span className="badge" style={{ background: '#ef4444', color: '#ffffff', fontWeight: 900, fontSize: '0.75rem' }}>
+                <span className="badge" style={{ background: '#ef4444', color: '#ffffff', fontWeight: 800, fontSize: '0.68rem' }}>
                   {product.dealBadge || '🔥 SUPER DEAL OF THE DAY'}
                 </span>
-                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fef08a' }}>
+                <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#fef08a' }}>
                   Special limited-quota discount active!
                 </span>
               </div>
@@ -320,23 +320,23 @@ const ProductDetailPage = () => {
           )}
 
           {/* Pricing Box */}
-          <div style={{ background: 'var(--bg-surface-alt)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-            <div className="flex items-baseline gap-3" style={{ flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '2.25rem', fontWeight: 900, color: 'var(--text-main)' }}>
+          <div style={{ background: 'var(--bg-surface-alt)', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+            <div className="flex items-baseline gap-2.5" style={{ flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.015em' }}>
                 {formatINR(currentPrice)}
               </span>
               {currentMrp > currentPrice && (
-                <span style={{ fontSize: '1.15rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
                   {formatINR(currentMrp)}
                 </span>
               )}
               {currentDiscountPercent > 0 && (
-                <span className="badge badge-accent" style={{ fontSize: '0.85rem', background: '#f59e0b', color: '#ffffff' }}>
+                <span className="badge badge-accent" style={{ fontSize: '0.68rem', background: '#f59e0b', color: '#ffffff', fontWeight: 700, padding: '0.12rem 0.45rem' }}>
                   {t('save', 'Save')} {currentDiscountPercent}% ({formatINR(currentDiscountAmount)})
                 </span>
               )}
               {product.hasExtraDiscount && product.extraDiscountValue > 0 && (
-                <span className="badge" style={{ fontSize: '0.85rem', background: '#16a34a', color: '#ffffff', fontWeight: 800 }}>
+                <span className="badge" style={{ fontSize: '0.68rem', background: '#16a34a', color: '#ffffff', fontWeight: 800, padding: '0.12rem 0.45rem' }}>
                   {product.extraDiscountType === 'PERCENT' ? `🎁 Extra ${product.extraDiscountValue}% OFF` : `🎁 Extra ₹${product.extraDiscountValue} OFF`}
                 </span>
               )}
@@ -344,12 +344,12 @@ const ProductDetailPage = () => {
 
             {/* Extra Discount Announcement */}
             {product.hasExtraDiscount && product.extraDiscountLabel && (
-              <div style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-400, #86efac)', borderRadius: '8px', padding: '0.5rem 0.75rem', marginTop: '0.75rem', fontSize: '0.85rem', color: '#166534', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ background: 'var(--primary-50)', border: '1px solid var(--border-color, #86efac)', borderRadius: '6px', padding: '0.35rem 0.55rem', marginTop: '0.45rem', fontSize: '0.7rem', color: 'var(--primary-600, #166534)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                 <span>🏷️ <strong>{t('extra_discount', 'Special Offer')}:</strong> {product.extraDiscountLabel}</span>
               </div>
             )}
 
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
               Price inclusive of <strong>{product.gstPercent || 12}% GST</strong> (HSN: {product.hsnCode || '8432'}). GST Input Tax Credit available on commercial invoice.
             </div>
           </div>
@@ -359,23 +359,23 @@ const ProductDetailPage = () => {
             <div style={{
               background: 'linear-gradient(135deg, #0c3e27, #166534)',
               color: '#ffffff',
-              padding: '1rem 1.25rem',
-              borderRadius: '12px',
+              padding: '0.65rem 0.85rem',
+              borderRadius: '9px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               flexWrap: 'wrap',
-              gap: '0.75rem'
+              gap: '0.45rem'
             }}>
               <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#86efac', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {t('emi_starting', 'EASY KISAN EMI AVAILABLE')}
+                <div style={{ fontSize: '0.6rem', fontWeight: 800, color: '#86efac', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  {t('emi_starting', 'EASY 0% NO-COST EMI AVAILABLE')}
                 </div>
-                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fef08a' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#fef08a' }}>
                   Starting from {formatINR(product.emi.minMonthlyEmi)} / month
                 </div>
-                <div style={{ fontSize: '0.7rem', color: '#dcfce7' }}>
-                  Flexible 3 to 36 months tenures with leading agricultural banks
+                <div style={{ fontSize: '0.62rem', color: '#dcfce7' }}>
+                  Flexible 3 to 36 months tenures with leading Indian banks
                 </div>
               </div>
 
@@ -383,47 +383,47 @@ const ProductDetailPage = () => {
                 type="button"
                 onClick={() => setIsEMIModalOpen(true)}
                 className="btn btn-accent btn-sm"
-                style={{ background: '#f59e0b', color: '#ffffff', fontWeight: 700 }}
+                style={{ background: '#f59e0b', color: '#ffffff', fontWeight: 700, fontSize: '0.68rem', padding: '0.25rem 0.55rem' }}
               >
-                <CreditCard size={15} />
+                <CreditCard size={12} />
                 <span>{t('view_emi_plans', 'View EMI Plans')}</span>
               </button>
             </div>
           )}
 
           {/* Stock Availability */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" style={{ flexWrap: 'wrap' }}>
             {isOutOfStock ? (
-              <span className="badge badge-danger" style={{ background: 'var(--bg-surface)', color: '#ef4444', border: '1px solid #fca5a5' }}>{t('out_of_stock', 'Out of Stock')}</span>
+              <span className="badge badge-danger" style={{ background: 'var(--bg-surface)', color: '#ef4444', border: '1px solid #fca5a5', fontSize: '0.66rem', padding: '0.2rem 0.55rem', borderRadius: '6px' }}>{t('out_of_stock', 'Out of Stock')}</span>
             ) : isLowStock ? (
-              <span className="badge badge-warning" style={{ background: 'var(--bg-surface)', color: '#f59e0b', border: '1px solid #fcd34d' }}>⚡ {t('low_stock', 'Low Stock: Only')} {currentStockQty} remaining</span>
+              <span className="badge badge-warning" style={{ background: 'var(--bg-surface)', color: '#f59e0b', border: '1px solid #fcd34d', fontSize: '0.66rem', padding: '0.2rem 0.55rem', borderRadius: '6px' }}>⚡ {t('low_stock', 'Low Stock: Only')} {currentStockQty} remaining</span>
             ) : (
-              <span className="badge badge-success" style={{ background: 'var(--bg-surface)', color: '#16a34a', border: '1px solid #86efac' }}>✓ {t('in_stock', 'In Stock & Ready for Immediate Dispatch')}</span>
+              <span className="badge badge-success" style={{ background: 'var(--bg-surface)', color: '#16a34a', border: '1px solid #86efac', fontSize: '0.66rem', padding: '0.2rem 0.55rem', borderRadius: '6px', fontWeight: 700 }}>✓✓ {t('in_stock', 'IN STOCK – READY FOR EXPRESS DISPATCH')}</span>
             )}
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              • Dispatches from {product.warehouse || 'Verified Fulfilment Hub'}
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              • Dispatches from {product.warehouse || 'Jaipur Craftworks Hub'}
             </span>
           </div>
 
           {/* Quantity & CTA Buttons */}
-          <div className="flex flex-col gap-3" style={{ marginTop: '0.5rem' }}>
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2" style={{ marginTop: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               {/* Quantity */}
-              <div className="flex items-center" style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden' }}>
+              <div className="flex items-center" style={{ border: '1px solid var(--border-color)', borderRadius: '6px', overflow: 'hidden', height: '36px', marginRight: '6px' }}>
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{ width: '38px', height: '42px', background: 'var(--bg-surface-alt)', border: 'none', cursor: 'pointer', fontWeight: 700 }}
+                  style={{ width: '30px', height: '36px', background: 'var(--bg-surface-alt)', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
                 >
                   -
                 </button>
-                <span style={{ width: '45px', textAlign: 'center', fontWeight: 700, fontSize: '0.95rem' }}>
+                <span style={{ width: '32px', textAlign: 'center', fontWeight: 700, fontSize: '0.825rem', color: 'var(--text-main)' }}>
                   {quantity}
                 </span>
                 <button
                   type="button"
                   onClick={() => setQuantity(q => q + 1)}
-                  style={{ width: '36px', height: '36px', border: 'none', background: 'var(--bg-surface-alt)', cursor: 'pointer', fontWeight: 700 }}
+                  style={{ width: '30px', height: '36px', border: 'none', background: 'var(--bg-surface-alt)', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
                 >
                   +
                 </button>
@@ -433,16 +433,26 @@ const ProductDetailPage = () => {
               <button
                 type="button"
                 onClick={() => toggleWishlist(product)}
-                className="btn btn-secondary btn-lg"
                 style={{
-                  padding: '0 0.85rem',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 0,
+                  border: '1px solid',
                   borderColor: isInWishlist(product._id || product.id) ? '#fca5a5' : 'var(--border-color)',
-                  background: isInWishlist(product._id || product.id) ? '#fef2f2' : 'var(--bg-surface)'
+                  background: isInWishlist(product._id || product.id) ? '#fef2f2' : 'var(--bg-surface)',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  marginRight: '6px',
+                  transition: 'all 0.15s ease'
                 }}
                 title={isInWishlist(product._id || product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
               >
                 <Heart
-                  size={20}
+                  size={16}
                   color={isInWishlist(product._id || product.id) ? '#ef4444' : '#64748b'}
                   fill={isInWishlist(product._id || product.id) ? '#ef4444' : 'none'}
                 />
@@ -452,10 +462,26 @@ const ProductDetailPage = () => {
               <button
                 onClick={handleAddToCart}
                 disabled={isOutOfStock}
-                className="btn btn-secondary btn-lg flex-1"
-                style={{ border: '2px solid #166534', color: '#166534', fontWeight: 700 }}
+                style={{
+                  height: '36px',
+                  padding: '0 0.85rem',
+                  borderRadius: '6px',
+                  border: '1.5px solid var(--primary-600, #166534)',
+                  background: 'transparent',
+                  color: 'var(--primary-600, #166534)',
+                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.35rem',
+                  cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                  flex: 1,
+                  marginRight: '6px',
+                  transition: 'all 0.15s ease'
+                }}
               >
-                <ShoppingCart size={18} />
+                <ShoppingCart size={15} />
                 <span>{t('add_to_cart', 'Add to Cart')}</span>
               </button>
 
@@ -463,48 +489,94 @@ const ProductDetailPage = () => {
               <button
                 onClick={handleBuyNow}
                 disabled={isOutOfStock}
-                className="btn btn-primary btn-lg flex-1"
+                style={{
+                  height: '36px',
+                  padding: '0 0.85rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #166534, #15803d)',
+                  color: '#ffffff',
+                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.35rem',
+                  cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                  flex: 1,
+                  boxShadow: '0 2px 6px rgba(22, 101, 52, 0.25)',
+                  transition: 'all 0.15s ease'
+                }}
               >
                 <span>{t('buy_now', 'Buy Now')}</span>
               </button>
             </div>
 
-            {/* WhatsApp Agronomy Expert Advice & Machine Query Modal Button */}
-            <div className="flex flex-col sm:flex-row gap-2.5">
+            {/* Shopping AI Assistant & WhatsApp Buttons */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={() => setIsQueryModalOpen(true)}
-                className="btn btn-secondary btn-md flex-1"
-                style={{ background: 'var(--primary-50)', borderColor: '#86efac', color: '#166534', fontWeight: 700, padding: '0.65rem 1rem' }}
+                style={{
+                  height: '32px',
+                  padding: '0 0.75rem',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-color, #86efac)',
+                  background: 'var(--primary-50)',
+                  color: 'var(--primary-600, #166534)',
+                  fontWeight: 700,
+                  fontSize: '0.74rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.35rem',
+                  cursor: 'pointer',
+                  flex: 1,
+                  marginRight: '6px'
+                }}
               >
-                <HelpCircle size={17} color="#166534" />
-                <span>{t('ask_specialist', 'Ask Specialist / Query')}</span>
+                <HelpCircle size={14} color="var(--primary-600, #166534)" />
+                <span>{t('ask_specialist', 'Ask Shopping AI Assistant')}</span>
               </button>
 
               <a
                 href={`https://wa.me/916395211953?text=${encodeURIComponent(
-                  `Hello Siddhiva! 👋\n\nI am interested in this product:\n✨ *Product:* ${product.name}\n🔖 *SKU:* ${product.sku || 'N/A'}\n💰 *Price:* ₹${product.sellingPrice?.toLocaleString('en-IN')}\n🔗 *Direct Link:* ${typeof window !== 'undefined' ? window.location.origin : ''}/product/${product.slug || product._id}\n\nPlease share demonstration details, availability, and discount options!`
+                  `Hello Eidula! 👋\n\nI am interested in this product:\n✨ *Product:* ${product.name}\n🔖 *SKU:* ${product.sku || 'N/A'}\n💰 *Price:* ₹${product.sellingPrice?.toLocaleString('en-IN')}\n🔗 *Direct Link:* ${typeof window !== 'undefined' ? window.location.origin : ''}/product/${product.slug || product._id}\n\nPlease share product details, availability, and discount options!`
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="btn btn-dark btn-md flex-1"
-                style={{ background: '#075e54', borderColor: '#075e54', color: '#ffffff', padding: '0.65rem 1rem' }}
+                style={{
+                  height: '32px',
+                  padding: '0 0.75rem',
+                  borderRadius: '6px',
+                  border: '1px solid #075e54',
+                  background: '#075e54',
+                  color: '#ffffff',
+                  fontWeight: 700,
+                  fontSize: '0.74rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.35rem',
+                  textDecoration: 'none',
+                  flex: 1
+                }}
               >
-                <PhoneCall size={16} />
-                <span>{t('whatsapp_advisor', 'WhatsApp Support')}</span>
+                <PhoneCall size={13} />
+                <span>{t('whatsapp_advisor', 'WhatsApp Shopping Assistant')}</span>
               </a>
             </div>
           </div>
 
           {/* Shipping & Delivery Quick Info */}
-          <div className="grid grid-cols-2 gap-3" style={{ marginTop: '0.5rem', background: 'var(--bg-surface-alt)', padding: '0.85rem', borderRadius: '10px', fontSize: '0.8rem', color: 'var(--text-main)' }}>
-            <div className="flex items-center gap-2">
-              <Truck size={18} color="#166534" />
-              <span><strong>{t('free_delivery', 'Free Delivery')}</strong> on orders over ₹4,999</span>
+          <div className="grid grid-cols-2 gap-2" style={{ marginTop: '0.35rem', background: 'var(--bg-surface-alt)', padding: '0.55rem 0.75rem', borderRadius: '8px', fontSize: '0.72rem', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}>
+            <div className="flex items-center gap-1.5">
+              <Truck size={15} color="var(--primary-600, #166534)" style={{ flexShrink: 0 }} />
+              <span><strong>{t('free_delivery', 'Free Pan-India Delivery')}</strong> on orders over ₹4,999</span>
             </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck size={18} color="#166534" />
-              <span><strong>{product.warranty?.period || t('warranty', '1 Year Manufacturer Warranty')}</strong></span>
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck size={15} color="var(--primary-600, #166534)" style={{ flexShrink: 0 }} />
+              <span><strong>{product.warranty?.period || t('warranty', '1 Year Electrical Warranty')}</strong></span>
             </div>
           </div>
         </div>
@@ -523,53 +595,53 @@ const ProductDetailPage = () => {
       <div style={{
         background: 'var(--bg-surface)',
         border: '1px solid var(--border-color)',
-        borderRadius: '16px',
-        padding: '2rem',
-        marginBottom: '2.5rem'
+        borderRadius: '14px',
+        padding: '1.5rem',
+        marginBottom: '2rem'
       }}>
-        <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', marginBottom: '1rem' }}>{t('overview_title', 'Product Overview & Operating Capabilities')}</h3>
+        <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main)', marginBottom: '0.75rem', fontWeight: 700 }}>{t('overview_title', 'Product Overview & Specifications')}</h3>
         {product.description ? (
           <div
             dangerouslySetInnerHTML={{ __html: product.description }}
-            style={{ fontSize: '0.95rem', lineHeight: 1.7, color: 'var(--text-main)' }}
+            style={{ fontSize: '0.85rem', lineHeight: 1.6, color: 'var(--text-main)' }}
           />
         ) : (
-          <p style={{ color: 'var(--text-muted)' }}>{product.shortDescription}</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{product.shortDescription}</p>
         )}
       </div>
 
       {product.specifications && product.specifications.length > 0 && (
-        <div style={{ marginBottom: '3rem' }}>
-          <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)', marginBottom: '1.25rem' }}>
-            {t('specifications_title', 'Technical Specifications & Engineering Matrix')}
+        <div style={{ marginBottom: '2.5rem' }}>
+          <h2 style={{ fontSize: '1.15rem', color: 'var(--text-main)', marginBottom: '1rem', fontWeight: 700 }}>
+            {t('specifications_title', 'Technical Specifications & Parameters')}
           </h2>
           <SpecificationTable specifications={product.specifications} />
         </div>
       )}
 
       {product.applications && product.applications.length > 0 && (
-        <div style={{ marginBottom: '3rem' }}>
+        <div style={{ marginBottom: '2.5rem' }}>
           <ApplicationsGrid applications={product.applications} />
         </div>
       )}
 
       {product.features && product.features.length > 0 && (
-        <div style={{ marginBottom: '3rem' }}>
+        <div style={{ marginBottom: '2.5rem' }}>
           <FeaturesGrid features={product.features} />
         </div>
       )}
 
       {product.whatsIncluded && product.whatsIncluded.length > 0 && (
-        <div style={{ background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.75rem', marginBottom: '3rem' }}>
-          <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Package size={22} color="#166534" />
+        <div style={{ background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '14px', padding: '1.25rem', marginBottom: '2.5rem' }}>
+          <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700 }}>
+            <Package size={18} color="#166534" />
             <span>{t('whats_in_box', "What's Included in the Box")}</span>
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
             {product.whatsIncluded.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-2" style={{ background: 'var(--bg-surface)', padding: '0.65rem 0.95rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.875rem', color: 'var(--text-main)' }}>
-                <CheckCircle2 size={16} color="#22c55e" style={{ flexShrink: 0 }} />
+              <div key={idx} className="flex items-center gap-2" style={{ background: 'var(--bg-surface)', padding: '0.5rem 0.75rem', borderRadius: '7px', border: '1px solid var(--border-color)', fontSize: '0.78rem', color: 'var(--text-main)' }}>
+                <CheckCircle2 size={14} color="#22c55e" style={{ flexShrink: 0 }} />
                 <span>{item}</span>
               </div>
             ))}
@@ -578,29 +650,29 @@ const ProductDetailPage = () => {
       )}
 
       {product.compatibility && (product.compatibility.compatibleAttachments?.length > 0 || product.compatibility.compatibleBrands?.length > 0) && (
-        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.75rem', marginBottom: '3rem' }}>
-          <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Wrench size={22} color="#166534" />
+        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '14px', padding: '1.25rem', marginBottom: '2.5rem' }}>
+          <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700 }}>
+            <Wrench size={18} color="#166534" />
             <span>Compatibility & Matching Implements</span>
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {product.compatibility.compatibleAttachments?.length > 0 && (
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Compatible PTO Attachments:</div>
-                <div className="flex flex-wrap gap-2">
+                <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.35rem' }}>Compatible PTO Attachments:</div>
+                <div className="flex flex-wrap gap-1.5">
                   {product.compatibility.compatibleAttachments.map((att, idx) => (
-                    <span key={idx} className="badge badge-primary">{att}</span>
+                    <span key={idx} className="badge badge-primary" style={{ fontSize: '0.7rem' }}>{att}</span>
                   ))}
                 </div>
               </div>
             )}
             {product.compatibility.compatibleBrands?.length > 0 && (
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Compatible OEM Brands:</div>
-                <div className="flex flex-wrap gap-2">
+                <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.35rem' }}>Compatible OEM Brands:</div>
+                <div className="flex flex-wrap gap-1.5">
                   {product.compatibility.compatibleBrands.map((b, idx) => (
-                    <span key={idx} className="badge badge-gold">{b}</span>
+                    <span key={idx} className="badge badge-gold" style={{ fontSize: '0.7rem' }}>{b}</span>
                   ))}
                 </div>
               </div>
@@ -609,38 +681,38 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginBottom: '3.5rem' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ marginBottom: '2.5rem' }}>
         {/* Warranty */}
-        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.5rem' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
-            <ShieldCheck size={22} color="#166534" />
-            <h4 style={{ fontSize: '1.1rem', color: 'var(--text-main)' }}>Warranty & Service Guarantee</h4>
+        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '14px', padding: '1.25rem' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: '0.5rem' }}>
+            <ShieldCheck size={18} color="#166534" />
+            <h4 style={{ fontSize: '0.95rem', color: 'var(--text-main)', fontWeight: 700 }}>Warranty & Service Guarantee</h4>
           </div>
-          <div style={{ fontSize: '0.9rem', color: '#166534', fontWeight: 700, marginBottom: '0.35rem' }}>
+          <div style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700, marginBottom: '0.25rem' }}>
             {product.warranty?.period || '1 Year Manufacturer Warranty'} ({product.warranty?.type || 'Comprehensive OEM Coverage'})
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+          <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '0.5rem' }}>
             {product.warranty?.terms || 'Full coverage on engine block, transmission gearbox, and chassis structural welds.'}
           </p>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
             Provider: {product.warranty?.provider || 'OEM Authorized Service Center Network'}
           </div>
         </div>
 
         {/* Shipping */}
-        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.5rem' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
-            <Truck size={22} color="#166534" />
-            <h4 style={{ fontSize: '1.1rem', color: 'var(--text-main)' }}>Shipping & Installation</h4>
+        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '14px', padding: '1.25rem' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: '0.5rem' }}>
+            <Truck size={18} color="#166534" />
+            <h4 style={{ fontSize: '0.95rem', color: 'var(--text-main)', fontWeight: 700 }}>Shipping & Logistics</h4>
           </div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '0.35rem' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '0.25rem' }}>
             Estimated Delivery: {product.shipping?.estimatedDeliveryDays || '4 - 7 Business Days'}
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
-            Secure palletized heavy transport with doorstep hydraulic tail-lift delivery directly to your farm gate.
+          <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '0.5rem' }}>
+            Secure doorstep delivery with live tracking and insured transit.
           </p>
           {product.shipping?.installationAvailable && (
-            <div className="badge badge-success" style={{ fontSize: '0.75rem' }}>
+            <div className="badge badge-success" style={{ fontSize: '0.68rem' }}>
               ✓ Free Field Demonstration & Video Setup Guide
             </div>
           )}
@@ -649,8 +721,8 @@ const ProductDetailPage = () => {
 
       {product.faqs && product.faqs.length > 0 && (
         <div style={{ background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '2rem', marginBottom: '3.5rem' }}>
-          <h3 style={{ fontSize: '1.35rem', color: 'var(--text-main)', marginBottom: '1.25rem' }}>
-            Frequently Asked Farmer Questions (FAQ)
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: '1rem', fontWeight: 700, fontFamily: 'var(--font-heading)' }}>
+            Frequently Asked Questions (FAQ)
           </h3>
           <div className="flex flex-col gap-3">
             {product.faqs.map((faq, idx) => (

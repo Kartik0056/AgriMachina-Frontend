@@ -36,7 +36,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
             style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newQ}
             onChange={(e) => setNewQ(e.target.value)}
-            placeholder="Farmer Question (e.g. Can this run on wet clay soil?)"
+            placeholder="Customer Question (e.g. Is this 100% pure without artificial additives?)"
           />
           <textarea
             className="textarea-field"
@@ -44,7 +44,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
             style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={newA}
             onChange={(e) => setNewA(e.target.value)}
-            placeholder="Agronomy Technical Answer"
+            placeholder="Official Brand &amp; Product Specialist Answer"
           />
           <button type="button" onClick={addFAQ} className="btn btn-primary btn-sm" style={{ alignSelf: 'flex-start' }}>
             <Plus size={16} />
@@ -93,7 +93,7 @@ const TabFAQPublish = ({ formData, updateField, onSave, onPublish, onPreview, is
         <div>
           <h3 style={{ fontSize: '1.2rem', color: '#ffffff', marginBottom: '0.25rem' }}>Listing Publication & Workflow</h3>
           <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-            Only listings set to <strong>"Published"</strong> are live and purchasable in the public farmer storefront.
+            Only listings set to <strong>"Published"</strong> are live and purchasable in the public Eidula storefront.
           </p>
         </div>
 

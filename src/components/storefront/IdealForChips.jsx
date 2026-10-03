@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sprout, CheckCircle2 } from 'lucide-react';
+import { Sparkles, CheckCircle2 } from 'lucide-react';
 
 const IdealForChips = ({ idealFor = [] }) => {
   if (!idealFor || idealFor.length === 0) return null;
@@ -7,9 +7,9 @@ const IdealForChips = ({ idealFor = [] }) => {
   return (
     <div style={{ background: 'var(--primary-50)', padding: '1.25rem', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
       <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
-        <Sprout size={20} color="#166534" />
+        <Sparkles size={20} color="#166534" />
         <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Ideal For Farm Types & Crops
+          Ideal For &amp; Recommended Uses
         </h4>
       </div>
 

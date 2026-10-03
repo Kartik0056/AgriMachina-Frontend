@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, Trash2, ArrowRight, ShieldCheck, CreditCard, Tractor, Sparkles } from 'lucide-react';
+import { Heart, ShoppingCart, Trash2, ArrowRight, ShieldCheck, CreditCard, Sparkles } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
@@ -24,13 +24,13 @@ const WishlistPage = () => {
       <div className="flex justify-between items-center" style={{ marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <span className="badge badge-primary" style={{ marginBottom: '0.4rem' }}>
-            ❤️ Kisan Saved Machinery
+            ❤️ My Saved Items
           </span>
           <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900 }}>
             My Wishlist ({wishlistItems.length})
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-            Equipment you've saved to compare, check subsidy eligibility, or purchase later.
+            Products you've saved to buy later or track price drops.
           </p>
         </div>
 
@@ -67,10 +67,10 @@ const WishlistPage = () => {
             Your Wishlist is Empty
           </h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
-            Tap the heart icon ❤️ on any power weeder, solar pump, or harvester to save it here for easy access.
+            Tap the heart icon ❤️ on any product to save it here for fast ordering and price drops.
           </p>
           <Link to="/products" className="btn btn-primary btn-lg">
-            Explore Machinery Catalog
+            Explore All Products
           </Link>
         </div>
       ) : (
@@ -126,15 +126,15 @@ const WishlistPage = () => {
                   <Link to={`/product/${prodSlug}`} style={{ display: 'block', textDecoration: 'none' }}>
                     <div style={{ width: '100%', height: '180px', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg-surface-alt)', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <img
-                        src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+                        src={product.mainImage?.url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80'}
                         alt={product.name}
                         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                         className="hover:scale-105 transition-transform"
                       />
                     </div>
 
-                    <div style={{ fontSize: '0.725rem', color: '#166534', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                      {product.category || 'Agricultural Equipment'}
+                    <div style={{ fontSize: '0.725rem', color: 'var(--primary-600, #166534)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                      {product.category || 'Curated Product'}
                     </div>
 
                     <h3 style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: 800, lineHeight: 1.3, marginBottom: '0.5rem' }}>
@@ -155,7 +155,7 @@ const WishlistPage = () => {
                   </div>
 
                   {minEmi > 0 && (
-                    <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--primary-600, #166534)', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                       <CreditCard size={13} />
                       <span>EMI from {formatINR(minEmi)}/mo (0% Interest)</span>
                     </div>

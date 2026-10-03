@@ -11,7 +11,7 @@ import {
   CreditCard,
   QrCode
 } from 'lucide-react';
-import SiddhivaLogo from './SiddhivaLogo';
+import EidulaLogo from './EidulaLogo';
 import {
   COMPANY_DETAILS,
   numberToWords,
@@ -275,7 +275,7 @@ const GSTInvoiceModal = ({ isOpen, onClose, order }) => {
           >
             <div>
               <div style={{ marginBottom: '0.5rem' }}>
-                <SiddhivaLogo size="md" />
+                <EidulaLogo size="md" />
               </div>
               <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>
                 {COMPANY_DETAILS.name}
@@ -397,7 +397,7 @@ const GSTInvoiceModal = ({ isOpen, onClose, order }) => {
                 </div>
               )}
               <div style={{ color: '#475569' }}>
-                <strong>Carrier:</strong> {order.tracking?.courierName || 'Siddhiva Express Dispatch'}
+                <strong>Carrier:</strong> {order.tracking?.courierName || 'Eidula Express Dispatch'}
               </div>
               {order.tracking?.trackingNumber && (
                 <div style={{ color: '#475569' }}>
@@ -623,7 +623,7 @@ const GSTInvoiceModal = ({ isOpen, onClose, order }) => {
                 Terms & Conditions:
               </div>
               <ol style={{ paddingLeft: '1.1rem', margin: 0 }}>
-                <li>Goods once sold will only be replaced as per Siddhiva 7-Day Replacement Policy.</li>
+                <li>Goods once sold will only be replaced as per Eidula 7-Day Replacement Policy.</li>
                 <li>All products carry official OEM brand warranty backed by manufacturer.</li>
                 <li>Payment verified digitally. Subject to Noida/UP jurisdiction only.</li>
               </ol>
@@ -643,7 +643,7 @@ const GSTInvoiceModal = ({ isOpen, onClose, order }) => {
                   ✓ DIGITALLY VERIFIED
                 </div>
                 <div style={{ fontSize: '0.65rem', color: '#64748b' }}>
-                  Siddhiva Commerce E-Seal
+                  Eidula Lifestyle E-Seal
                 </div>
               </div>
               <div style={{ fontWeight: 800, fontSize: '0.75rem', color: '#0f172a' }}>

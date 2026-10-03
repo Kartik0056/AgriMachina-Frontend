@@ -101,7 +101,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
       try {
         await navigator.share({
           title: shareTitle,
-          text: `Check out ${product.name} on Siddhiva (${priceFormatted})`,
+          text: `Check out ${product.name} on Eidula (${priceFormatted})`,
           url: productUrl
         });
         addToast('Product shared successfully!', 'success');
@@ -117,23 +117,23 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
   };
 
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-    `✨ *${product.name}*\n💰 *Price:* ${priceFormatted} (Incl. GST)\n🔖 *Brand:* ${product.brand || 'Siddhiva'}\n\n👉 *View Details & Order on Siddhiva:* ${productUrl}`
+    `✨ *${product.name}*\n💰 *Price:* ${priceFormatted} (Incl. GST)\n🔖 *Brand:* ${product.brand || 'Eidula'}\n\n👉 *View Details & Order on Eidula:* ${productUrl}`
   )}`;
 
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
 
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    `Check out ${product.name} on Siddhiva! ✨ Price: ${priceFormatted}`
+    `Check out ${product.name} on Eidula! ✨ Price: ${priceFormatted}`
   )}&url=${encodeURIComponent(productUrl)}`;
 
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(
-    `✨ ${product.name} - ${priceFormatted} | Siddhiva Store`
+    `✨ ${product.name} - ${priceFormatted} | Eidula Store`
   )}`;
 
   const mailtoUrl = `mailto:?subject=${encodeURIComponent(
-    `Recommended on Siddhiva: ${product.name}`
+    `Recommended on Eidula: ${product.name}`
   )}&body=${encodeURIComponent(
-    `Hello,\n\nI thought you might be interested in this product on Siddhiva:\n\nProduct: ${product.name}\nBrand: ${product.brand || 'Siddhiva'}\nPrice: ${priceFormatted}\n\nView details and order here:\n${productUrl}\n\nSiddhiva - Smart Store & Mart`
+    `Hello,\n\nI thought you might be interested in this product on Eidula:\n\nProduct: ${product.name}\nBrand: ${product.brand || 'Eidula'}\nPrice: ${priceFormatted}\n\nView details and order here:\n${productUrl}\n\nEidula - Pure Spices & Living`
   )}`;
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=${encodeURIComponent(productUrl)}`;
@@ -209,7 +209,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
   ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Share Farm Equipment" maxWidth="480px">
+    <Modal isOpen={isOpen} onClose={onClose} title="Share Product" maxWidth="480px">
       <div className="flex flex-col gap-4" style={{ animation: 'fadeIn 0.25s ease-out' }}>
         {/* Compact Product Snapshot Card */}
         <div
@@ -224,7 +224,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
           }}
         >
           <img
-            src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+            src={product.mainImage?.url || '/images/placeholder.svg'}
             alt={product.name}
             style={{
               width: '54px',
@@ -239,7 +239,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary-600, #166534)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {product.brand || 'Siddhiva'} {product.sku ? `• SKU: ${product.sku}` : ''}
+              {product.brand || 'Eidula'} {product.sku ? `• SKU: ${product.sku}` : ''}
             </div>
             <div style={{
               fontWeight: 800,

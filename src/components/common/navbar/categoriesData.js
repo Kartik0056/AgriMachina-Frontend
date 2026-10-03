@@ -1,203 +1,136 @@
 export const categoriesData = [
   {
-    id: 'power-weeder-tiller',
-    name: 'Power Weeder & Tiller',
-    param: 'Power Weeder & Tiller',
-    icon: '🌱',
-    image: '/images/machinery/power_weeder.jpg',
-    tagline: 'High-torque petrol & diesel weeders for deep soil cultivation in cotton, sugarcane, and vegetables.',
-    startingPrice: '₹38,499',
-    emiStarting: '₹1,171/mo',
+    id: 'spices-masale',
+    name: 'Spices & Masale',
+    param: 'Spices & Masale',
+    icon: '🌶️',
+    image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80',
+    tagline: '100% pure organic whole spices, culinary masale powders, and royal handcrafted blends.',
+    startingPrice: '₹45',
+    emiStarting: '₹149/mo',
     subcategories: [
-      { name: '7HP Petrol Power Weeders (208cc)', slug: 'petrol-weeders' },
-      { name: '9HP Heavy Diesel Tillers', slug: 'diesel-weeders' },
-      { name: 'Mini Rotary Cultivators', slug: 'mini-cultivators' },
-      { name: 'Inter-Row Cotton & Sugarcane Weeders', slug: 'inter-row-weeders' }
+      { name: 'Ground Masala Powders (Haldi, Mirch, Dhaniya)', slug: 'ground-masala' },
+      { name: 'Royal Blended Gourmet Masale (Biryani, Garam, Chana)', slug: 'blended-masala' },
+      { name: 'Whole Khada Masala (Cardamom, Cloves, Star Anise)', slug: 'whole-spices' },
+      { name: 'Pure Grade-1 Kashmiri Saffron & Organic Herbs', slug: 'saffron-herbs' }
     ],
     features: [
-      '32 Heat-Treated Boron Steel Blades',
-      '2 Forward + 1 Reverse Gearbox',
-      '360° Height Adjustable Handlebars'
+      'Agmark & FSSAI Certified Purity',
+      'No Added Artificial Colors or Preservatives',
+      'Aroma-Lock Multi-Layer Seal Packaging'
     ]
   },
   {
-    id: 'earth-auger',
-    name: 'Earth Auger',
-    param: 'Earth Auger',
-    icon: '⛏️',
-    image: '/images/machinery/rotavator.jpg',
-    tagline: '1-man and 2-man high-speed soil drillers for orchard plantation and fence posts.',
-    startingPrice: '₹14,999',
-    emiStarting: '₹499/mo',
-    subcategories: [
-      { name: '52cc 1-Man Soil Auger', slug: '1-man-auger' },
-      { name: '68cc Heavy Duty 2-Man Auger', slug: '2-man-auger' },
-      { name: '4" to 12" Alloy Drill Bits', slug: 'drill-bits' }
-    ],
-    features: [
-      'Heavy Dual Handle Shock Reduction',
-      'Forged Alloy Tungsten Tip Bits',
-      'Bore 1m Deep in 45 Seconds'
-    ]
-  },
-  {
-    id: 'pumps-irrigation',
-    name: 'Pumps & Irrigation',
-    param: 'Pumps & Irrigation',
-    icon: '☀️',
-    image: '/images/machinery/solar_pump.jpg',
-    tagline: 'Solar submersible pumps, high-head DC brushless motors, and precision drip irrigation.',
-    startingPrice: '₹74,999',
-    emiStarting: '₹2,280/mo',
-    subcategories: [
-      { name: '5HP Solar Submersible Pump Sets', slug: 'solar-submersible' },
-      { name: 'Smart MPPT Solar Controllers', slug: 'mppt-controllers' },
-      { name: 'Centrifugal Farm Water Pumps', slug: 'petrol-pumps' }
-    ],
-    features: [
-      '35,000 LPH High Discharge',
-      'Up to 120m Deep Borewell Head',
-      'Zero Electricity Bill for 25+ Years'
-    ]
-  },
-  {
-    id: 'sprayers-crop-protection',
-    name: 'Sprayers & Crop Protection',
-    param: 'Sprayers & Crop Protection',
-    icon: '💧',
-    image: '/images/machinery/sprayer.jpg',
-    tagline: '16L / 20L battery knapsack sprayers and engine HTP power sprayers.',
-    startingPrice: '₹3,499',
-    emiStarting: '₹299/mo',
-    subcategories: [
-      { name: '16L / 20L Battery Knapsacks', slug: 'battery-knapsack' },
-      { name: '2-in-1 Battery cum Manual', slug: '2in1-sprayers' },
-      { name: 'Portable Petrol Engine HTP', slug: 'htp-sprayers' }
-    ],
-    features: [
-      '12V 12Ah Dual Motor High Pressure',
-      'Up to 8 Hours Continuous Spray',
-      'Telescopic Brass Wand Included'
-    ]
-  },
-  {
-    id: 'harvesting-machinery',
-    name: 'Harvesting Machinery',
-    param: 'Harvesting Machinery',
-    icon: '🌾',
-    image: '/images/machinery/brush_cutter.jpg',
-    tagline: 'Backpack multi-crop brush cutters, paddy harvesters, and crop reapers.',
-    startingPrice: '₹23,999',
-    emiStarting: '₹1,027/mo',
-    subcategories: [
-      { name: '50cc Backpack Multi-Crop Cutters', slug: 'backpack-brush-cutters' },
-      { name: '80T Alloy Harvester Blades', slug: 'harvester-blades' },
-      { name: 'Paddy Harvesting Attachments', slug: 'paddy-collectors' }
-    ],
-    features: [
-      '2.2 HP High-Torque 2-Stroke Engine',
-      'Ergonomic Shock-Absorbing Backpack',
-      'Cuts Paddy, Wheat, Fodder & Cane'
-    ]
-  },
-  {
-    id: 'post-harvesting',
-    name: 'Post Harvesting',
-    param: 'Post Harvesting',
-    icon: '🚜',
-    image: '/images/machinery/rotavator.jpg',
-    tagline: 'Electric fodder chaff cutters, multi-crop grain threshers, and flour mills.',
-    startingPrice: '₹18,500',
-    emiStarting: '₹699/mo',
-    subcategories: [
-      { name: 'Electric Fodder & Chaff Cutters', slug: 'chaff-cutters' },
-      { name: 'Multi-Crop Grain Threshers', slug: 'grain-threshers' }
-    ],
-    features: [
-      'Heavy-Duty Reversible Blades',
-      'Chops Fodder up to 1000 kg/hr',
-      'Zero Grain Wastage High Output'
-    ]
-  },
-  {
-    id: 'power-reaper',
-    name: 'Power Reaper',
-    param: 'Power Reaper',
+    id: 'electronics-gadgets',
+    name: 'Electronics & Smart Tech',
+    param: 'Electronics & Smart Tech',
     icon: '⚡',
-    image: '/images/machinery/brush_cutter.jpg',
-    tagline: 'Self-propelled paddy, wheat, and soybean crop reapers with automated windrowing.',
-    startingPrice: '₹1,15,000',
-    emiStarting: '₹3,450/mo',
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80',
+    tagline: 'High-fidelity audio earbuds, smart watches, fast GaN chargers, and ambient home tech.',
+    startingPrice: '₹799',
+    emiStarting: '₹249/mo',
     subcategories: [
-      { name: 'Walking Tractor Crop Reapers', slug: 'walking-reaper' },
-      { name: 'Multi-Crop Reaper Binder', slug: 'reaper-binder' }
+      { name: 'Active Noise Cancelling (ANC) Wireless Earbuds', slug: 'wireless-earbuds' },
+      { name: 'Smart Fitness Watches (AMOLED Display)', slug: 'smart-watches' },
+      { name: 'Fast GaN Chargers & Braided Type-C Cables', slug: 'chargers-cables' },
+      { name: 'Smart Ambient WiFi LED Controllers & Strips', slug: 'smart-lighting' }
     ],
     features: [
-      'Reaps 1 Acre of Crop in 45 Minutes',
-      '95% Labor Cost Reduction',
-      'Neat Row Windrowing on Farm Soil'
+      '1-Year Direct Brand Comprehensive Warranty',
+      'Original Manufacturer Sealed Packaging',
+      'Instant 0% No-Cost EMI on Leading Cards'
     ]
   },
   {
-    id: 'lawn-mower-gardening',
-    name: 'Lawn Mower & Gardening Tools',
-    param: 'Lawn Mower & Gardening Tools',
-    icon: '✂️',
-    image: '/images/machinery/brush_cutter.jpg',
-    tagline: 'High-torque hedge trimmers, self-propelled lawn mowers, and chainsaws.',
-    startingPrice: '₹8,999',
+    id: 'home-decor-living',
+    name: 'Home Decor & Living',
+    param: 'Home Decor & Living',
+    icon: '🏺',
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&q=80',
+    tagline: 'Designer warm ambient lighting, handcrafted Nordic ceramic pottery, and modern wall aesthetics.',
+    startingPrice: '₹499',
+    emiStarting: '₹199/mo',
+    subcategories: [
+      { name: 'Handcrafted Ceramic & Bohemian Table Lamps', slug: 'table-lamps' },
+      { name: 'Nordic Minimalist Flower Vases & Planters', slug: 'vases-planters' },
+      { name: 'Designer Modern Silent Wall Clocks & Frames', slug: 'wall-clocks' },
+      { name: 'Natural Aromatherapy Soy Wax Scented Candles', slug: 'scented-candles' }
+    ],
+    features: [
+      'Handcrafted by Master Artisans',
+      'Safe Cushion Box Fragile Packaging',
+      'Contemporary Luxury Aesthetic'
+    ]
+  },
+  {
+    id: 'kitchen-home-appliances',
+    name: 'Kitchen & Home Appliances',
+    param: 'Kitchen & Home Appliances',
+    icon: '🍳',
+    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=80',
+    tagline: 'Heavy-duty 1000W copper motor mixer grinders, touch air fryers, and double-wall kettles.',
+    startingPrice: '₹1,299',
+    emiStarting: '₹399/mo',
+    subcategories: [
+      { name: '1000W Pure Copper 4-Jar Mixer Grinders', slug: 'mixer-grinders' },
+      { name: 'Digital Touch Rapid Air Fryers (4.5L)', slug: 'air-fryers' },
+      { name: 'Double-Wall Stainless Steel 1.8L Electric Kettles', slug: 'electric-kettles' },
+      { name: 'Multi-Layer Non-Stick Granite Cookware Sets', slug: 'cookware-sets' }
+    ],
+    features: [
+      '100% Copper Core Heavy-Duty Motors',
+      'Food-Grade BPA-Free Safety Standards',
+      'Home Doorstep Warranty Support'
+    ]
+  },
+  {
+    id: 'hardware-power-tools',
+    name: 'Hardware & Power Tools',
+    param: 'Hardware & Power Tools',
+    icon: '🛠️',
+    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&q=80',
+    tagline: 'Cordless brushless impact drills, all-in-one home DIY kits, and high-pressure washers.',
+    startingPrice: '₹999',
     emiStarting: '₹349/mo',
     subcategories: [
-      { name: 'Self-Propelled Petrol Lawn Mowers', slug: 'lawn-mowers' },
-      { name: 'Hedge Trimmers & Pruners', slug: 'hedge-trimmers' }
+      { name: '20V Cordless Brushless Impact Drills & Bit Sets', slug: 'cordless-drills' },
+      { name: '108-Piece Professional Home DIY Tool Kits', slug: 'tool-kits' },
+      { name: '1800W High-Pressure Car & Patio Jet Washers', slug: 'pressure-washers' },
+      { name: 'Precision Laser Measuring & Safety Protective Gear', slug: 'measuring-safety' }
     ],
     features: [
-      'Precision Grass Height Adjustment',
-      'Hardened Steel Cutting Blades'
+      'High-Torque Industrial-Grade Performance',
+      'Heavy-Duty Ergonomic Anti-Slip Grips',
+      'Rugged Storage Carry Case Included'
     ]
   },
   {
-    id: 'power-engines',
-    name: 'Power & Engines',
-    param: 'Power & Engines',
-    icon: '⚙️',
-    image: '/images/machinery/power_weeder.jpg',
-    tagline: 'General purpose 4-stroke OHV petrol engines and diesel power blocks.',
-    startingPrice: '₹11,999',
-    emiStarting: '₹450/mo',
+    id: 'organic-groceries-oils',
+    name: 'Organic Groceries & Oils',
+    param: 'Organic Groceries & Oils',
+    icon: '🌿',
+    image: 'https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=600&q=80',
+    tagline: 'Cold-pressed virgin wood-churned oils, unpolished organic pulses, and pure A2 desi bilona ghee.',
+    startingPrice: '₹85',
+    emiStarting: 'Under ₹299',
     subcategories: [
-      { name: '7HP 208cc Petrol Engines', slug: 'petrol-engines' },
-      { name: '9HP / 12HP Diesel Engines', slug: 'diesel-engines' }
+      { name: 'Cold-Pressed Kachi Ghani Mustard & Groundnut Oils', slug: 'cold-pressed-oils' },
+      { name: 'Unpolished Organic High-Protein Pulses & Dals', slug: 'organic-pulses' },
+      { name: 'Vedic A2 Desi Cow Bilona Ghee (Lab Certified)', slug: 'desi-ghee' },
+      { name: 'Raw Natural Wildflower Forest Honey', slug: 'raw-honey' }
     ],
     features: [
-      'Cast-Iron Cylinder Sleeve',
-      'Low Fuel Consumption (650 ml/hr)'
-    ]
-  },
-  {
-    id: 'accessories-attachment',
-    name: 'Accessories & Attachment',
-    param: 'Accessories & Attachment',
-    icon: '🔩',
-    image: '/images/machinery/rotavator.jpg',
-    tagline: 'Boron steel tilling blades, rotavator implements, and high-pressure spray hoses.',
-    startingPrice: '₹1,299',
-    emiStarting: 'Under ₹499',
-    subcategories: [
-      { name: '32-Piece Boron Tilling Blades', slug: 'tilling-blades' },
-      { name: 'Adjustable Furrower & Ridger Kits', slug: 'ridger-kits' }
-    ],
-    features: [
-      'Forged High-Strength Boron Steel',
-      'Original Manufacturer Warranty'
+      'Traditional Wood-Churned Cold Extraction',
+      'Zero Hexane, Chemical, or Solvent Refining',
+      'Naturally Nutrient & Antioxidant Dense'
     ]
   }
 ];
 
 export const tickerAnnouncements = [
-  { icon: '✨', text: 'Welcome to Siddhiva • 100% Genuine Products with Direct Brand Warranty & Fast Support', highlight: 'Siddhiva Assured' },
-  { icon: '🚚', text: 'Fast Doorstep Delivery Across India • Dispatched in 24 Hours with Real-Time Tracking', highlight: 'Fast Dispatch' },
-  { icon: '💳', text: '0% No-Cost EMI Available on Leading Credit/Debit Cards & UPI Payments', highlight: 'Easy EMI' },
-  { icon: '🛡️', text: 'Safe & Secure Shopping • GST Invoicing, Easy Replacements & Transparent Pricing', highlight: 'Verified Quality' },
-  { icon: '📞', text: 'Siddhiva 24x7 Customer Helpline: +91 63952 11953 • WhatsApp Support Available', highlight: '24x7 Support', isHelpline: true }
+  { icon: '✨', text: 'Welcome to Eidula • Pure Spices, Premium Home Living & 100% Genuine Quality', highlight: 'Eidula Assured' },
+  { icon: '🚚', text: 'Fast Express Doorstep Delivery Across India • Dispatched in 24h', highlight: 'Fast Dispatch' },
+  { icon: '💳', text: '0% No-Cost EMI Available on Leading Cards • Instant Approval', highlight: 'Zero Cost EMI' },
+  { icon: '🛡️', text: 'Safe & Secure Shopping • Easy 7-Day Returns & Brand Warranty', highlight: 'Buyer Protection' },
+  { icon: '📞', text: 'Customer Priority Helpline: +91 63952 11953 • 24x7 Assistance', highlight: '24x7 Support', isHelpline: true }
 ];

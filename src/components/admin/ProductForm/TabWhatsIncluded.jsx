@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Package, Plus, Trash2 } from 'lucide-react';
 
 const presets = [
-  'Machinery Main Unit',
-  '32-Piece Heat Treated Blade Set',
-  'Pneumatic Rubber Transport Wheels',
-  'Depth Resistance Rod & Bracket',
-  'Farmer Maintenance Toolkit & Spanners',
-  'Operational Manual & Warranty Card'
+  'Primary Packaged Product Unit',
+  'Aroma-Lock Freshness Sealed Pouch / Jar',
+  'Batch Quality Lab Test Certificate',
+  'Power Cable & Fast Adapter (for Tech)',
+  'Heavy-Duty Stainless Steel Attachment',
+  'Comprehensive User Manual & Warranty Card'
 ];
 
 const TabWhatsIncluded = ({ formData, updateField }) => {

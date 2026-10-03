@@ -26,7 +26,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
             style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.brand || ''}
             onChange={(e) => updateField('brand', e.target.value)}
-            placeholder="e.g. AgriPro Master"
+            placeholder="e.g. Everest, boAt, Philips"
             list="brands-list"
           />
           <datalist id="brands-list">
@@ -42,7 +42,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
             style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
             value={formData.modelNumber || ''}
             onChange={(e) => updateField('modelNumber', e.target.value)}
-            placeholder="e.g. AV-708"
+            placeholder="e.g. EGM-500"
           />
         </div>
 
@@ -55,7 +55,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
             style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff', textTransform: 'uppercase' }}
             value={formData.sku || ''}
             onChange={(e) => updateField('sku', e.target.value.toUpperCase())}
-            placeholder="e.g. AV-708-4S"
+            placeholder="e.g. EVR-GM-500G"
           />
         </div>
 
@@ -70,7 +70,7 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
               updateField('category', catName);
               const foundCat = categories.find(c => c.name === catName);
               if (foundCat) {
-                if (foundCat.categoryType && (!formData.productType || formData.productType === 'Machinery' || formData.productType === 'General')) {
+                if (foundCat.categoryType && (!formData.productType || formData.productType === 'General')) {
                   updateField('productType', foundCat.categoryType);
                 }
                 if (foundCat.unitType === 'weight' && (!formData.unit || formData.unit === 'unit' || formData.unit === 'pcs')) {
@@ -95,15 +95,15 @@ const TabBasic = ({ formData, updateField, categories = [], brands = [] }) => {
           <select
             className="select-field"
             style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
-            value={formData.productType || 'General'}
+            value={formData.productType || 'Spices & Groceries'}
             onChange={(e) => updateField('productType', e.target.value)}
           >
-            <option value="Agricultural Machinery">🌾 Agricultural Machinery & Implements</option>
-            <option value="Spices & Groceries">🌶️ Spices, Masala & Grocery Products</option>
-            <option value="Electronics & Appliances">⚡ Electronics, Motors & Gadgets</option>
-            <option value="Fashion & Apparel">👕 Fashion & Apparel</option>
-            <option value="Hardware & Tools">🛠️ Hardware & Tools</option>
-            <option value="General FMCG">📦 General FMCG & Retail</option>
+            <option value="Spices & Groceries">🌶️ Pure Spices, Whole Masale & Groceries</option>
+            <option value="Electronics & Smart Tech">⚡ Electronics, Smart Tech & Audio</option>
+            <option value="Home Decor & Living">🏺 Home Decor, Pottery & Lighting</option>
+            <option value="Kitchen & Appliances">🍳 Kitchen & Home Appliances</option>
+            <option value="Hardware & Tools">🛠️ Hardware, DIY & Power Tools</option>
+            <option value="Organic Groceries & Oils">🌿 Organic Groceries & Cold-Pressed Oils</option>
             <option value="General">🏷️ General Product</option>
           </select>
         </div>

@@ -94,16 +94,16 @@ const CartPage = () => {
         }}>
           <ShoppingCart size={40} />
         </div>
-        <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Your Cart is Empty</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Explore our agricultural machinery catalog to add high-efficiency equipment.</p>
-        <Link to="/products" className="btn btn-primary btn-lg">Browse Farm Equipment</Link>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', marginBottom: '0.4rem', fontWeight: 700 }}>Your Cart is Empty</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>Explore our premium catalog to add authentic spices, groceries and lifestyle products.</p>
+        <Link to="/products" className="btn btn-primary btn-md">Browse Catalog</Link>
       </div>
     );
   }
 
   return (
-    <div className="container" style={{ padding: '2.5rem 1.25rem 4rem 1.25rem' }}>
-      <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>
+    <div className="container" style={{ padding: '2rem 1.25rem 4rem 1.25rem' }}>
+      <h1 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1.25rem', fontWeight: 700, letterSpacing: '-0.015em' }}>
         Shopping Cart ({cartItems.length} {cartItems.length === 1 ? 'Product' : 'Products'})
       </h1>
 
@@ -133,7 +133,7 @@ const CartPage = () => {
                 }}
               >
                 <img
-                  src={selectedVariant?.image || product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+                  src={selectedVariant?.image || product.mainImage?.url || '/images/placeholder.svg'}
                   alt={product.name}
                   style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '10px', background: 'var(--bg-surface-alt)', padding: '4px' }}
                 />
@@ -346,15 +346,15 @@ const CartPage = () => {
             )}
           </div>
 
-          <div className="flex justify-between items-baseline" style={{ marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)' }}>Grand Total:</span>
-            <span style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-main)' }}>{formatINR(finalTotal)}</span>
+          <div className="flex justify-between items-baseline" style={{ marginBottom: '1.25rem' }}>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-main)' }}>Grand Total:</span>
+            <span style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-main)' }}>{formatINR(finalTotal)}</span>
           </div>
 
           <button
             onClick={() => {
               if (!isAuthenticated) {
-                addToast('Farmer login required to proceed to checkout and confirm your order.', 'info');
+                addToast('Login required to proceed to checkout and confirm your order.', 'info');
                 navigate('/login?redirect=/checkout', { state: { coupon: appliedCoupon, discount } });
                 return;
               }

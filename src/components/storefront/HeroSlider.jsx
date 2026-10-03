@@ -5,88 +5,52 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  CreditCard,
-  PhoneCall,
-  Sparkles,
-  CheckCircle2,
-  Timer
+  Sparkles
 } from 'lucide-react';
 import api from '../../services/api';
-import { formatINR } from '../../services/emiHelper';
 import { useLanguage } from '../../context/LanguageContext';
 import { useLiveRefresh } from '../../context/SyncContext';
-import { extractYouTubeId, isDirectVideoUrl } from '../../services/videoHelper';
-import EMICalculatorModal from './EMICalculatorModal';
 
 const FALLBACK_SLIDES = [
   {
-    _id: 'power-weeder-7hp',
-    title: 'Power Weeder 7HP Petrol 4-Stroke (AV-708)',
-    tagline: 'High-torque 208cc power weeder engineered for deep inter-row soil cultivation across tough clay, cotton, and sugarcane fields.',
-    badge: '🔥 DEAL OF THE DAY • 20% OFF',
-    category: 'Power Weeder & Tiller',
-    bgImage: '/images/machinery/power_weeder.jpg',
-    productImage: '/images/machinery/power_weeder.jpg',
-    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    specs: [
-      '208cc 4-Stroke OHV Engine',
-      '900mm Adjustable Tilling Width',
-      '32 Heat-Treated Boron Blades',
-      '2 Forward + 1 Reverse Gearbox'
-    ],
-    price: 38499,
-    mrp: 48500,
-    discountPercent: 20,
-    monthlyEmi: 1171,
-    productSlug: 'power-weeder-7hp-petrol-av-708',
-    ctaText: 'Explore Full Machine Details',
-    ctaLink: '/product/power-weeder-7hp-petrol-av-708'
+    _id: 'pure-indian-spices-collection',
+    title: 'Royal Malabar & Kashmiri Gourmet Spices',
+    tagline: '100% pure organic whole spices, royal biryani masale, and fresh high-curcumin Lakadong turmeric.',
+    badge: '🌶️ 100% PURE & ORGANIC • CERTIFIED QUALITY',
+    category: 'Spices & Masale',
+    productImage: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1920&q=85',
+    ctaText: 'Explore Spices Collection',
+    ctaLink: '/products?category=Spices+%26+Masale'
   },
   {
-    _id: 'solar-pump-5hp',
-    title: '5HP Solar Submersible Pump Set (DC Brushless)',
-    tagline: 'Heavy-duty stainless steel solar pump set with smart MPPT controller for reliable, uninterrupted farm canal and borewell irrigation.',
-    badge: '☀️ 100% SOLAR • ZERO ELECTRICITY BILL',
-    category: 'Pumps & Irrigation',
-    bgImage: '/images/machinery/solar_pump.jpg',
-    productImage: '/images/machinery/solar_pump.jpg',
-    videoUrl: '',
-    specs: [
-      '35,000 Liters/Hour Discharge',
-      'Up to 120 Meters Head Depth',
-      'IP68 Stainless Steel Body',
-      'Smart MPPT Solar Tracking'
-    ],
-    price: 74999,
-    mrp: 89999,
-    discountPercent: 17,
-    monthlyEmi: 2280,
-    productSlug: '5hp-solar-submersible-pump-set',
-    ctaText: 'Explore Full Machine Details',
-    ctaLink: '/product/5hp-solar-submersible-pump-set'
+    _id: 'ultrasound-pro-wireless-earbuds',
+    title: 'UltraSound Pro Wireless ANC Earbuds',
+    tagline: 'Hybrid 42dB Active Noise Cancellation, 48-hour ultra endurance, and custom bass boost acoustic drivers.',
+    badge: '⚡ PREMIUM AUDIO • SMART TECH',
+    category: 'Electronics & Smart Tech',
+    productImage: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1920&q=85',
+    ctaText: 'Discover Tech Deals',
+    ctaLink: '/products?category=Electronics+%26+Smart+Tech'
   },
   {
-    _id: 'rotavator-6ft',
-    title: 'Heavy-Duty 6-Foot Rotavator (Multi-Speed)',
-    tagline: 'Dual-speed heavy tractor rotavator for single-pass seedbed preparation in wet puddle and hard dry soil.',
-    badge: '⚙️ TRACTOR PTO • MULTI-SPEED GEARBOX',
-    category: 'Accessories & Attachment',
-    bgImage: '/images/machinery/rotavator.jpg',
-    productImage: '/images/machinery/rotavator.jpg',
-    videoUrl: '',
-    specs: [
-      '48 Boron Steel L-Type Blades',
-      'Multi-Speed Heavy Cast Iron Gearbox',
-      '35 - 55 HP Tractor Compatible',
-      'Depth Control Side Skids'
-    ],
-    price: 94500,
-    mrp: 112000,
-    discountPercent: 16,
-    monthlyEmi: 2875,
-    productSlug: 'heavy-duty-6-foot-rotavator',
-    ctaText: 'Explore Full Machine Details',
-    ctaLink: '/product/heavy-duty-6-foot-rotavator'
+    _id: 'bohemian-ceramic-ambient-lamp',
+    title: 'Artisan Handcrafted Ceramic Ambient Lamp',
+    tagline: 'Warm textured stoneware ceramic base with woven natural linen shade for cozy modern living spaces.',
+    badge: '🏺 ARTISAN HANDCRAFTED LUXURY',
+    category: 'Home Decor & Living',
+    productImage: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1920&q=85',
+    ctaText: 'Explore Home Decor',
+    ctaLink: '/products?category=Home+Decor+%26+Living'
+  },
+  {
+    _id: 'heavy-duty-mixer-grinder-1000w',
+    title: 'Heavy-Duty 1000W Pure Copper Mixer Grinder',
+    tagline: 'Commercial-grade 100% copper motor with multi-utility leakproof stainless steel jars for fine grinding.',
+    badge: '🍳 BESTSELLER • 5-YEAR WARRANTY',
+    category: 'Kitchen & Home Appliances',
+    productImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1920&q=85',
+    ctaText: 'Shop Kitchen Appliances',
+    ctaLink: '/products?category=Kitchen+%26+Home+Appliances'
   }
 ];
 
@@ -95,20 +59,14 @@ const HeroSlider = () => {
   const [slides, setSlides] = useState(FALLBACK_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isMuted] = useState(true);
-  const [selectedEmiProduct, setSelectedEmiProduct] = useState(null);
-  const [isEmiModalOpen, setIsEmiModalOpen] = useState(false);
-
-  const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 42, seconds: 18 });
 
   const sliderContainerRef = useRef(null);
-  const contentBoxRef = useRef(null);
   const badgeRef = useRef(null);
   const titleRef = useRef(null);
   const descRef = useRef(null);
-  const priceCardRef = useRef(null);
+  const ctaRef = useRef(null);
+  const bgImgRef = useRef(null);
   const progressBarRef = useRef(null);
-  const videoRef = useRef(null);
 
   const fetchDynamicSlides = async () => {
     try {
@@ -116,8 +74,8 @@ const HeroSlider = () => {
       if (res.data.success && res.data.slides && res.data.slides.length > 0) {
         setSlides(res.data.slides);
       }
-    } catch (err) {
-      console.error('Failed to load dynamic hero banners', err);
+    } catch {
+      // Keep fallback slides
     }
   };
 
@@ -130,73 +88,60 @@ const HeroSlider = () => {
   }, ['BANNER_CHANGED', 'CATALOG_CHANGED']);
 
   const slide = slides[currentSlide] || slides[0] || FALLBACK_SLIDES[0];
-  const ytVideoId = extractYouTubeId(slide.videoUrl);
-  const isDirectVideo = isDirectVideoUrl(slide.videoUrl);
-  const hasBackgroundVideo = Boolean(slide.videoUrl && (isDirectVideo || ytVideoId));
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        return { hours: 5, minutes: 0, seconds: 0 };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Background Image Subtle Ken-Burns Zoom
+      if (bgImgRef.current) {
+        gsap.fromTo(
+          bgImgRef.current,
+          { scale: 1.08, opacity: 0.8 },
+          { scale: 1.0, opacity: 1, duration: 5.5, ease: 'power1.out' }
+        );
+      }
+
+      // Badge Animation
       if (badgeRef.current) {
         gsap.fromTo(
           badgeRef.current,
-          { scale: 0.8, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(1.7)' }
+          { y: -18, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out' }
         );
       }
 
+      // Title Animation
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
-          { y: 35, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.65, ease: 'power3.out', delay: 0.1 }
+          { y: 28, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', delay: 0.08 }
         );
       }
 
+      // Subtitle / Tagline Animation
       if (descRef.current) {
         gsap.fromTo(
           descRef.current,
-          { y: 25, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out', delay: 0.2 }
+          { y: 22, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.16 }
         );
       }
 
-      gsap.fromTo(
-        '.gsap-spec-chip',
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.07, duration: 0.45, ease: 'power2.out', delay: 0.25 }
-      );
-
-      if (priceCardRef.current) {
+      // CTA Button Animation
+      if (ctaRef.current) {
         gsap.fromTo(
-          priceCardRef.current,
-          { x: -30, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.3 }
+          ctaRef.current,
+          { y: 18, opacity: 0, scale: 0.94 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: 'power2.out', delay: 0.24 }
         );
       }
 
-      gsap.fromTo(
-        '.gsap-hero-btn',
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.08, duration: 0.45, ease: 'power2.out', delay: 0.35 }
-      );
-
+      // Auto-progress bar
       if (progressBarRef.current) {
         gsap.fromTo(
           progressBarRef.current,
           { width: '0%' },
-          { width: '100%', duration: 6.5, ease: 'none' }
+          { width: '100%', duration: 6.0, ease: 'none' }
         );
       }
     }, sliderContainerRef);
@@ -211,7 +156,7 @@ const HeroSlider = () => {
     }
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6500);
+    }, 6000);
     return () => clearInterval(interval);
   }, [isPaused, slides.length]);
 
@@ -223,436 +168,302 @@ const HeroSlider = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
-  const handleOpenEmi = (slideData) => {
-    setSelectedEmiProduct(slideData);
-    setIsEmiModalOpen(true);
-  };
-
   const slideTitle = slide.title || slide.name || '';
   const slideDesc = slide.tagline || slide.shortDesc || '';
-  const slideSpecs = slide.specs || [];
-  const slideImage = slide.bgImage || slide.productImage || slide.image || '/images/machinery/power_weeder.jpg';
+  const slideImage = slide.productImage || slide.bgImage || slide.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1920&q=85';
   const targetLink = slide.ctaLink || (slide.productSlug ? `/product/${slide.productSlug}` : '/products');
 
   return (
     <div
       ref={sliderContainerRef}
       className="hero-slider-section hero-banner"
-      style={{ position: 'relative', width: '100%', overflow: 'hidden', backgroundColor: '#062416', padding: 0 }}
+      style={{
+        position: 'relative',
+        width: '100%',
+        minHeight: '380px',
+        maxHeight: '460px',
+        height: '42vw',
+        overflow: 'hidden',
+        background: '#04160e'
+      }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Full Background Image */}
+      <img
+        ref={bgImgRef}
+        key={currentSlide}
+        src={slideImage}
+        alt={slideTitle}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: 'center',
+          zIndex: 1,
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Modern Gradient Overlay for 100% Readability */}
       <div
         style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(90deg, rgba(2, 18, 10, 0.94) 0%, rgba(2, 18, 10, 0.78) 46%, rgba(2, 18, 10, 0.42) 78%, rgba(2, 18, 10, 0.2) 100%)',
+          zIndex: 2,
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Decorative Accent Glow */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-20%',
+          left: '-10%',
+          width: '500px',
+          height: '500px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(22, 163, 74, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
+          zIndex: 3,
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Slide Text Content Container */}
+      <div
+        className="container"
+        style={{
           position: 'relative',
-          minHeight: '650px',
+          zIndex: 10,
+          height: '100%',
           display: 'flex',
-          alignItems: 'center',
-          backgroundColor: 'var(--text-main)',
-          overflow: 'hidden'
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '2rem 1.5rem',
+          maxWidth: '1280px',
+          margin: '0 auto'
         }}
       >
-        {hasBackgroundVideo ? (
-          isDirectVideo ? (
-            <video
-              key={slide.videoUrl}
-              ref={videoRef}
-              src={slide.videoUrl}
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
+        <div style={{ maxWidth: '640px' }}>
+          {/* Category / Offer Badge */}
+          <div ref={badgeRef} style={{ marginBottom: '0.85rem' }}>
+            <span
               style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                minWidth: '100%',
-                minHeight: '100%',
-                width: 'auto',
-                height: 'auto',
-                objectFit: 'cover',
-                zIndex: 1
-              }}
-            />
-          ) : ytVideoId ? (
-            <div
-              key={slide.videoUrl}
-              style={{
-                position: 'absolute',
-                top: '-20%',
-                left: '-20%',
-                width: '140%',
-                height: '140%',
-                zIndex: 1,
-                pointerEvents: 'none',
-                overflow: 'hidden'
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(245, 158, 11, 0.18)',
+                color: '#fef08a',
+                border: '1px solid rgba(245, 158, 11, 0.45)',
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                padding: '0.3rem 0.85rem',
+                borderRadius: '999px',
+                letterSpacing: '0.04em',
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.25)'
               }}
             >
-              <iframe
-                src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&loop=1&playlist=${ytVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&enablejsapi=1`}
-                title="Machinery Background Video"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                  pointerEvents: 'none'
-                }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            </div>
-          ) : (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: `url(${slideImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                zIndex: 1
-              }}
-            />
-          )
-        ) : (
-          <div
+              <Sparkles size={13} color="#f59e0b" />
+              <span>{slide.badge || '🔥 FEATURED COLLECTION'}</span>
+            </span>
+          </div>
+
+          {/* Headline Title */}
+          <h1
+            ref={titleRef}
             style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: `url(${slideImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              zIndex: 1
+              fontSize: 'clamp(1.15rem, 1.8vw, 1.45rem)',
+              fontWeight: 800,
+              color: '#ffffff',
+              lineHeight: 1.25,
+              marginBottom: '0.45rem',
+              letterSpacing: '-0.015em',
+              fontFamily: 'var(--font-heading)',
+              textShadow: '0 2px 10px rgba(0, 0, 0, 0.55)'
             }}
-          />
-        )}
+          >
+            {tr(slideTitle)}
+          </h1>
 
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(90deg, rgba(6, 36, 22, 0.95) 0%, rgba(6, 36, 22, 0.86) 48%, rgba(6, 36, 22, 0.45) 80%, rgba(0, 0, 0, 0.3) 100%)',
-            backdropFilter: 'blur(1px)',
-            zIndex: 3
-          }}
-        />
-
-        <div className="container" style={{ position: 'relative', zIndex: 10, padding: '3.5rem 1.25rem 7.5rem 1.25rem' }}>
-          <div ref={contentBoxRef} style={{ maxWidth: '680px' }}>
-            <div ref={badgeRef} className="flex items-center gap-2" style={{ marginBottom: '0.85rem', flexWrap: 'wrap' }}>
-              <span
-                className="badge"
-                style={{
-                  background: '#f59e0b',
-                  color: '#ffffff',
-                  fontWeight: 800,
-                  fontSize: '0.75rem',
-                  padding: '0.35rem 0.75rem',
-                  boxShadow: '0 2px 8px rgba(245, 158, 11, 0.4)'
-                }}
-              >
-                {slide.badge || '🔥 FEATURED MACHINERY'}
-              </span>
-
-              <div
-                style={{
-                  background: 'rgba(0, 0, 0, 0.65)',
-                  backdropFilter: 'blur(6px)',
-                  color: '#fef08a',
-                  border: '1px solid rgba(254, 240, 138, 0.4)',
-                  borderRadius: '999px',
-                  padding: '0.3rem 0.75rem',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem'
-                }}
-              >
-                <Timer size={13} color="#f59e0b" />
-                <span>
-                  {t('deal_ends_in', 'Ends in')} {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
-                </span>
-              </div>
-            </div>
-
-            <h1
-              ref={titleRef}
+          {/* Subtitle / Tagline */}
+          {slideDesc && (
+            <p
+              ref={descRef}
               style={{
-                fontSize: '2.5rem',
-                fontWeight: 900,
-                color: '#ffffff',
-                lineHeight: 1.2,
-                marginBottom: '0.85rem',
-                letterSpacing: '-0.02em',
-                textShadow: '0 2px 12px rgba(0,0,0,0.6)'
+                fontSize: 'clamp(0.75rem, 0.9vw, 0.85rem)',
+                color: 'rgba(255, 255, 255, 0.88)',
+                lineHeight: 1.5,
+                marginBottom: '1.15rem',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textShadow: '0 2px 6px rgba(0, 0, 0, 0.45)'
               }}
             >
-              {tr(slideTitle)}
-            </h1>
+              {tr(slideDesc)}
+            </p>
+          )}
 
-            {slideDesc && (
-              <p
-                ref={descRef}
-                style={{
-                  fontSize: '1.05rem',
-                  color: '#dcfce7',
-                  lineHeight: 1.55,
-                  marginBottom: '1.25rem',
-                  textShadow: '0 1px 4px rgba(0,0,0,0.4)'
-                }}
-              >
-                {tr(slideDesc)}
-              </p>
-            )}
+          {/* Action CTA Button */}
+          <div ref={ctaRef} style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <Link
+              to={targetLink}
+              style={{
+                padding: '0.7rem 1.6rem',
+                fontSize: '0.925rem',
+                fontWeight: 800,
+                borderRadius: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.55rem',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: '#ffffff',
+                boxShadow: '0 6px 20px rgba(245, 158, 11, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                textDecoration: 'none',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+              className="hover:scale-105 active:scale-95"
+            >
+              <span>{t('explore_collection', slide.ctaText || 'Explore Collection')}</span>
+              <ArrowRight size={17} />
+            </Link>
 
-            {slideSpecs.length > 0 && (
-              <div className="flex flex-wrap gap-2" style={{ marginBottom: '1.35rem' }}>
-                {slideSpecs.map((spec, idx) => (
-                  <span
-                    key={idx}
-                    className="gsap-spec-chip"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.12)',
-                      backdropFilter: 'blur(8px)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      borderRadius: '8px',
-                      padding: '0.35rem 0.75rem',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.35rem'
-                    }}
-                  >
-                    <CheckCircle2 size={13} color="#86efac" />
-                    <span>{tr(spec)}</span>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {slide.price > 0 && (
-              <div
-                ref={priceCardRef}
-                style={{
-                  background: 'rgba(0, 0, 0, 0.55)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '14px',
-                  padding: '1rem 1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '1rem',
-                  marginBottom: '1.5rem',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)'
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: '#a7f3d0', textTransform: 'uppercase', fontWeight: 700 }}>
-                    {t('special_farm_price', 'Special Direct Farm Price')}
-                  </div>
-                  <div className="flex items-baseline gap-2.5">
-                    <span style={{ fontSize: '2rem', fontWeight: 900, color: '#fef08a' }}>
-                      {formatINR(slide.price)}
-                    </span>
-                    {slide.mrp > slide.price && (
-                      <span style={{ fontSize: '1.05rem', color: 'var(--text-light)', textDecoration: 'line-through' }}>
-                        {formatINR(slide.mrp)}
-                      </span>
-                    )}
-                    {slide.discountPercent > 0 && (
-                      <span className="badge badge-accent" style={{ background: '#f59e0b', color: '#ffffff', fontSize: '0.75rem' }}>
-                        {t('save', 'Save')} {slide.discountPercent}%
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {slide.monthlyEmi > 0 && (
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
-                      <Sparkles size={13} color="#f59e0b" />
-                      <span>{t('no_cost_emi_badge', '0% No-Cost EMI via Razorpay')}</span>
-                    </div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff' }}>
-                      {t('monthly_emi_text', 'EMI from')} <span style={{ color: '#86efac' }}>{formatINR(slide.monthlyEmi)}</span>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#dcfce7' }}>/mo</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Link to={targetLink} className="btn btn-accent btn-lg gsap-hero-btn">
-                <span>{t('explore_machine', slide.ctaText || 'Explore Full Machine Details')}</span>
-                <ArrowRight size={18} />
-              </Link>
-
-              {slide.price > 0 && (
-                <button
-                  type="button"
-                  onClick={() => handleOpenEmi(slide)}
-                  className="btn btn-secondary btn-lg gsap-hero-btn"
-                  style={{ background: 'rgba(255, 255, 255, 0.95)', color: 'var(--text-main)', fontWeight: 700 }}
-                >
-                  <CreditCard size={18} color="#166534" />
-                  <span>{t('view_emi_plans_btn', 'View Bank EMI Plans')}</span>
-                </button>
-              )}
-
-              <a
-                href={`https://wa.me/916395211953?text=${encodeURIComponent(
-                  `Hello Siddhiva! 👋\nI am interested in ${slideTitle}.\n💰 Price: ${slide.price ? formatINR(slide.price) : 'Inquiry'}\n🔗 Product Link: ${typeof window !== 'undefined' ? window.location.origin : ''}${targetLink}\n\nPlease share details and demo video!`
-                )}`}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-dark btn-lg gsap-hero-btn"
-                style={{ background: 'rgba(7, 94, 84, 0.85)', borderColor: '#075e54', color: '#ffffff' }}
-              >
-                <PhoneCall size={18} color="#86efac" />
-                <span>{t('live_chat_support', 'WhatsApp Live')}</span>
-              </a>
-            </div>
+            <Link
+              to="/products"
+              style={{
+                padding: '0.7rem 1.25rem',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                borderRadius: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(8px)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                textDecoration: 'none',
+                transition: 'all 0.2s ease'
+              }}
+              className="hover:bg-white/20 active:scale-95"
+            >
+              <span>View All</span>
+            </Link>
           </div>
         </div>
       </div>
 
+      {/* Sleek Floating Arrows */}
       {slides.length > 1 && (
         <>
           <button
             onClick={handlePrev}
-            title="Previous Machine"
+            title="Previous Slide"
             style={{
               position: 'absolute',
-              left: '15px',
-              top: '45%',
+              left: '16px',
+              top: '50%',
               transform: 'translateY(-50%)',
-              width: '46px',
-              height: '46px',
+              width: '40px',
+              height: '40px',
               borderRadius: '50%',
-              background: 'rgba(0, 0, 0, 0.65)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
+              background: 'rgba(0, 0, 0, 0.45)',
+              border: '1px solid rgba(255, 255, 255, 0.22)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               zIndex: 20,
-              transition: 'all 0.2s ease',
-              backdropFilter: 'blur(4px)'
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.35)',
+              transition: 'all 0.15s ease'
             }}
+            className="hover:scale-110 active:scale-95 hover:bg-black/70"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={22} />
           </button>
 
           <button
             onClick={handleNext}
-            title="Next Machine"
+            title="Next Slide"
             style={{
               position: 'absolute',
-              right: '15px',
-              top: '45%',
+              right: '16px',
+              top: '50%',
               transform: 'translateY(-50%)',
-              width: '46px',
-              height: '46px',
+              width: '40px',
+              height: '40px',
               borderRadius: '50%',
-              background: 'rgba(0, 0, 0, 0.65)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
+              background: 'rgba(0, 0, 0, 0.45)',
+              border: '1px solid rgba(255, 255, 255, 0.22)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               zIndex: 20,
-              transition: 'all 0.2s ease',
-              backdropFilter: 'blur(4px)'
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.35)',
+              transition: 'all 0.15s ease'
             }}
+            className="hover:scale-110 active:scale-95 hover:bg-black/70"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={22} />
           </button>
         </>
       )}
 
-      <div style={{ position: 'absolute', bottom: '66px', left: 0, right: 0, height: '3px', background: 'rgba(255,255,255,0.15)', zIndex: 25 }}>
-        <div ref={progressBarRef} style={{ height: '100%', width: '0%', background: '#86efac' }} />
-      </div>
-
+      {/* Minimalist Dot Indicators */}
       {slides.length > 1 && (
         <div
           style={{
             position: 'absolute',
-            bottom: 0,
+            bottom: '14px',
             left: 0,
             right: 0,
-            background: 'rgba(6, 36, 22, 0.95)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-            padding: '0.65rem 1.25rem',
-            zIndex: 20,
-            backdropFilter: 'blur(10px)'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            zIndex: 20
           }}
         >
-          <div className="container flex items-center justify-between gap-3 overflow-x-auto">
-            {slides.map((s, idx) => {
-              const isActive = currentSlide === idx;
-              const sTitle = s.title || s.name || '';
-              const sImg = s.bgImage || s.productImage || s.image || '/images/machinery/power_weeder.jpg';
-              return (
-                <button
-                  key={s._id || idx}
-                  type="button"
-                  onClick={() => setCurrentSlide(idx)}
-                  style={{
-                    background: isActive ? 'rgba(255, 255, 255, 0.18)' : 'transparent',
-                    border: isActive ? '2px solid #86efac' : '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '10px',
-                    padding: '0.35rem 0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.65rem',
-                    cursor: 'pointer',
-                    flex: 1,
-                    minWidth: '180px',
-                    textAlign: 'left',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <img
-                    src={sImg}
-                    alt=""
-                    style={{ width: '38px', height: '38px', objectFit: 'contain', background: 'var(--bg-surface)', borderRadius: '6px', padding: '2px' }}
-                  />
-                  <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: isActive ? '#86efac' : '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {sTitle}
-                    </div>
-                    {s.price > 0 && (
-                      <div style={{ fontSize: '0.7rem', color: isActive ? '#fef08a' : '#94a3b8' }}>
-                        {formatINR(s.price)} {s.monthlyEmi > 0 ? `• ${formatINR(s.monthlyEmi)}/mo` : ''}
-                      </div>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+          {slides.map((_, idx) => {
+            const isActive = currentSlide === idx;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                style={{
+                  width: isActive ? '24px' : '8px',
+                  height: '8px',
+                  borderRadius: '999px',
+                  background: isActive ? '#f59e0b' : 'rgba(255, 255, 255, 0.4)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                }}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            );
+          })}
         </div>
       )}
 
-      {selectedEmiProduct && (
-        <EMICalculatorModal
-          isOpen={isEmiModalOpen}
-          onClose={() => setIsEmiModalOpen(false)}
-          productPrice={selectedEmiProduct.price}
-          emiConfig={{
-            minMonthlyEmi: selectedEmiProduct.monthlyEmi,
-            interestRate: 13.5
-          }}
-        />
-      )}
+      {/* Ultra-Thin Progress Bar */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '3px', background: 'rgba(255,255,255,0.12)', zIndex: 25 }}>
+        <div ref={progressBarRef} style={{ height: '100%', width: '0%', background: '#f59e0b' }} />
+      </div>
     </div>
   );
 };

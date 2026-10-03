@@ -6,11 +6,11 @@ const AdminSEOPage = () => {
   const { addToast } = useToast();
 
   const [seoConfig, setSeoConfig] = useState({
-    siteTitle: 'Siddhiva | Smart Shopping, Tools, Machinery & Lifestyle Online Store',
-    metaDescription: "Shop high-quality equipment, power tools, home and garden essentials, machinery, and smart commercial products on Siddhiva with verified warranty, easy No-Cost EMI, and fast pan-India delivery.",
-    canonicalBase: 'https://siddhiva.in',
-    ogImageUrl: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=1200&q=85',
-    googleAnalyticsId: 'G-SIDDHIVA2026IN',
+    siteTitle: 'Eidula | Pure Spices, Electronics, Home Decor & Lifestyle Online Store',
+    metaDescription: "Shop authentic pure spices & masale, smart electronics, luxury home decor, kitchen appliances, and hardware on Eidula with verified purity, easy No-Cost EMI, and fast pan-India delivery.",
+    canonicalBase: 'https://eidula.in',
+    ogImageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=85',
+    googleAnalyticsId: 'G-EIDULA2026IN',
     sitemapEnabled: true,
     schemaOrgProductEnabled: true
   });
@@ -47,7 +47,7 @@ const AdminSEOPage = () => {
         </div>
 
         <div style={{ fontSize: '0.85rem', color: '#202124', marginBottom: '2px' }}>
-          https://siddhiva.in
+          https://eidula.in
         </div>
         <div style={{ fontSize: '1.25rem', color: '#1a0dab', fontWeight: 600, lineHeight: 1.3, marginBottom: '6px', cursor: 'pointer' }}>
           {seoConfig.siteTitle}
@@ -115,11 +115,11 @@ const AdminSEOPage = () => {
 {JSON.stringify({
   "@context": "https://schema.org/",
   "@type": "Product",
-  "name": "Power Weeder 7HP Petrol 4-Stroke",
-  "image": "https://siddhiva.in/images/product.jpg",
+  "name": "Catch Royal Kashmiri Mogra Saffron (Grade-1 1g)",
+  "image": "https://eidula.in/images/product.jpg",
   "description": seoConfig.metaDescription,
-  "brand": { "@type": "Brand", "name": "AgriPro Machinery" },
-  "offers": { "@type": "Offer", "priceCurrency": "INR", "price": "38499", "availability": "https://schema.org/InStock" }
+  "brand": { "@type": "Brand", "name": "Eidula Pure Spices" },
+  "offers": { "@type": "Offer", "priceCurrency": "INR", "price": "495", "availability": "https://schema.org/InStock" }
 }, null, 2)}
           </pre>
           <div className="flex items-center gap-4 mt-4">

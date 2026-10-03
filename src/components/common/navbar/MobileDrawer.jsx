@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Tractor,
   X,
   User,
   Sun,
@@ -13,7 +12,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import CategoryIcon from '../CategoryIcon';
-import SiddhivaLogo from '../SiddhivaLogo';
+import EidulaLogo from '../EidulaLogo';
 
 const MobileDrawer = ({
   mobileDrawerOpen,
@@ -63,7 +62,7 @@ const MobileDrawer = ({
       >
         <div>
           <div style={{ padding: '1.15rem 1.25rem', background: 'linear-gradient(135deg, #052e16, #14532d)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <SiddhivaLogo size="sm" light={true} />
+            <EidulaLogo size="sm" light={true} />
 
             <button
               type="button"
@@ -105,7 +104,7 @@ const MobileDrawer = ({
                 style={{ width: '100%', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem' }}
               >
                 <User size={15} />
-                <span>Farmer Login / Register</span>
+                <span>Customer Sign In / Register</span>
               </Link>
             )}
           </div>
@@ -121,38 +120,38 @@ const MobileDrawer = ({
               style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.65rem 0.85rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-main)', textDecoration: 'none' }}
               className="hover:bg-green-50 dark:hover:bg-slate-800"
             >
-              <span>🌾</span>
-              <span>All Machinery Catalog</span>
+              <span>🛍️</span>
+              <span>All Products Catalog</span>
             </Link>
 
             <Link
-              to="/products?category=Pumps+%26+Irrigation"
+              to="/products?category=Spices+%26+Masale"
               onClick={() => setMobileDrawerOpen(false)}
               style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.65rem 0.85rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-main)', textDecoration: 'none' }}
               className="hover:bg-green-50 dark:hover:bg-slate-800"
             >
-              <Sun size={17} color="#f59e0b" />
-              <span>Solar Irrigation & Pumps</span>
+              <span>🌶️</span>
+              <span>Pure Spices & Masale</span>
             </Link>
 
             <Link
-              to="/products?category=Power+Weeder+%26+Tiller"
+              to="/products?category=Electronics+%26+Smart+Tech"
               onClick={() => setMobileDrawerOpen(false)}
               style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.65rem 0.85rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-main)', textDecoration: 'none' }}
               className="hover:bg-green-50 dark:hover:bg-slate-800"
             >
-              <Tractor size={17} color="#16a34a" />
-              <span>Power Weeders & Tillers</span>
+              <span>⚡</span>
+              <span>Electronics & Smart Tech</span>
             </Link>
 
             <Link
-              to="/products?category=Sprayers+%26+Crop+Protection"
+              to="/products?category=Home+Decor+%26+Living"
               onClick={() => setMobileDrawerOpen(false)}
               style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.65rem 0.85rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-main)', textDecoration: 'none' }}
               className="hover:bg-green-50 dark:hover:bg-slate-800"
             >
-              <span>🌿</span>
-              <span>Crop Sprayers & Protection</span>
+              <span>🏺</span>
+              <span>Home Decor & Living</span>
             </Link>
 
             <Link

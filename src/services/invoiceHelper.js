@@ -3,9 +3,9 @@
  */
 
 export const COMPANY_DETAILS = {
-  name: 'Siddhiva Commerce & Commercial Mart Pvt. Ltd.',
-  brand: 'Siddhiva',
-  addressLine1: 'Siddhiva Industrial Hub, Sector 62',
+  name: 'Eidula Lifestyle & Spices Pvt. Ltd.',
+  brand: 'Eidula',
+  addressLine1: 'Eidula Commercial Towers, Sector 62',
   addressLine2: 'Noida, Uttar Pradesh - 201309, India',
   gstin: '07AABCY1234F1Z8',
   cin: 'U72900UP2026PTC198421',
@@ -14,7 +14,7 @@ export const COMPANY_DETAILS = {
   stateCode: '09',
   phone: '+91 63952 11953',
   email: 'kartikkumar151998@gmail.com',
-  website: 'https://siddhiva.in',
+  website: 'https://eidula.in',
   bankName: 'HDFC Bank Ltd.',
   accountNumber: '50200084729104',
   ifscCode: 'HDFC0000128',
@@ -134,7 +134,7 @@ export const generateTallyXml = (order) => {
         <TALLYMESSAGE xmlns:UDF="TallyUDF">
           <VOUCHER VCHTYPE="Sales" ACTION="Create" OBJVIEW="Invoice Voucher View">
             <DATE>${dateStr}</DATE>
-            <GUID>SIDDHIVA-${order._id || order.orderNumber}</GUID>
+            <GUID>EIDULA-${order._id || order.orderNumber}</GUID>
             <VOUCHERTYPENAME>Sales</VOUCHERTYPENAME>
             <VOUCHERNUMBER>${invoiceNumber}</VOUCHERNUMBER>
             <REFERENCE>${order.orderNumber || order._id}</REFERENCE>
@@ -144,7 +144,7 @@ export const generateTallyXml = (order) => {
             <COUNTRYNAME>India</COUNTRYNAME>
             <PLACEOFSUPPLY>${buyerState}</PLACEOFSUPPLY>
             <BASICBUYERADDRESS>${order.shippingAddress?.street || ''}, ${order.shippingAddress?.villageCity || ''}, ${order.shippingAddress?.district || ''} - ${order.shippingAddress?.pincode || ''}</BASICBUYERADDRESS>
-            <NARRATION>E-Commerce Sales Order #${order.orderNumber} via Siddhiva Platform. Payment Mode: ${order.payment?.method || 'Online'}</NARRATION>
+            <NARRATION>E-Commerce Sales Order #${order.orderNumber} via Eidula Platform. Payment Mode: ${order.payment?.method || 'Online'}</NARRATION>
             
             <!-- Customer Debit Ledger -->
             <ALLLEDGERENTRIES.LIST>

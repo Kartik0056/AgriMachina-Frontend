@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Play, ZoomIn, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
 
 const ProductGallery = ({ mainImage, gallery = [], video }) => {
   const allImages = [];
   if (mainImage?.url) {
-    allImages.push({ url: mainImage.url, tag: '01 Main View', alt: mainImage.alt || 'Main Machinery View' });
+    allImages.push({ url: mainImage.url, tag: '01 Main View', alt: mainImage.alt || 'Main Product View' });
   }
 
   gallery.forEach((item, idx) => {
@@ -20,7 +20,7 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
   });
 
   if (allImages.length === 0) {
-    allImages.push({ url: '/images/machinery/power_weeder.jpg', tag: '01 Main View', alt: 'Machinery View' });
+    allImages.push({ url: '/images/placeholder.svg', tag: '01 Main View', alt: 'Product View' });
   }
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -204,28 +204,6 @@ const ProductGallery = ({ mainImage, gallery = [], video }) => {
           )}
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', pointerEvents: 'auto' }}>
-            {!showVideo && !isZoomed && (
-              <div
-                style={{
-                  background: 'rgba(22, 101, 52, 0.85)',
-                  backdropFilter: 'blur(8px)',
-                  color: '#ffffff',
-                  fontSize: '0.7rem',
-                  fontWeight: 700,
-                  padding: '0.3rem 0.65rem',
-                  borderRadius: '8px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  border: '1px solid rgba(134, 239, 172, 0.3)'
-                }}
-              >
-                <ZoomIn size={13} color="#86efac" />
-                <span>Hover to Zoom</span>
-              </div>
-            )}
-
             {!showVideo && (
               <button
                 type="button"

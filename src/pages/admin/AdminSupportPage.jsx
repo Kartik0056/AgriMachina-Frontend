@@ -8,7 +8,6 @@ import {
   AlertCircle,
   Phone,
   Mail,
-  Tractor,
   Send,
   Camera,
   Video,
@@ -91,12 +90,12 @@ const decodeText = (str) => {
 };
 
 const quickCannedReplies = [
-  'Namaste Kisan Bhai! Yeh machine cotton aur sugarcane kheti ke liye 100% suitable hai.',
-  'Aapka DBT / SMAM Govt. Subsidy invoice generate kar diya gaya hai.',
-  'Hamare certified agricultural engineer ne aapki field requirements note kar li hain.',
-  'Machine 100% Free Palletized transport se 4-5 business days me deliver ho jayegi.',
-  'Is model par SBI Kisan Credit aur HDFC par 0% No-Cost EMI uplabdh hai.',
-  'Aapki suvidha ke liye humne working field demonstration video attach kar diya hai.'
+  'Namaste! Yeh product 100% genuine certified quality ke sath aata hai.',
+  'Aapka order confirmation aur GST tax invoice generate kar diya gaya hai.',
+  'Hamare support specialist ne aapki requirements note kar li hain.',
+  'Aapka order Pan-India Express delivery se 2-5 business days me deliver ho jayega.',
+  'Is product par HDFC aur SBI par 0% No-Cost EMI uplabdh hai.',
+  'Aapki suvidha ke liye humne product guide aur warranty details attach kar di hain.'
 ];
 
 const AdminSupportPage = () => {
@@ -209,8 +208,8 @@ const AdminSupportPage = () => {
           if (soundEnabled) playChime();
           setLiveBanner({
             ticketId: payload.ticketId,
-            userName: payload.userName || 'A farmer',
-            subject: payload.subject || 'Equipment inquiry',
+            userName: payload.userName || 'A customer',
+            subject: payload.subject || 'Product inquiry',
             phone: payload.userPhone || '',
             product: payload.productTitle || '',
             preview: payload.preview || 'Customer sent a new query message.',
@@ -487,15 +486,15 @@ const AdminSupportPage = () => {
         <div>
           <div className="flex items-center gap-3">
             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 10px #22c55e' }} />
-            <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: 'var(--admin-text-main)', letterSpacing: '-0.02em', margin: 0 }}>
-              Farmer Advisory & Machinery Inquiries Desk
+            <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: 'var(--admin-text-main)', letterSpacing: '-0.02em', margin: 0, fontFamily: 'var(--font-heading)' }}>
+              Customer Support & Order Inquiries Desk
             </h1>
             <span className="badge" style={{ background: '#064e3b', color: '#6ee7b7', border: '1px solid #059669', fontWeight: 800, fontSize: '0.75rem', padding: '0.25rem 0.65rem' }}>
               ● LIVE STREAM ACTIVE
             </span>
           </div>
           <p style={{ fontSize: '0.9rem', color: 'var(--admin-text-muted)', marginTop: '0.4rem' }}>
-            Omnichannel agricultural advisory CRM. Click any inquiry to launch an interactive floating resolution chat popup.
+            Omnichannel customer support CRM. Click any inquiry to launch an interactive resolution chat popup.
           </p>
         </div>
 
@@ -563,17 +562,17 @@ const AdminSupportPage = () => {
         <div style={{ background: 'var(--admin-bg-card)', border: '1px solid #059669', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(5, 150, 105, 0.15)' }}>
           <div className="flex justify-between items-center">
             <span style={{ fontSize: '0.775rem', color: '#34d399', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>In Resolution</span>
-            <Tractor size={18} color="#34d399" />
+            <ShieldCheck size={18} color="#34d399" />
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34d399', marginTop: '0.5rem' }}>
             {stats.inProgressCount}
           </div>
-          <div style={{ fontSize: '0.775rem', color: '#10b981', marginTop: '0.25rem' }}>Agronomist discussing</div>
+          <div style={{ fontSize: '0.775rem', color: '#10b981', marginTop: '0.25rem' }}>Active discussions</div>
         </div>
 
         <div style={{ background: 'var(--admin-bg-card)', border: stats.unreadCount > 0 ? '1.5px solid #ef4444' : '1px solid var(--admin-border, rgba(255,255,255,0.1))', borderRadius: '16px', padding: '1.5rem 1.65rem', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
           <div className="flex justify-between items-center">
-            <span style={{ fontSize: '0.775rem', color: stats.unreadCount > 0 ? '#fca5a5' : 'var(--admin-text-muted, #94a3b8)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Unread Farmer Messages</span>
+            <span style={{ fontSize: '0.775rem', color: stats.unreadCount > 0 ? '#fca5a5' : 'var(--admin-text-muted, #94a3b8)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Unread Customer Messages</span>
             <AlertCircle size={18} color={stats.unreadCount > 0 ? '#ef4444' : 'var(--admin-text-muted, #64748b)'} />
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 900, color: stats.unreadCount > 0 ? '#ef4444' : 'var(--admin-text-main, #ffffff)', marginTop: '0.5rem' }}>
@@ -605,7 +604,7 @@ const AdminSupportPage = () => {
           <div style={{ position: 'relative', flex: 1, minWidth: '280px', maxWidth: '480px' }}>
             <input
               type="text"
-              placeholder="Search farmer name, phone, ticket #, SKU..."
+              placeholder="Search customer name, phone, ticket #, SKU..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -671,7 +670,7 @@ const AdminSupportPage = () => {
           {loading ? (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--admin-text-muted)' }}>
               <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 0.75rem auto', color: 'var(--admin-accent, #22c55e)' }} />
-              <div style={{ fontSize: '1rem', fontWeight: 600 }}>Loading farmer inquiry records...</div>
+              <div style={{ fontSize: '1rem', fontWeight: 600 }}>Loading customer inquiry records...</div>
             </div>
           ) : tickets.length === 0 ? (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--admin-text-muted)', backgroundColor: 'var(--admin-input-bg)', borderRadius: '16px', border: '1px solid var(--admin-border)' }}>
@@ -787,10 +786,10 @@ const AdminSupportPage = () => {
                       {decodeText(t.subject)}
                     </div>
 
-                    {/* Machinery tag if present */}
+                    {/* Product tag if present */}
                     {t.productTitle && (
                       <div style={{ fontSize: '0.75rem', color: '#38bdf8', background: 'rgba(56, 189, 248, 0.12)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        🚜 {decodeText(t.productTitle)} {t.productSku ? `(SKU: ${t.productSku})` : ''}
+                        📦 {decodeText(t.productTitle)} {t.productSku ? `(SKU: ${t.productSku})` : ''}
                       </div>
                     )}
 
@@ -825,13 +824,13 @@ const AdminSupportPage = () => {
                           transition: 'all 0.15s ease'
                         }}
                         className="hover:scale-105 hover:bg-green-700/30 hover:border-green-400"
-                        title="Call Farmer"
+                        title="Call Customer"
                       >
                         <PhoneCall size={12} color="#86efac" />
                         <span>Call</span>
                       </a>
                       <a
-                        href={`https://wa.me/${t.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${t.userName} ji! 🙏 Siddhiva Support Desk se hum aapki inquiry (${t.subject}) ke sambandh me sampark kar rahe hain.`)}`}
+                        href={`https://wa.me/${t.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${t.userName} ji! 🙏 Eidula Support Desk se hum aapki inquiry (${t.subject}) ke sambandh me sampark kar rahe hain.`)}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{
@@ -849,7 +848,7 @@ const AdminSupportPage = () => {
                           transition: 'all 0.15s ease'
                         }}
                         className="hover:scale-105 hover:bg-emerald-700/30 hover:border-emerald-400"
-                        title="WhatsApp Farmer"
+                        title="WhatsApp Customer"
                       >
                         <MessageCircle size={12} color="#34d399" />
                         <span>WhatsApp</span>
@@ -1055,7 +1054,7 @@ const AdminSupportPage = () => {
           {/* Pop-up Body (Hidden when minimized) */}
           {!isMinimized && (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100% - 44px)', overflow: 'hidden', background: '#090e1a' }}>
-              {/* Context Bar: Machinery SKU + Status Selector + Call/WhatsApp Shortcuts */}
+              {/* Context Bar: Product SKU + Status Selector + Call/WhatsApp Shortcuts */}
               <div
                 style={{
                   padding: '0.45rem 0.85rem',
@@ -1093,7 +1092,7 @@ const AdminSupportPage = () => {
                     <span>Call</span>
                   </a>
                   <a
-                    href={`https://wa.me/${activeTicket.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${activeTicket.userName} ji! 🙏 Siddhiva Support Desk.`)}`}
+                    href={`https://wa.me/${activeTicket.userPhone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${activeTicket.userName} ji! 🙏 Eidula Support Desk.`)}`}
                     target="_blank"
                     rel="noreferrer"
                     style={{
@@ -1190,7 +1189,7 @@ const AdminSupportPage = () => {
                     >
                       <div style={{ fontSize: '0.68rem', color: '#64748b', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <strong style={{ color: isAdmin ? '#86efac' : '#38bdf8', fontWeight: 700 }}>
-                          {isAdmin ? 'Siddhiva Specialist (You)' : msg.senderName || activeTicket.userName}
+                          {isAdmin ? 'Eidula Specialist (You)' : msg.senderName || activeTicket.userName}
                         </strong>
                         <span>•</span>
                         <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>

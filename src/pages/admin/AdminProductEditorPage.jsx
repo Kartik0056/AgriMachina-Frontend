@@ -223,10 +223,10 @@ const AdminProductEditorPage = () => {
 
           <div>
             <h1 style={{ fontSize: '1.6rem', color: '#ffffff', fontWeight: 800 }}>
-              {isEdit ? `Edit Machine: ${formData.name || formData.sku}` : 'Create New Agricultural Machinery Listing'}
+              {isEdit ? `Edit Product: ${formData.name || formData.sku}` : 'Create New Product Listing'}
             </h1>
             <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-              Complete 15-Tab Technical Specifications, Media, Pricing & EMI Configuration
+              Complete 15-Tab Specifications, Media, Pricing & EMI Configuration
             </div>
           </div>
         </div>

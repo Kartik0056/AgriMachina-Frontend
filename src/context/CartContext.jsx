@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
   const [recentlyViewed, setRecentlyViewed] = useState(() => {
     if (typeof window === 'undefined') return [];
     try {
-      const saved = localStorage.getItem('siddhiva_recently_viewed') || localStorage.getItem('agri_recently_viewed');
+      const saved = localStorage.getItem('eidula_recently_viewed') || localStorage.getItem('siddhiva_recently_viewed');
       return saved ? JSON.parse(saved) : [];
     } catch (e) {
       return [];
@@ -99,8 +99,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('siddhiva_recently_viewed', JSON.stringify(recentlyViewed));
-      localStorage.setItem('agri_recently_viewed', JSON.stringify(recentlyViewed));
+      localStorage.setItem('eidula_recently_viewed', JSON.stringify(recentlyViewed));
     } catch (e) {}
   }, [recentlyViewed]);
 
@@ -179,8 +178,7 @@ export const CartProvider = ({ children }) => {
       const filtered = prev.filter((p) => (p._id || p.id) !== prodId);
       const updated = [product, ...filtered].slice(0, 12);
       try {
-        localStorage.setItem('siddhiva_recently_viewed', JSON.stringify(updated));
-        localStorage.setItem('agri_recently_viewed', JSON.stringify(updated));
+        localStorage.setItem('eidula_recently_viewed', JSON.stringify(updated));
       } catch (e) {}
       return updated;
     });
@@ -189,8 +187,8 @@ export const CartProvider = ({ children }) => {
   const clearRecentlyViewed = () => {
     setRecentlyViewed([]);
     try {
+      localStorage.removeItem('eidula_recently_viewed');
       localStorage.removeItem('siddhiva_recently_viewed');
-      localStorage.removeItem('agri_recently_viewed');
     } catch (e) {}
   };
 

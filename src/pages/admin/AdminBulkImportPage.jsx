@@ -132,7 +132,7 @@ const AdminBulkImportPage = () => {
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', color: '#ffffff', fontWeight: 800 }}>
-            Bulk Machinery Import & Spreadsheet Ingestion
+            Bulk Catalog Import & Spreadsheet Ingestion
           </h1>
           <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
             Production-grade 7-step XLSX/CSV import wizard with multi-pass validation & ZIP SKU image mapper
@@ -177,7 +177,7 @@ const AdminBulkImportPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="admin-card lg:col-span-2">
             <h3 style={{ fontSize: '1.2rem', color: '#ffffff', marginBottom: '0.5rem' }}>
-              Step 1: Upload Machinery Catalog Spreadsheet
+              Step 1: Upload Product Catalog Spreadsheet
             </h3>
             <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.5rem' }}>
               Supported formats: Microsoft Excel (<code>.xlsx</code>), CSV (<code>.csv</code>). Column headers are automatically mapped to all 15 technical specifications and EMI attributes.
@@ -228,7 +228,7 @@ const AdminBulkImportPage = () => {
               <span>Bulk Image ZIP Mapper</span>
             </h3>
             <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '1rem' }}>
-              Upload a ZIP file containing machine photos named by SKU (e.g. <code>AV708-01.jpg</code>, <code>AV708-02.jpg</code>). The system automatically attaches them to the matching SKU!
+              Upload a ZIP file containing product photos named by SKU (e.g. <code>EID101-01.jpg</code>, <code>EID101-02.jpg</code>). The system automatically attaches them to the matching SKU!
             </p>
 
             <form onSubmit={handleZipUpload} className="flex flex-col gap-3">
@@ -251,7 +251,7 @@ const AdminBulkImportPage = () => {
 
             {zipResult && (
               <div style={{ marginTop: '1rem', background: 'var(--admin-bg-sidebar)', padding: '0.75rem', borderRadius: '8px', border: '1px solid #1e2e4f', fontSize: '0.75rem', color: '#34d399' }}>
-                ✓ Mapped {zipResult.mappedCount} images to {zipResult.affectedProducts?.length || 0} machinery listings.
+                ✓ Mapped {zipResult.mappedCount} images to {zipResult.affectedProducts?.length || 0} product listings.
               </div>
             )}
           </div>

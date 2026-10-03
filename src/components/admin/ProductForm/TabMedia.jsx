@@ -89,7 +89,7 @@ const TabMedia = ({ formData, updateField }) => {
         updateField('video', {
           ...formData.video,
           url: videoUrl,
-          title: formData.video?.title || `${formData.name || 'Machinery'} Field Demo`
+          title: formData.video?.title || `${formData.name || 'Product'} Video Demo`
         });
         addToast('Video file uploaded successfully!', 'success');
       }
@@ -302,7 +302,7 @@ const TabMedia = ({ formData, updateField }) => {
         </div>
 
         <div className="input-group">
-          <label className="input-label" style={{ color: '#cbd5e1' }}>Farmer Operational Manual URL</label>
+          <label className="input-label" style={{ color: '#cbd5e1' }}>Product User Manual URL</label>
           <input
             type="text"
             className="input-field"

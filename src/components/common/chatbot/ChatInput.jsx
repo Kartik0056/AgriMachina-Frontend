@@ -70,7 +70,7 @@ const ChatInput = ({ currentLang, inputVal, setInputVal, handleSendMessage }) =>
             type="text"
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
-            placeholder="Type your agricultural question..."
+            placeholder="Type your product or order question..."
             style={{
               fontSize: '0.825rem',
               background: 'transparent',

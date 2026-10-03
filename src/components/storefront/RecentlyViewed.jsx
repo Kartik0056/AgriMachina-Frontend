@@ -65,7 +65,7 @@ const RecentlyViewed = ({
               Recently Viewed Products
             </h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto' }}>
-              You haven't viewed any machinery or tools yet. Click on any product to see your personalized browsing history here!
+              You haven't viewed any products yet. Click on any product to see your personalized browsing history here!
             </p>
           </div>
           <Link to="/products" className="btn btn-secondary btn-sm" style={{ marginTop: '0.5rem' }}>
@@ -106,15 +106,15 @@ const RecentlyViewed = ({
               {filtered.length} {filtered.length === 1 ? 'item' : 'items'} tracked
             </span>
           </div>
-          <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)', fontWeight: 800, letterSpacing: '-0.02em' }}>
+          <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, letterSpacing: '-0.015em' }}>
             {title}
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.2rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.825rem', marginTop: '0.2rem' }}>
             {subtitle}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             type="button"
             onClick={handleClear}
@@ -126,10 +126,11 @@ const RecentlyViewed = ({
               background: 'transparent',
               padding: '0.4rem 0.8rem',
               borderRadius: '8px',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              marginRight: '10px'
             }}
             title="Clear all recently viewed items"
           >
@@ -139,16 +140,18 @@ const RecentlyViewed = ({
 
           <Link
             to="/products"
-            className="flex items-center gap-1"
             style={{
               color: 'var(--primary-600, #166534)',
               fontWeight: 700,
-              fontSize: '0.9rem',
-              textDecoration: 'none'
+              fontSize: '0.85rem',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
             }}
           >
             <span>View Catalog</span>
-            <ChevronRight size={16} />
+            <ChevronRight size={15} />
           </Link>
         </div>
       </div>

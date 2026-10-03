@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Star, ShieldCheck, Camera, Video, Send, Plus, Trash2, Play, CheckCircle2 } from 'lucide-react';
+import { Star, ShieldCheck, Camera, Send, Plus, CheckCircle2 } from 'lucide-react';
 import Modal from '../common/Modal';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
-import { getYouTubeEmbedUrl } from '../../services/videoHelper';
 
-const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialReview = null, onReviewSubmitted }) => {
+const WriteReviewModal = ({ 
+  isOpen, 
+  onClose, 
+  productId, 
+  productName, 
+  orderNumber = null, 
+  initialReview = null, 
+  onReviewSubmitted 
+}) => {
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
-  const [farmType, setFarmType] = useState('Vegetable & Horticulture');
-  const [cropGrown, setCropGrown] = useState('');
-  const [acres, setAcres] = useState(5);
-
-  // Photos & Video
   const [imageInput, setImageInput] = useState('');
   const [imagesList, setImagesList] = useState([]);
-  const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
 
@@ -25,20 +26,12 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
       setRating(initialReview.rating || 5);
       setTitle(initialReview.title || '');
       setComment(initialReview.comment || '');
-      setFarmType(initialReview.farmContext?.farmType || 'Vegetable & Horticulture');
-      setCropGrown(initialReview.farmContext?.cropGrown || '');
-      setAcres(initialReview.farmContext?.acres || 5);
       setImagesList(initialReview.images || []);
-      setVideoUrl(initialReview.videoUrl || '');
     } else {
       setRating(5);
       setTitle('');
       setComment('');
-      setFarmType('Vegetable & Horticulture');
-      setCropGrown('');
-      setAcres(5);
       setImagesList([]);
-      setVideoUrl('');
       setImageInput('');
     }
   }, [initialReview, isOpen]);
@@ -46,8 +39,8 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
   const handleAddImage = (e) => {
     e.preventDefault();
     if (!imageInput.trim()) return;
-    if (imagesList.length >= 4) {
-      addToast('Maximum 4 photos allowed per review.', 'warning');
+    if (imagesList.length >= 2) {
+      addToast('Maximum 2 photos allowed per review.', 'warning');
       return;
     }
     setImagesList(prev => [...prev, imageInput.trim()]);
@@ -61,7 +54,7 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comment || comment.trim().length < 5) {
-      addToast('Please enter at least 5 characters for your review.', 'warning');
+      addToast('Please enter at least 5 characters for your review comment.', 'warning');
       return;
     }
 
@@ -69,191 +62,237 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
     try {
       const payload = {
         rating,
-        title,
-        comment,
-        farmContext: {
-          farmType,
-          cropGrown,
-          acres: Number(acres) || 0
-        },
-        images: imagesList,
-        videoUrl: videoUrl.trim()
+        title: title.trim(),
+        comment: comment.trim(),
+        images: imagesList
       };
 
       let res;
       if (initialReview && initialReview._id) {
-        // Edit Mode
         res = await api.put(`/reviews/${initialReview._id}`, payload);
       } else {
-        // Create Mode
         res = await api.post(`/reviews/${productId}`, payload);
       }
 
       if (res.data.success) {
-        addToast(initialReview ? 'Your review with photos/video has been updated!' : 'Your review with photos/video is now live!', 'success');
+        addToast(initialReview ? 'Aapka review successfully update ho gaya hai!' : 'Dhanyawad! Aapka verified review publish ho gaya hai.', 'success');
         if (onReviewSubmitted) onReviewSubmitted(res.data.review);
         onClose();
       }
     } catch (error) {
-      addToast(error.response?.data?.message || 'Failed to save review.', 'error');
+      const errorMsg = error.response?.data?.message || 'Failed to save review. Please verify your delivered purchase.';
+      addToast(errorMsg, 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  const embedVideo = getYouTubeEmbedUrl(videoUrl);
-
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={initialReview ? 'Edit Your Farmer Review' : 'Write Verified Farmer Review'}
-      maxWidth="640px"
+      title={initialReview ? 'Edit Verified Review' : 'Write Verified Review'}
+      maxWidth="500px"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Verified Badge Ribbon */}
-        <div style={{
-          background: 'var(--primary-50)',
-          border: '1px solid #bbf7d0',
-          padding: '0.75rem 1rem',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          fontSize: '0.85rem',
-          color: '#166534'
-        }}>
-          <ShieldCheck size={18} color="#22c55e" />
-          <span>
-            {initialReview
-              ? <span>Editing your published review for <strong>{productName}</strong></span>
-              : <span>Reviewing as a <strong>Verified Farmer</strong> of <strong>{productName}</strong></span>
-            }
-          </span>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
+        {/* Verified Delivered Purchase Badge Ribbon */}
+        <div 
+          className="skeuo-card"
+          style={{
+            background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+            border: '1px solid #a7f3d0',
+            padding: '0.85rem 1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem'
+          }}
+        >
+          <div 
+            className="skeuo-icon-medallion"
+            style={{
+              width: '36px',
+              height: '36px',
+              background: '#ffffff',
+              border: '1px solid #a7f3d0',
+              color: '#047857'
+            }}
+          >
+            <ShieldCheck size={18} strokeWidth={2.2} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#065f46', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span>VERIFIED DELIVERED PURCHASE</span>
+              {orderNumber && (
+                <span className="skeuo-badge" style={{ background: '#ffffff', color: '#047857', padding: '0.1rem 0.45rem', fontSize: '0.65rem' }}>
+                  #{orderNumber}
+                </span>
+              )}
+            </div>
+            <div style={{ fontSize: '0.825rem', color: '#047857', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {productName}
+            </div>
+          </div>
         </div>
 
-        {/* 5-Star Rating Selector */}
-        <div className="flex flex-col gap-1">
-          <label className="input-label">Your Overall Rating *</label>
-          <div className="flex items-center gap-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setRating(star)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '2px'
-                }}
-              >
-                <Star
-                  size={28}
-                  fill={star <= rating ? '#f59e0b' : 'none'}
-                  color={star <= rating ? '#f59e0b' : '#cbd5e1'}
-                />
-              </button>
-            ))}
-            <span style={{ fontWeight: 700, color: '#b45309', marginLeft: '0.5rem' }}>
-              {rating === 5 ? '5 ★ - Outstanding' : rating === 4 ? '4 ★ - Very Good' : rating === 3 ? '3 ★ - Average' : `${rating} ★`}
+        {/* 5-Star Tactile Rating Selector */}
+        <div>
+          <label style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.45rem', display: 'block' }}>
+            Your Rating *
+          </label>
+          <div 
+            className="skeuo-well"
+            style={{ 
+              padding: '0.75rem 1rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              flexWrap: 'wrap', 
+              gap: '0.5rem' 
+            }}
+          >
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  style={{
+                    background: star <= rating ? 'linear-gradient(145deg, #fffbeb, #fef3c7)' : 'transparent',
+                    border: star <= rating ? '1px solid #fde68a' : '1px solid transparent',
+                    borderRadius: '10px',
+                    padding: '6px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.15s ease',
+                    boxShadow: star <= rating ? '0 2px 5px rgba(245, 158, 11, 0.2)' : 'none'
+                  }}
+                  className="hover:scale-110 active:scale-95"
+                >
+                  <Star
+                    size={24}
+                    fill={star <= rating ? '#f59e0b' : 'none'}
+                    color={star <= rating ? '#f59e0b' : '#cbd5e1'}
+                  />
+                </button>
+              ))}
+            </div>
+            <span style={{ fontWeight: 800, color: '#b45309', fontSize: '0.85rem' }}>
+              {rating === 5 ? '5 ★ - Outstanding' : rating === 4 ? '4 ★ - Very Good' : rating === 3 ? '3 ★ - Average' : rating === 2 ? '2 ★ - Below Average' : '1 ★ - Poor'}
             </span>
           </div>
         </div>
 
         {/* Review Title */}
-        <div className="input-group">
-          <label className="input-label">Review Headline / Summary</label>
+        <div>
+          <label style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.35rem', display: 'block' }}>
+            Review Headline
+          </label>
           <input
             type="text"
             className="input-field"
+            style={{ 
+              padding: '0.65rem 0.85rem', 
+              fontSize: '0.875rem', 
+              borderRadius: '12px',
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)'
+            }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Excellent machine for black clay soil! Saved 4 laborers"
+            placeholder="e.g. Outstanding build quality, swift delivery!"
           />
         </div>
 
         {/* Review Comment */}
-        <div className="input-group">
-          <label className="input-label">Detailed Farmer Review & Experience *</label>
+        <div>
+          <label style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.35rem', display: 'block' }}>
+            Your Experience & Feedback *
+          </label>
           <textarea
             className="textarea-field"
             rows="3"
             required
+            style={{ 
+              padding: '0.65rem 0.85rem', 
+              fontSize: '0.875rem', 
+              borderRadius: '12px', 
+              minHeight: '85px', 
+              maxHeight: '130px', 
+              resize: 'none',
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)'
+            }}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your practical experience: How was the fuel consumption? Easy to start? Quality of weeding/tilling? Delivery and service support?"
+            placeholder="Share details on product quality, packaging, delivery speed, and how it matched your expectations."
           />
         </div>
 
-        {/* Farm Context */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ background: 'var(--bg-surface-alt)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-          <div className="input-group">
-            <label className="input-label">Crops Grown</label>
-            <input
-              type="text"
-              className="input-field"
-              value={cropGrown}
-              onChange={(e) => setCropGrown(e.target.value)}
-              placeholder="e.g. Cotton, Chilli, Sugarcane"
-            />
-          </div>
-
-          <div className="input-group">
-            <label className="input-label">Farm Size (Acres)</label>
-            <input
-              type="number"
-              className="input-field"
-              value={acres}
-              onChange={(e) => setAcres(e.target.value)}
-              placeholder="e.g. 5"
-            />
-          </div>
-        </div>
-
-        {/* Photos Upload / URL Section */}
-        <div className="input-group">
-          <label className="input-label flex items-center justify-between">
+        {/* Photos Section */}
+        <div>
+          <label style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span className="flex items-center gap-1.5">
-              <Camera size={16} color="#166534" />
-              <span>Attach Field Photos (Up to 4)</span>
+              <Camera size={14} color="var(--primary-600)" />
+              <span>Attach Photos (Optional, max 2)</span>
             </span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{imagesList.length}/4 Attached</span>
           </label>
 
           <div className="flex gap-2">
             <input
               type="url"
               className="input-field"
+              style={{ 
+                padding: '0.55rem 0.85rem', 
+                fontSize: '0.825rem', 
+                borderRadius: '12px',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)'
+              }}
               value={imageInput}
               onChange={(e) => setImageInput(e.target.value)}
-              placeholder="Paste photo image URL (e.g. https://...)"
+              placeholder="Paste photo image URL"
             />
             <button
               type="button"
               onClick={handleAddImage}
-              className="btn btn-secondary btn-sm"
-              style={{ whiteSpace: 'nowrap' }}
+              className="skeuo-btn"
+              style={{ 
+                whiteSpace: 'nowrap', 
+                padding: '0.55rem 1rem', 
+                fontSize: '0.825rem',
+                background: 'var(--bg-surface-alt)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-main)'
+              }}
             >
               <Plus size={14} />
-              <span>Add Photo</span>
+              <span>Add</span>
             </button>
           </div>
 
-          {/* Photos Thumbnails List */}
           {imagesList.length > 0 && (
-            <div className="flex gap-2" style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
+            <div className="flex gap-3" style={{ marginTop: '0.6rem' }}>
               {imagesList.map((img, idx) => (
-                <div key={idx} style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
-                  <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div 
+                  key={idx} 
+                  className="skeuo-card"
+                  style={{ 
+                    position: 'relative', 
+                    width: '60px', 
+                    height: '60px', 
+                    borderRadius: '10px', 
+                    overflow: 'hidden', 
+                    padding: '2px'
+                  }}
+                >
+                  <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(idx)}
                     style={{
                       position: 'absolute',
-                      top: '2px',
-                      right: '2px',
-                      background: 'rgba(239, 68, 68, 0.9)',
+                      top: '3px',
+                      right: '3px',
+                      background: 'rgba(220, 38, 38, 0.9)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '50%',
@@ -263,7 +302,8 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      fontSize: '10px'
+                      fontSize: '10px',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                     }}
                   >
                     ✕
@@ -274,45 +314,21 @@ const WriteReviewModal = ({ isOpen, onClose, productId, productName, initialRevi
           )}
         </div>
 
-        {/* Video / YouTube Field Demonstration URL */}
-        <div className="input-group">
-          <label className="input-label flex items-center gap-1.5">
-            <Video size={16} color="#166534" />
-            <span>Field Working Video URL / YouTube Link (Optional)</span>
-          </label>
-          <input
-            type="url"
-            className="input-field"
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-            placeholder="e.g. https://www.youtube.com/watch?v=... or direct MP4 video link"
-          />
-
-          {/* Live In-Modal Video Preview */}
-          {videoUrl && (
-            <div style={{ marginTop: '0.5rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', maxHeight: '180px' }}>
-              {embedVideo ? (
-                <iframe
-                  src={embedVideo}
-                  title="Field Video Preview"
-                  style={{ width: '100%', height: '180px', border: 'none' }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : videoUrl.endsWith('.mp4') || videoUrl.includes('mp4') ? (
-                <video src={videoUrl} controls style={{ width: '100%', height: '180px', objectFit: 'contain', background: '#000000' }} />
-              ) : (
-                <div style={{ padding: '0.5rem', fontSize: '0.75rem', color: '#166534', background: 'var(--primary-50)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Play size={13} /> Video link attached: {videoUrl}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <button type="submit" disabled={loading} className="btn btn-primary btn-lg" style={{ marginTop: '0.5rem' }}>
-          <Send size={18} />
-          <span>{loading ? 'Saving Review...' : initialReview ? 'Update My Review' : 'Submit Live Review with Media'}</span>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="skeuo-btn skeuo-btn-primary"
+          style={{ 
+            width: '100%', 
+            padding: '0.85rem', 
+            fontSize: '0.925rem', 
+            fontWeight: 800, 
+            marginTop: '0.5rem' 
+          }}
+        >
+          <Send size={16} />
+          <span>{loading ? 'Submitting...' : initialReview ? 'Update Verified Review' : 'Submit Verified Review'}</span>
         </button>
       </form>
     </Modal>

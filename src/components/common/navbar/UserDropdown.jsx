@@ -30,7 +30,7 @@ const UserDropdown = ({
           cursor: 'pointer',
           borderRadius: '50%'
         }}
-        title={user?.name || 'My Farmer Account'}
+        title={user?.name || 'My Account'}
       >
         {user?.avatar ? (
           <img

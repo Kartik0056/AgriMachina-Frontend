@@ -23,11 +23,11 @@ const VARIANT_PRESETS = {
     { name: 'Pack of 5', unit: 'pack', quantity: '5', mrpFactor: 4.5, priceFactor: 4.2 },
     { name: 'Box of 10', unit: 'box', quantity: '10', mrpFactor: 9.0, priceFactor: 8.0 }
   ],
-  '⚙️ Machinery & Power': [
-    { name: '50cc Model', unit: 'cc', quantity: '50', mrpFactor: 1.0, priceFactor: 1.0, isDefault: true },
-    { name: '68cc Heavy Duty', unit: 'cc', quantity: '68', mrpFactor: 1.3, priceFactor: 1.25 },
-    { name: '7 HP Petrol', unit: 'HP', quantity: '7', mrpFactor: 1.0, priceFactor: 1.0 },
-    { name: '9 HP Diesel', unit: 'HP', quantity: '9', mrpFactor: 1.45, priceFactor: 1.4 }
+  '⚙️ Appliances & Power': [
+    { name: '500 Watt Standard', unit: 'W', quantity: '500', mrpFactor: 1.0, priceFactor: 1.0, isDefault: true },
+    { name: '750 Watt Heavy Duty', unit: 'W', quantity: '750', mrpFactor: 1.25, priceFactor: 1.2 },
+    { name: '1000 Watt Turbo', unit: 'W', quantity: '1000', mrpFactor: 1.5, priceFactor: 1.45 },
+    { name: 'Commercial 1500W', unit: 'W', quantity: '1500', mrpFactor: 1.85, priceFactor: 1.8 }
   ]
 };
 
@@ -191,9 +191,9 @@ const TabPricing = ({ formData, updateField }) => {
           >
             <option value={0}>0% (Exempt / Grains / Raw Spices)</option>
             <option value={5}>5% (Packaged Spices, Tea, Food Items)</option>
-            <option value={12}>12% (Standard Agricultural & Food Products)</option>
-            <option value={18}>18% (Electronics, Machinery, Appliances)</option>
-            <option value={28}>28% (Luxury Items / High Motors)</option>
+            <option value={12}>12% (Processed Food & Lifestyle Goods)</option>
+            <option value={18}>18% (Electronics, Hardware & Appliances)</option>
+            <option value={28}>28% (Luxury Tech & Premium Consumer Goods)</option>
           </select>
         </div>
 

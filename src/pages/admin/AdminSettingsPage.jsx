@@ -13,7 +13,7 @@ const AdminSettingsPage = () => {
           System Configuration & Commercial Settings
         </h1>
         <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-          Global parameters for agricultural tax rules, secret portal route, and system security
+          Global parameters for catalog tax rules, secret portal route, and system security
         </p>
       </div>
 
@@ -39,25 +39,25 @@ const AdminSettingsPage = () => {
           </p>
         </div>
 
-        {/* Agricultural GST Rules */}
+        {/* Commercial GST Rules */}
         <div className="admin-card">
           <div className="flex items-center gap-2" style={{ marginBottom: '1rem' }}>
             <DollarSign size={22} color="#f59e0b" />
-            <h3 style={{ fontSize: '1.15rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Agricultural Tax & Invoicing Defaults</h3>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Commercial Tax &amp; Invoicing Defaults</h3>
           </div>
 
           <div className="flex flex-col gap-2.5" style={{ fontSize: '0.85rem' }}>
             <div className="flex justify-between" style={{ borderBottom: '1px solid var(--admin-border, #1e2e4f)', paddingBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--admin-text-muted)' }}>Default Machinery GST:</span>
-              <strong style={{ color: 'var(--admin-text-main)' }}>12% (HSN 8432)</strong>
+              <span style={{ color: 'var(--admin-text-muted)' }}>Default Category GST:</span>
+              <strong style={{ color: 'var(--admin-text-main)' }}>5% - 18% (Multi-Category)</strong>
             </div>
             <div className="flex justify-between" style={{ borderBottom: '1px solid var(--admin-border, #1e2e4f)', paddingBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--admin-text-muted)' }}>Engine & Generator GST:</span>
-              <strong style={{ color: 'var(--admin-text-main)' }}>18% (HSN 8407)</strong>
+              <span style={{ color: 'var(--admin-text-muted)' }}>Standard Tax Slabs:</span>
+              <strong style={{ color: 'var(--admin-text-main)' }}>Food 5% / Tech 18%</strong>
             </div>
             <div className="flex justify-between" style={{ borderBottom: '1px solid var(--admin-border, #1e2e4f)', paddingBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--admin-text-muted)' }}>Kisan EMI Max Tenure:</span>
-              <strong style={{ color: 'var(--admin-text-main)' }}>36 Months</strong>
+              <span style={{ color: 'var(--admin-text-muted)' }}>No-Cost EMI Max Tenure:</span>
+              <strong style={{ color: 'var(--admin-text-main)' }}>24 Months</strong>
             </div>
             <div className="flex justify-between">
               <span style={{ color: 'var(--admin-text-muted)' }}>Free Shipping Threshold:</span>

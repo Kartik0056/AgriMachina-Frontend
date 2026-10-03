@@ -10,60 +10,63 @@ export const supportedLanguages = [
 ];
 
 export const quickQuestions = {
-  hi: [
-    '5 HP Power Weeder chahiye',
-    'Machine start nahi ho rahi / Technical Problem',
-    'Shikayat / Raise Support Ticket',
-    '0% No-Cost EMI kaise milegi?',
-    'Cotton & Sugarcane ke liye best weeder?',
-    'Govt. SMAM Subsidy kaise claim karein?'
-  ],
   en: [
-    'I need 5 HP Power Weeder',
-    'Machine not starting / Technical Issue',
-    'Complaint / Raise Support Ticket',
-    'How to get 0% No-Cost EMI?',
-    'Best Power Weeder for cotton & sugarcane?',
-    'How to claim Govt. SMAM Subsidy?'
+    'Track my order & dispatch status',
+    'How does 0% No-Cost EMI work?',
+    'What are the trending bestsellers?',
+    'Are your spices & grocery products 100% authentic?',
+    'Warranty, replacement and return policy',
+    'Raise a customer support ticket'
+  ],
+  hi: [
+    'मेरा ऑर्डर ट्रैक करें / डिस्पैच स्टेटस',
+    '0% नो-कॉस्ट ईएमआई कैसे मिलेगी?',
+    'स्टोर के ट्रेंडिंग और बेस्टसेलर उत्पाद',
+    'क्या मसाले और खाद्य उत्पाद 100% शुद्ध हैं?',
+    'वारंटी, रिटर्न और रिप्लेसमेंट पॉलिसी',
+    'सपोर्ट टिकट दर्ज करें / शिकायत'
   ],
   gu: [
-    '0% No-Cost EMI કેવી રીતે મળશે?',
-    'કપાસ અને શેરડી માટે શ્રેષ્ઠ પાવર વીડર?',
-    'સરકારી સબસિડી કેવી રીતે મેળવવી?',
-    'ડિલિવરી કેટલા દિવસમાં આવશે?'
+    'મારો ઓર્ડર ટ્રેક કરો / ડિસ્પેચ સ્ટેટસ',
+    '0% નો-કોસ્ટ ઈએમઆઈ કેવી રીતે મળશે?',
+    'ટ્રેન્ડિંગ અને બેસ્ટસેલર પ્રોડક્ટ્સ',
+    'રિટર્ન અને વોરંટી પોલિસી શું છે?'
   ],
   pa: [
-    '0% No-Cost EMI ਕਿਵੇਂ ਮਿਲੇਗੀ?',
-    'ਕਣਕ ਅਤੇ ਝੋਨੇ ਲਈ ਬੈਸਟ ਮਸ਼ੀਨਰੀ?',
-    'ਸਰਕਾਰੀ ਸਬਸਿਡੀ ਦਾ ਕੀ ਤਰੀਕਾ ਹੈ?',
-    'ਡਿਲਿਵਰੀ ਕਿੰਨੇ ਦਿਨਾਂ ਵਿੱਚ ਆਵੇਗੀ?'
+    'ਮੇਰਾ ਆਰਡਰ ਟਰੈਕ ਕਰੋ / ਡਿਲਿਵਰੀ ਸਟੇਟਸ',
+    '0% ਨੋ-ਕਾਸਟ ਕਿਸ਼ਤਾਂ ਕਿਵੇਂ ਮਿਲਣਗੀਆਂ?',
+    'ਟ੍ਰੈਂਡਿੰਗ ਅਤੇ ਵਧੀਆ ਉਤਪਾਦ',
+    'ਵਾਰੰਟੀ ਅਤੇ ਵਾਪਸੀ ਨੀਤੀ ਕੀ ਹੈ?'
   ],
   mr: [
-    '0% No-Cost EMI कशी मिळेल?',
-    'कापूस आणि उसासाठी सर्वोत्तम वीडर?',
-    'शासकीय सबसिडी कशी मिळवावी?',
-    'ડિલિવરી किती दिवसात होईल?'
+    'माझा ऑर्डर ट्रॅक करा / डिलिव्हरी स्थिती',
+    '0% नो-कॉस्ट ईएमआय कशी मिळेल?',
+    'ट्रेंडिंग आणि सर्वाधिक विकली जाणारी उत्पादने',
+    'वॉरंटी आणि रिटर्न पॉलिसी काय आहे?'
   ],
   te: [
-    '0% No-Cost EMI ఎలా పొందాలి?',
-    'పత్తి మరియు చెరకు కోసం ఉత్తమ వీడర్ ఏది?',
-    'ప్రభుత్వ సబ్సిడీ ఎలా పొందాలి?'
+    'నా ఆర్డర్‌ని ట్రాక్ చేయండి / డెలివరీ స్థితి',
+    '0% నో-కాస్ట్ EMI ఎలా పొందాలి?',
+    'ట్రెండింగ్ మరియు బెస్ట్‌సెల్లర్ ఉత్పత్తులు',
+    'వారంటీ మరియు రిటర్న్ పాలసీ ఏమిటి?'
   ],
   ta: [
-    '0% No-Cost EMI எப்படி பெறுவது?',
-    'பருத்தி மற்றும் கரும்புக்கு சிறந்த களை எடுக்கும் கருவி எது?',
-    'அரசு மானியம் பெறுவது எப்படி?'
+    'எனது ஆர்டரை கண்காணிக்கவும்',
+    '0% கட்டணமில்லா இஎம்ஐ பெறுவது எப்படி?',
+    'சிறந்த தயாரிப்புகள் மற்றும் சலுகைகள்',
+    'உத்தரவாதம் மற்றும் திரும்பப்பெறும் கொள்கை'
   ],
   bn: [
-    '0% No-Cost EMI কীভাবে পাব?',
-    'চাষের জন্য সেরা পাওয়ার উইডার কোনটি?',
-    'সরকারি ভর্তুকি কীভাবে পাওয়া যাবে?'
+    'আমার অর্ডার ট্র্যাক করুন',
+    '0% নো-কস্ট ইএমআই কীভাবে পাব?',
+    'সেরা ট্রেন্ডিং পণ্যগুলি কী কী?',
+    'ওয়ারেন্টি এবং রিটার্ন পলিসি'
   ]
 };
 
 export const initialGreeting = {
   id: 1,
   sender: 'bot',
-  text: 'Namaste & Welcome to Siddhiva! 🙏 Main aapka 24x7 **Siddhiva Smart Shopping AI Assistant** hoon. Main product recommendations, 0% No-Cost EMI, order tracking, warranties, aur technical questions me aapki madad kar sakta hoon. Kahiye, main aapki kya seva karoon?',
+  text: 'Namaste & Welcome to Eidula! 🙏 Main aapka 24x7 **Eidula Smart Shopping AI Assistant** hoon. Main Pure Spices & Masale, Electronics, Home Decor, Kitchen Appliances, Tools, 0% No-Cost EMI, order tracking, aur warranties ke sawalon me aapki madad kar sakta hoon. Kahiye, main aapki kya seva karoon?',
   time: 'Just now'
 };

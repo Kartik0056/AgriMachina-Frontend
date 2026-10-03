@@ -9,7 +9,6 @@ import {
   Send,
   HelpCircle,
   ChevronDown,
-  Tractor,
   CheckCircle2,
   Sparkles
 } from 'lucide-react';
@@ -19,24 +18,24 @@ import { useToast } from '../../context/ToastContext';
 
 const faqs = [
   {
-    q: 'How does DBT / SMAM Govt. Subsidy approval work on farm equipment?',
-    a: 'All our power weeders, solar pumps, and crop protection equipment are pre-tested and approved under central & state DBT (SMAM / Sub-Mission on Agricultural Mechanization) schemes. Upon order confirmation, we generate an authorized GST commercial invoice with complete engine and chassis numbers required for instant subsidy claim on your state agriculture portal.'
+    q: 'How does Pan-India Express Delivery work?',
+    a: 'We provide fast and reliable delivery across 28,000+ pin codes in India. Orders are dispatched within 24 hours via premier courier partners (Delhivery, BlueDart, DTDC). Standard doorstep delivery takes 2 to 5 business days.'
   },
   {
-    q: 'What are the requirements for 0% No-Cost EMI financing?',
-    a: 'Farmers can avail 0% No-Cost EMI tenures (3 to 36 months) online during checkout using Razorpay Affordability. Supported payment modes include SBI Kisan Credit Cards, HDFC Agri Finance, ICICI Bank, Axis Bank, and Bajaj Finserv EMI Cards with zero down-payment.'
+    q: 'What payment options and 0% No-Cost EMI plans are available?',
+    a: 'You can pay using UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, Net Banking, and Cash on Delivery (COD). For larger purchases, 0% No-Cost EMI (3 to 24 months) is available through HDFC, SBI, ICICI, Axis Bank, and Bajaj Finserv.'
   },
   {
-    q: 'How is heavy machinery delivered to rural farm locations?',
-    a: 'We provide 100% Free Palletized Farm Delivery across all pin codes in India. Machinery is dispatched in heavy wooden crate packing via dedicated hydraulic tail-lift transport trucks directly to your village or farm gate within 4 to 7 business days.'
+    q: 'What is your returns and replacement policy?',
+    a: 'We offer an easy 7-day hassle-free replacement or refund guarantee on all damaged, defective, or incorrect items. Simply contact support or initiate a return from your Orders dashboard.'
   },
   {
-    q: 'What is the engine warranty and spare parts availability policy?',
-    a: 'Every machine comes with a 1-Year Comprehensive OEM Engine & Gearbox Warranty. We maintain a full 10-year replacement stock for all wearing parts (rotary blades, carburetors, recoil starters, drive belts, spray nozzles) dispatchable within 24 hours.'
+    q: 'Are all products authentic and quality-certified?',
+    a: 'Yes, 100%. Our spices are lab-tested and FSSAI certified, our electronics and appliances come with official OEM warranties, and home decor items undergo strict multi-stage quality inspections.'
   },
   {
-    q: 'Can I request a live video demonstration before purchasing?',
-    a: 'Yes! You can connect with our certified agricultural engineers over WhatsApp video call (+91 90277 99171) to inspect the machine operation, soil compatibility, starting procedure, and maintenance tips live from our demo testing grounds.'
+    q: 'Can I place bulk or corporate orders?',
+    a: 'Yes! We offer wholesale and corporate gifting discounts on bulk orders across spices, electronics, and home living. Select "Bulk Purchase / Corporate" in the contact form to receive a custom quote.'
   }
 ];
 
@@ -48,10 +47,8 @@ const ContactPage = () => {
     name: user?.name || '',
     phone: user?.phone || '',
     email: user?.email || '',
-    machineryInterest: 'Power Weeder & Tiller',
+    categoryInterest: 'All Categories / General',
     inquiryType: 'General Inquiry',
-    farmType: '',
-    acres: 5,
     state: user?.addresses && user.addresses[0] ? user.addresses[0].state : 'Gujarat',
     district: user?.addresses && user.addresses[0] ? user.addresses[0].district : '',
     message: ''
@@ -73,7 +70,7 @@ const ContactPage = () => {
       const res = await api.post('/contact', formData);
       if (res.data.success) {
         setSubmitted(true);
-        addToast('Your inquiry has been submitted! Our agronomy specialist will call you shortly.', 'success');
+        addToast('Your inquiry has been submitted! Our customer care specialist will call you shortly.', 'success');
       }
     } catch (error) {
       addToast(error.response?.data?.message || 'Failed to submit inquiry.', 'error');
@@ -87,13 +84,13 @@ const ContactPage = () => {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <span className="badge badge-primary" style={{ marginBottom: '0.75rem', padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
-          🌾 Kisan Technical Advisory & Customer Support
+          💬 Customer Support & Product Advisory
         </span>
-        <h1 style={{ fontSize: '2.4rem', color: 'var(--text-main)', fontWeight: 900, marginBottom: '0.75rem' }}>
-          Connect with Agricultural Machinery Specialists
+        <h1 style={{ fontSize: '1.35rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem', fontFamily: 'var(--font-heading)' }}>
+          Connect with Our Support Specialists
         </h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '680px', margin: '0 auto' }}>
-          Have questions about field compatibility, subsidy documentation, 0% EMI financing, or custom implements? Our certified agricultural engineers are available 6 days a week.
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', maxWidth: '640px', margin: '0 auto' }}>
+          Have questions about our products, express doorstep delivery, 0% EMI financing, or bulk orders? Our team is available 6 days a week to help you.
         </p>
       </div>
 
@@ -171,7 +168,7 @@ const ContactPage = () => {
             Receive product brochures, live demo videos, order invoices, and quick answers directly on WhatsApp.
           </p>
           <a
-            href="https://wa.me/916395211953?text=Hi%20Siddhiva,%20I%20need%20assistance%20with%20products."
+            href="https://wa.me/916395211953?text=Hi%20Eidula,%20I%20need%20assistance%20with%20products."
             target="_blank"
             rel="noreferrer"
             className="btn btn-accent btn-sm"
@@ -212,7 +209,7 @@ const ContactPage = () => {
             Email & Operations Hub
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-            Siddhiva Commercial Mart & Distribution Center, Industrial Zone, India
+            Eidula Commercial Towers & Distribution Center, Sector 62, Noida, India
           </p>
           <div style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700 }}>
             ✉️ <a href="mailto:kartikkumar151998@gmail.com" style={{ color: '#166534', textDecoration: 'none' }}>kartikkumar151998@gmail.com</a>
@@ -232,11 +229,11 @@ const ContactPage = () => {
           padding: '2rem',
           boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
         }}>
-          <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '0.4rem' }}>
             Submit an Inquiry / Request a Callback
           </h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-            Fill in your farm details below and an agricultural engineer will contact you with recommendations.
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1.25rem' }}>
+            Fill in your details below and our customer support team will contact you with recommendations.
           </p>
 
           {submitted ? (
@@ -252,7 +249,7 @@ const ContactPage = () => {
                 Thank You, {formData.name}!
               </h4>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
-                Your inquiry has been successfully assigned to our agricultural engineering team. We will call you on <strong>{formData.phone}</strong> shortly.
+                Your inquiry has been successfully received by our support team. We will call you on <strong>{formData.phone}</strong> shortly.
               </p>
               <button
                 type="button"
@@ -266,7 +263,7 @@ const ContactPage = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="input-group">
-                  <label className="input-label">Farmer Full Name *</label>
+                  <label className="input-label">Full Name *</label>
                   <input
                     type="text"
                     required
@@ -296,7 +293,7 @@ const ContactPage = () => {
                     className="input-field"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="e.g. farmer@kisanmail.in"
+                    placeholder="e.g. customer@example.com"
                   />
                 </div>
 
@@ -307,29 +304,28 @@ const ContactPage = () => {
                     value={formData.inquiryType}
                     onChange={(e) => setFormData({ ...formData, inquiryType: e.target.value })}
                   >
-                    <option value="General Inquiry">General Machinery Consultation</option>
-                    <option value="Govt Subsidy Assistance">Govt. SMAM / DBT Subsidy Guidance</option>
-                    <option value="0% EMI Financing">0% No-Cost EMI & Bank Loans</option>
-                    <option value="Field Demo Request">Request Live Field Demonstration</option>
-                    <option value="Bulk Purchase / Dealer">Bulk Purchase / Farmer Cooperative</option>
+                    <option value="General Inquiry">General Product Consultation</option>
+                    <option value="Order Tracking">Order Tracking & Delivery Status</option>
+                    <option value="0% EMI Financing">0% No-Cost EMI & Payment Inquiries</option>
+                    <option value="Bulk Purchase / Corporate">Bulk Purchase / Corporate Inquiries</option>
+                    <option value="Warranty & Replacement">Warranty Claim & Replacement</option>
                   </select>
                 </div>
 
                 <div className="input-group">
-                  <label className="input-label">Equipment Category of Interest</label>
+                  <label className="input-label">Category of Interest</label>
                   <select
                     className="select-field"
-                    value={formData.machineryInterest}
-                    onChange={(e) => setFormData({ ...formData, machineryInterest: e.target.value })}
+                    value={formData.categoryInterest}
+                    onChange={(e) => setFormData({ ...formData, categoryInterest: e.target.value })}
                   >
-                    <option value="Power Weeder & Tiller">Power Weeder & Tiller</option>
-                    <option value="Earth Auger">Earth Auger (Soil Driller)</option>
-                    <option value="Pumps & Irrigation">Solar & Submersible Pumps</option>
-                    <option value="Sprayers & Crop Protection">Battery & HTP Sprayers</option>
-                    <option value="Harvesting Machinery">Brush Cutters & Harvesters</option>
-                    <option value="Post Harvesting">Chaff Cutters & Threshers</option>
-                    <option value="Power Reaper">Power Reaper</option>
-                    <option value="Lawn Mower & Gardening Tools">Lawn Mower & Gardening</option>
+                    <option value="All Categories / General">All Categories / General</option>
+                    <option value="Spices & Masale">Spices & Masale</option>
+                    <option value="Electronics & Smart Tech">Electronics & Smart Tech</option>
+                    <option value="Home Decor & Living">Home Decor & Living</option>
+                    <option value="Kitchen & Home Appliances">Kitchen & Home Appliances</option>
+                    <option value="Hardware & Tools">Hardware & Power Tools</option>
+                    <option value="Organic Groceries">Organic Groceries & Oils</option>
                   </select>
                 </div>
 
@@ -342,6 +338,7 @@ const ContactPage = () => {
                   >
                     <option value="Gujarat">Gujarat</option>
                     <option value="Maharashtra">Maharashtra</option>
+                    <option value="Delhi">Delhi NCR</option>
                     <option value="Punjab">Punjab</option>
                     <option value="Haryana">Haryana</option>
                     <option value="Uttar Pradesh">Uttar Pradesh</option>
@@ -351,19 +348,19 @@ const ContactPage = () => {
                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                     <option value="Telangana">Telangana</option>
                     <option value="Tamil Nadu">Tamil Nadu</option>
-                    <option value="Bihar">Bihar</option>
+                    <option value="West Bengal">West Bengal</option>
                   </select>
                 </div>
               </div>
 
               <div className="input-group">
-                <label className="input-label">Your Specific Question / Farm Details</label>
+                <label className="input-label">Your Message / Query Details</label>
                 <textarea
                   className="textarea-field"
                   rows="4"
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Describe your soil type (e.g. black cotton soil, sandy loam), crops grown, and any technical questions you have..."
+                  placeholder="Tell us what you are looking for or any questions regarding your order..."
                 />
               </div>
 
@@ -374,7 +371,7 @@ const ContactPage = () => {
                 style={{ width: '100%', marginTop: '0.5rem' }}
               >
                 <Send size={18} />
-                <span>{loading ? 'Submitting...' : 'Submit Inquiry for Free Expert Consultation'}</span>
+                <span>{loading ? 'Submitting...' : 'Submit Inquiry'}</span>
               </button>
             </form>
           )}
@@ -460,10 +457,10 @@ const ContactPage = () => {
             <ShieldCheck size={36} color="#34d399" style={{ flexShrink: 0 }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#fef08a' }}>
-                100% Genuine Machinery Direct Guarantee
+                100% Genuine & Certified Quality Guarantee
               </div>
               <div style={{ fontSize: '0.8rem', color: '#dcfce7', marginTop: '0.2rem' }}>
-                Every equipment order is accompanied by an authorized manufacturer warranty card, tool kit, and user guide.
+                Every order is backed by genuine manufacturer warranty, batch quality certification, and secure packaging.
               </div>
             </div>
           </div>

@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { Sprout, CheckCircle2, Wrench, Plus, X } from 'lucide-react';
 
 const idealPresets = [
-  'Small Farms',
-  'Medium Farms',
-  'Large Farms',
-  'Vegetable Farming',
-  'Orchards',
-  'Nurseries',
-  'Gardening',
-  'Paddy',
-  'Wheat',
-  'Sugarcane',
-  'Cotton',
-  'Fruit Farming',
-  'Commercial Farming'
+  'Everyday Home Cooking',
+  'Gourmet & Chef Kitchens',
+  'Biryani & Festive Delicacies',
+  'Immunity & Herbal Teas',
+  'Daily Ayurveda & Wellness',
+  'Modern Apartments & Villas',
+  'Living Room & Ambient Spaces',
+  'Work From Home & Office',
+  'Smart Homes & IoT',
+  'Home DIY & Renovations',
+  'Car, Bike & Patio Washing',
+  'Professional Workshops',
+  'Gift Sets & Festive Hampers'
 ];
 
 const TabIdealCompatibility = ({ formData, updateField }) => {
@@ -62,11 +62,11 @@ const TabIdealCompatibility = ({ formData, updateField }) => {
     <div className="flex flex-col gap-6">
       <div style={{ background: 'var(--admin-bg-main)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.5rem' }}>
         <h4 style={{ fontSize: '1rem', color: '#ffffff', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Sprout size={18} color="#34d399" />
-          <span>"Ideal For" Farm Holdings & Crops (Required)</span>
+          <Sparkles size={18} color="#34d399" />
+          <span>"Ideal For" Use Cases &amp; Target Audience</span>
         </h4>
         <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '1rem' }}>
-          Select the farm sizes and crop categories where this machine operates at peak efficiency. Displays as visual chips on PDP.
+          Select recommended use cases, culinary applications, or lifestyle environments. Displays as visual chips on the product page.
         </p>
 
         <div className="flex flex-wrap gap-2" style={{ marginBottom: '1rem' }}>

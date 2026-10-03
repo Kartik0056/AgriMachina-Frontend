@@ -11,7 +11,7 @@ const TabEMI = ({ formData, updateField }) => {
     interestRate: 13.5,
     tenureOptions: [3, 6, 9, 12, 18, 24, 36],
     processingFee: 499,
-    financePartners: ['HDFC Bank Agri', 'SBI Kisan Credit', 'Bajaj Finserv Agri', 'Kotak Mahindra', 'TVS Credit']
+    financePartners: ['HDFC Bank', 'State Bank of India', 'Bajaj Finserv', 'Kotak Mahindra', 'ICICI Bank']
   };
 
   const updateEMI = (key, value) => {
@@ -38,7 +38,7 @@ const TabEMI = ({ formData, updateField }) => {
       <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '1rem' }}>
-            Enable Kisan EMI Plans & Calculator for this Machine
+            Enable 0% No-Cost EMI Plans & Calculator for this Product
           </div>
           <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
             Displays "EASY EMI AVAILABLE: Starting from ₹X/mo" badge on storefront and PDP.

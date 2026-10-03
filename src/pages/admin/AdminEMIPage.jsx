@@ -57,18 +57,18 @@ const AdminEMIPage = () => {
           const emiInfo = order.payment?.emiDetails || {};
           const tenure = emiInfo.tenureMonths || 12;
           const monthly = emiInfo.monthlyEmi || Math.round(total / tenure);
-          const provider = emiInfo.financePartner || (order.payment?.method === 'Razorpay EMI' ? 'Razorpay • 0% No-Cost EMI' : 'Razorpay • Kisan Credit EMI');
+          const provider = emiInfo.financePartner || (order.payment?.method === 'Razorpay EMI' ? 'Razorpay • 0% No-Cost EMI' : 'Razorpay • Cardless EMI');
           const isPaid = order.payment?.status === 'Paid' || order.payment?.status === 'PAID';
           const villageStr = [order.shippingAddress?.villageCity, order.shippingAddress?.district, order.shippingAddress?.state].filter(Boolean).join(', ') || order.shippingAddress?.city || 'India';
 
           return {
             id: `EMI-${order.orderNumber}`,
             orderNumber: order.orderNumber,
-            farmerName: order.shippingAddress?.fullName || order.customerName || 'Farmer Customer',
+            customerName: order.shippingAddress?.fullName || order.customerName || 'Customer',
             phone: order.shippingAddress?.phone || order.customerPhone || '-',
             village: villageStr,
-            machineName: item.name || item.title || 'Agricultural Machinery',
-            machineImage: item.image || '/images/machinery/power_weeder.jpg',
+            productName: item.name || item.title || 'Product',
+            productImage: item.image || item.product?.mainImage?.url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=80',
             loanProvider: provider,
             loanAmount: total,
             monthlyEmi: monthly,
@@ -123,10 +123,10 @@ const AdminEMIPage = () => {
   const filteredList = emiLoans.filter((item) => {
     const matchesFilter = filterStatus === 'ALL' || item.status === filterStatus;
     const matchesSearch =
-      item.farmerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.customerName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.phone.includes(searchQuery) ||
       item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.machineName.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.productName || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -173,7 +173,7 @@ const AdminEMIPage = () => {
 
   // Chart Data 3: Financing Provider Distribution
   const doughnutBankData = {
-    labels: ['Razorpay • SBI Kisan', 'Razorpay • HDFC Agri', 'Razorpay • ICICI Bank', '0% No-Cost Bajaj Finserv', 'Others'],
+    labels: ['Razorpay • SBI', 'Razorpay • HDFC Bank', 'Razorpay • ICICI Bank', '0% No-Cost Bajaj Finserv', 'Others'],
     datasets: [
       {
         data: emiLoans.length > 0 ? [40, 30, 15, 10, 5] : [1, 0, 0, 0, 0],
@@ -189,7 +189,7 @@ const AdminEMIPage = () => {
   };
 
   const handleSendReminder = (loan) => {
-    addToast(`Payment reminder SMS & WhatsApp dispatched to ${loan.farmerName} (${loan.phone}) with Razorpay direct payment link!`, 'success');
+    addToast(`Payment reminder SMS & WhatsApp dispatched to ${loan.customerName} (${loan.phone}) with Razorpay direct payment link!`, 'success');
   };
 
   return (
@@ -243,13 +243,13 @@ const AdminEMIPage = () => {
 
         <div className="admin-card flex flex-col gap-1">
           <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Completed Loans</span>
-          <span style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--admin-accent, #34d399)' }}>{completedCount} Farmers</span>
+          <span style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--admin-accent, #34d399)' }}>{completedCount} Customers</span>
           <span style={{ fontSize: '0.7rem', color: '#86efac' }}>100% Fully Paid Off</span>
         </div>
 
         <div className="admin-card flex flex-col gap-1">
           <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Active (On-Track)</span>
-          <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#38bdf8' }}>{activeCount} Farmers</span>
+          <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#38bdf8' }}>{activeCount} Customers</span>
           <span style={{ fontSize: '0.7rem', color: '#bfdbfe' }}>Paying monthly installments</span>
         </div>
 
@@ -352,7 +352,7 @@ const AdminEMIPage = () => {
               style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff', paddingLeft: '2.2rem', fontSize: '0.825rem' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search farmer name, phone, machine..."
+              placeholder="Search customer name, phone, product..."
             />
             <Search size={15} color="#94a3b8" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
           </div>
@@ -363,8 +363,8 @@ const AdminEMIPage = () => {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Farmer & Loan ID</th>
-                <th>Machinery Financed</th>
+                <th>Customer & Loan ID</th>
+                <th>Product Financed</th>
                 <th>Monthly EMI</th>
                 <th>Tenure Progress</th>
                 <th>Paid / Balance</th>
@@ -388,7 +388,7 @@ const AdminEMIPage = () => {
                       <CreditCard size={38} color="#334155" />
                       <span style={{ fontSize: '1rem', color: '#cbd5e1', fontWeight: 700 }}>No Customer EMI Loans Found</span>
                       <span style={{ fontSize: '0.8rem', color: '#64748b', maxWidth: '420px' }}>
-                        When farmers place machinery orders using 0% No-Cost EMI financing at checkout, their live loan records, installment schedules, and repayment statuses will appear here in real time.
+                        When customers place orders using 0% No-Cost EMI financing at checkout, their live loan records, installment schedules, and repayment statuses will appear here in real time.
                       </span>
                     </div>
                   </td>
@@ -398,24 +398,24 @@ const AdminEMIPage = () => {
                   const percent = Math.round((loan.paidInstallments / loan.totalTenureMonths) * 100);
                   return (
                     <tr key={loan.id}>
-                      {/* Farmer Profile */}
+                      {/* Customer Profile */}
                       <td>
-                        <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.9rem' }}>{loan.farmerName}</div>
+                        <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.9rem' }}>{loan.customerName}</div>
                         <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{loan.phone}</div>
                         <div style={{ fontSize: '0.7rem', color: '#34d399', fontFamily: 'monospace' }}>{loan.id}</div>
                       </td>
 
-                      {/* Machinery */}
+                      {/* Product */}
                       <td style={{ maxWidth: '220px' }}>
                         <div className="flex items-center gap-2">
                           <img
-                            src={loan.machineImage}
+                            src={loan.productImage}
                             alt=""
                             style={{ width: '38px', height: '38px', objectFit: 'contain', background: '#ffffff', borderRadius: '6px', padding: '2px', flexShrink: 0 }}
                           />
                           <div>
                             <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#cbd5e1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>
-                              {loan.machineName}
+                              {loan.productName}
                             </div>
                             <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{loan.loanProvider}</div>
                           </div>
@@ -530,7 +530,7 @@ const AdminEMIPage = () => {
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '10px', padding: '0.85rem 1rem' }}>
               <div className="flex justify-between items-center">
                 <div>
-                  <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.95rem' }}>{selectedLoan.farmerName}</div>
+                  <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.95rem' }}>{selectedLoan.customerName}</div>
                   <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{selectedLoan.village} • {selectedLoan.phone}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>

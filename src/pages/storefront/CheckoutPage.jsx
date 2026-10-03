@@ -121,20 +121,15 @@ const CheckoutPage = () => {
     try {
       if (authTab === 'login') {
         await login(authEmail, authPassword);
-        addToast('Farmer login successful! You can now complete your order.', 'success');
+        addToast('Customer login successful! You can now complete your order.', 'success');
       } else {
         await registerUser({
           name: authName,
           email: authEmail,
           phone: authPhone,
-          password: authPassword,
-          farmDetails: {
-            farmType: authFarmType,
-            farmSizeAcres: 5,
-            state: shippingAddress.state || 'Gujarat'
-          }
+          password: authPassword
         });
-        addToast('Farmer account created & logged in! 🌾', 'success');
+        addToast('Customer account created & logged in! ✨', 'success');
       }
     } catch (err) {
       addToast(err.message || 'Authentication failed. Please check your credentials.', 'error');
@@ -181,12 +176,12 @@ const CheckoutPage = () => {
     e.preventDefault();
 
     if (!isAuthenticated || !user) {
-      addToast('Farmer account login is required before placing an order.', 'warning');
+      addToast('Customer account login is required before placing an order.', 'warning');
       return;
     }
 
     if (!shippingAddress.fullName || !shippingAddress.phone || !shippingAddress.street || !shippingAddress.pincode) {
-      addToast('Please fill in complete farm delivery address and contact details.', 'warning');
+      addToast('Please fill in complete delivery address and contact details.', 'warning');
       return;
     }
 
@@ -262,7 +257,7 @@ const CheckoutPage = () => {
         key: rzpOrder.keyId || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RAZORPAY_KEY_ID) || 'rzp_test_TSjrOFCBv53fsK',
         amount: rzpOrder.amount,
         currency: rzpOrder.currency || 'INR',
-        name: 'Siddhiva Store',
+        name: 'Eidula Store',
         description: `Order #${createdOrder.orderNumber}`,
         order_id: rzpOrder.id,
         prefill: {
@@ -292,7 +287,7 @@ const CheckoutPage = () => {
 
             if (verifyRes.data.success) {
               clearCart();
-              addToast('Razorpay payment verified successfully! Your machinery is confirmed.', 'success');
+              addToast('Razorpay payment verified successfully! Your order is confirmed.', 'success');
               navigate(`/order-confirmation/${createdOrder._id}`, {
                 state: { order: verifyRes.data.order || createdOrder }
               });
@@ -330,10 +325,10 @@ const CheckoutPage = () => {
     <div className="container" style={{ padding: '2.5rem 1.25rem 4rem 1.25rem' }}>
       <div style={{ marginBottom: '1.5rem' }}>
         <span className="badge badge-primary" style={{ marginBottom: '0.4rem' }}>
-          🚜 Secure Farm Equipment Checkout
+          🔒 100% Secure Checkout
         </span>
-        <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900 }}>
-          Machinery Order & Delivery Confirmation
+        <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900, fontFamily: 'var(--font-heading)' }}>
+          Order & Delivery Confirmation
         </h1>
       </div>
 
@@ -362,11 +357,11 @@ const CheckoutPage = () => {
                   <Lock size={22} color="#166534" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0 }}>
-                    Step 1: Farmer Sign In Required to Confirm Order
+                  <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, margin: 0, fontFamily: 'var(--font-heading)' }}>
+                    Step 1: Sign In or Register to Confirm Order
                   </h3>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.2rem 0 0 0' }}>
-                    An authenticated farmer account is required to generate warranty cards, GST tax invoices, and live tracking.
+                    An authenticated account is required to generate warranty cards, GST tax invoices, and live tracking.
                   </p>
                 </div>
               </div>
@@ -425,7 +420,7 @@ const CheckoutPage = () => {
                   }}
                 >
                   <UserPlus size={16} />
-                  <span>New Farmer Registration</span>
+                  <span>New Customer Registration</span>
                 </button>
               </div>
 
@@ -434,7 +429,7 @@ const CheckoutPage = () => {
                 {authTab === 'register' && (
                   <>
                     <div className="input-group">
-                      <label className="input-label">Farmer Full Name *</label>
+                      <label className="input-label">Full Name *</label>
                       <div style={{ position: 'relative' }}>
                         <input
                           type="text"
@@ -584,14 +579,14 @@ const CheckoutPage = () => {
               opacity: !isAuthenticated ? 0.6 : 1,
               pointerEvents: !isAuthenticated ? 'none' : 'auto'
             }}>
-              <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-heading)' }}>
                 <Truck size={20} color="#166534" />
-                <span>Farm Delivery Address</span>
+                <span>Delivery Address</span>
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="input-group">
-                  <label className="input-label">Farmer Full Name *</label>
+                  <label className="input-label">Full Name *</label>
                   <input
                     type="text"
                     required
@@ -617,7 +612,7 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="input-group md:col-span-2">
-                  <label className="input-label">Farm Plot / Street Address *</label>
+                  <label className="input-label">House / Flat / Street Address *</label>
                   <input
                     type="text"
                     required
@@ -625,12 +620,12 @@ const CheckoutPage = () => {
                     className="input-field"
                     value={shippingAddress.street}
                     onChange={(e) => setShippingAddress({ ...shippingAddress, street: e.target.value })}
-                    placeholder="e.g. Survey No. 42, Near Cooperative Society"
+                    placeholder="e.g. Flat 402, Green Park Avenue, Main Road"
                   />
                 </div>
 
                 <div className="input-group">
-                  <label className="input-label">Village / Town / City *</label>
+                  <label className="input-label">City / Town *</label>
                   <input
                     type="text"
                     required
@@ -638,12 +633,12 @@ const CheckoutPage = () => {
                     className="input-field"
                     value={shippingAddress.villageCity}
                     onChange={(e) => setShippingAddress({ ...shippingAddress, villageCity: e.target.value })}
-                    placeholder="e.g. Gondal"
+                    placeholder="e.g. Ahmedabad"
                   />
                 </div>
 
                 <div className="input-group">
-                  <label className="input-label">District *</label>
+                  <label className="input-label">District / Region *</label>
                   <input
                     type="text"
                     required
@@ -767,7 +762,7 @@ const CheckoutPage = () => {
                   <div style={{ flex: 1 }}>
                     <div className="flex justify-between items-center">
                       <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1rem' }}>
-                        Kisan Equipment EMI & No-Cost Financing (Razorpay)
+                        0% No-Cost & Easy EMI Financing (Razorpay)
                       </div>
                       <span className="badge" style={{ background: '#f59e0b', color: '#ffffff', fontSize: '0.7rem', fontWeight: 700 }}>
                         0% No-Cost EMI
@@ -791,12 +786,12 @@ const CheckoutPage = () => {
                         value={selectedBank}
                         onChange={(e) => setSelectedBank(e.target.value)}
                       >
-                        <option value="State Bank of India (SBI)">State Bank of India - SBI Kisan</option>
+                        <option value="State Bank of India (SBI)">State Bank of India (SBI)</option>
                         <option value="HDFC Bank">HDFC Bank (Credit / Debit EMI)</option>
                         <option value="ICICI Bank">ICICI Bank Credit / Debit</option>
                         <option value="Axis Bank">Axis Bank</option>
                         <option value="Bajaj Finserv">Bajaj Finserv No-Cost EMI Card</option>
-                        <option value="TVS Credit">TVS Credit Kisan Machinery</option>
+                        <option value="Kotak Mahindra">Kotak Mahindra Bank</option>
                       </select>
                     </div>
 
@@ -860,10 +855,10 @@ const CheckoutPage = () => {
                   />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '1rem' }}>
-                      Cash on Farm Delivery (COD)
+                      Cash on Delivery (COD)
                     </div>
                     <div style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                      Pay in cash or UPI when machinery arrives at your farm gate.
+                      Pay conveniently in cash or UPI when your shipment arrives at your doorstep.
                     </div>
                   </div>
                 </label>
@@ -883,7 +878,7 @@ const CheckoutPage = () => {
                   {loading
                     ? 'Connecting to Payment Gateway...'
                     : paymentMethod === 'COD'
-                    ? 'Confirm Farm Delivery Order'
+                    ? 'Confirm Doorstep Order'
                     : paymentMethod === 'RAZORPAY_EMI'
                     ? `Pay via Razorpay EMI (${formatINR(Math.round(grandTotal / emiTenure))}/mo)`
                     : `Pay ${formatINR(grandTotal)} via Razorpay`}
@@ -909,7 +904,7 @@ const CheckoutPage = () => {
             {cartItems.map(({ product, quantity }) => (
               <div key={product._id} className="flex items-center gap-3">
                 <img
-                  src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+                  src={product.mainImage?.url || '/images/placeholder.svg'}
                   alt={product.name}
                   style={{ width: '48px', height: '48px', objectFit: 'contain', background: 'var(--bg-surface-alt)', borderRadius: '6px', padding: '2px' }}
                 />
@@ -1049,9 +1044,9 @@ const CheckoutPage = () => {
             )}
           </div>
 
-          <div className="flex justify-between items-baseline" style={{ marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: 800 }}>Total Payable:</span>
-            <span style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-main)' }}>{formatINR(grandTotal)}</span>
+          <div className="flex justify-between items-baseline" style={{ marginBottom: '1.25rem' }}>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700 }}>Total Payable:</span>
+            <span style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-main)' }}>{formatINR(grandTotal)}</span>
           </div>
 
           {!isAuthenticated && (

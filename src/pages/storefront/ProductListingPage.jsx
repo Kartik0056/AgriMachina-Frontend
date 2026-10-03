@@ -46,14 +46,14 @@ const ProductListingPage = () => {
   }, [minPrice, maxPrice]);
 
   const idealForOptions = [
-    'Small Farms',
-    'Medium Farms',
-    'Large Farms',
-    'Vegetable Farming',
-    'Orchards',
-    'Spices & Food Processing',
-    'Commercial & Retail',
-    'Gardening'
+    'Daily Cooking',
+    'Home Kitchens',
+    'Gourmet & Dining',
+    'Music & Travel',
+    'Home Decor',
+    'Workshop & DIY',
+    'Health & Wellness',
+    'Gifting & Festive'
   ];
 
   const fetchMetadata = async () => {
@@ -173,10 +173,10 @@ const ProductListingPage = () => {
       {/* Top Header */}
       <div className="flex justify-between items-center" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.85rem', color: 'var(--text-main)', margin: '0 0 0.25rem 0' }}>
+          <h1 style={{ fontSize: '1.25rem', color: 'var(--text-main)', margin: '0 0 0.25rem 0', fontWeight: 700, letterSpacing: '-0.015em' }}>
             {getPageTitle()}
           </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
             Showing <strong>{total}</strong> verified products in stock
           </p>
         </div>

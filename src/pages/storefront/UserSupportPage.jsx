@@ -11,7 +11,6 @@ import {
   CheckCheck,
   ShieldCheck,
   Headphones,
-  Tractor,
   HelpCircle,
   PhoneCall,
   MessageCircle,
@@ -51,12 +50,12 @@ const decodeText = (str) => {
     .replace(/&nbsp;/g, ' ');
 };
 
-const quickFarmerQuestions = [
-  'Is this machine suitable for heavy black cotton / clay soil?',
-  'What is the subsidy percentage under SMAM / DBT for this model?',
-  'How to apply for 0% No-Cost EMI via SBI Kisan / HDFC?',
-  'When will the spare parts and blade set be dispatched?',
-  'Please share full working demonstration video in field.'
+const quickSupportQuestions = [
+  'What is the estimated delivery date for my order?',
+  'How to apply for 0% No-Cost EMI via HDFC / SBI?',
+  'What is the return and replacement window?',
+  'Are tax invoices and warranty cards included?',
+  'How do I track my live courier shipment?'
 ];
 
 const UserSupportPage = () => {
@@ -135,7 +134,7 @@ const UserSupportPage = () => {
         }
       }
     } catch (error) {
-      console.error('Failed to load farmer tickets:', error);
+      console.error('Failed to load support tickets:', error);
     } finally {
       if (showLoading) setLoading(false);
     }
@@ -299,7 +298,7 @@ const formatFileSize = (bytes) => {
       });
 
       if (res.data.success) {
-        addToast('Message sent to Siddhiva support specialists.', 'success');
+        addToast('Message sent to Eidula support specialists.', 'success');
         setActiveTicket(res.data.ticket);
         setReplyText('');
         setAttachmentsList([]);
@@ -397,7 +396,7 @@ const formatFileSize = (bytes) => {
               </span>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0', lineHeight: 1.4 }}>
-              Chat directly with Siddhiva support specialists, request demonstration videos, and track orders.
+              Chat directly with Eidula support specialists, request product details, and track orders.
             </p>
           </div>
         </div>
@@ -439,7 +438,7 @@ const formatFileSize = (bytes) => {
           <div style={{ position: 'relative', flex: 1, minWidth: '260px', maxWidth: '420px' }}>
             <input
               type="text"
-              placeholder="Search your conversations or machinery..."
+              placeholder="Search your conversations or products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="input-field"
@@ -560,10 +559,10 @@ const formatFileSize = (bytes) => {
                       Ticket #{t.ticketNumber || t._id.slice(-6).toUpperCase()} • {new Date(t.createdAt).toLocaleDateString()}
                     </div>
 
-                    {/* Machinery tag if present */}
+                    {/* Product tag if present */}
                     {t.productTitle && (
                       <div style={{ fontSize: '0.75rem', color: '#166534', background: '#dcfce7', border: '1px solid var(--primary-400, #86efac)', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 700 }}>
-                        🚜 {t.productTitle}
+                        🛍️ {t.productTitle}
                       </div>
                     )}
 
@@ -572,10 +571,10 @@ const formatFileSize = (bytes) => {
                       {decodeText(t.subject)}
                     </div>
 
-                    {/* Machinery tag if present */}
+                    {/* Product tag if present */}
                     {t.productTitle && (
                       <div style={{ fontSize: '0.75rem', color: '#166534', background: 'var(--primary-50)', border: '1px solid #bbf7d0', borderRadius: '6px', padding: '0.2rem 0.55rem', marginBottom: '0.6rem', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        🚜 {decodeText(t.productTitle)} {t.productSku ? `(SKU: ${t.productSku})` : ''}
+                        🛍️ {decodeText(t.productTitle)} {t.productSku ? `(SKU: ${t.productSku})` : ''}
                       </div>
                     )}
 
@@ -691,7 +690,7 @@ const formatFileSize = (bytes) => {
               </div>
               <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  Siddhiva Specialist Desk
+                  Eidula Specialist Desk
                 </div>
                 {!isMinimized && (
                   <div style={{ fontSize: '0.7rem', color: '#dcfce7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -982,7 +981,7 @@ const formatFileSize = (bytes) => {
                   <Sparkles size={12} color="#166534" />
                   <span>Suggestions:</span>
                 </span>
-                {quickFarmerQuestions.map((q, idx) => (
+                {quickSupportQuestions.map((q, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -1181,7 +1180,7 @@ const formatFileSize = (bytes) => {
         maxWidth="540px"
       >
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
-          Our certified agricultural engineers will review your question and respond in this chat.
+          Our customer support specialists will review your question and respond in this chat.
         </p>
 
         <form onSubmit={handleCreateNewInquiry} className="flex flex-col gap-3">
@@ -1193,7 +1192,7 @@ const formatFileSize = (bytes) => {
               className="input-field"
               value={newSubject}
               onChange={(e) => setNewSubject(e.target.value)}
-              placeholder="e.g. Query regarding power weeder blade attachment"
+              placeholder="e.g. Query regarding product specifications or delivery status"
             />
           </div>
 

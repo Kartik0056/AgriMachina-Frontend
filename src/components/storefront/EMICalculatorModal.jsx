@@ -62,7 +62,7 @@ const EMICalculatorModal = ({ isOpen, onClose, productPrice = 38499, emiConfig =
   const customInterestTotal = customTotal - loanAmount;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Kisan Equipment EMI Plans & No-Cost Financing" maxWidth="880px">
+    <Modal isOpen={isOpen} onClose={onClose} title="Easy Product EMI Plans & 0% No-Cost Financing" maxWidth="880px">
       <div className="flex flex-col gap-6">
         {/* Top Summary Banner Powered by Razorpay */}
         <div style={{
@@ -83,7 +83,7 @@ const EMICalculatorModal = ({ isOpen, onClose, productPrice = 38499, emiConfig =
                 ⚡ Powered by Razorpay
               </span>
               <span style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 700 }}>
-                Kisan Credit & Bank EMI Available
+                Credit Card & Bank EMI Available
               </span>
             </div>
             <div style={{ fontSize: '2.25rem', fontWeight: 900, color: '#fef08a', lineHeight: 1.1 }}>
@@ -189,7 +189,7 @@ const EMICalculatorModal = ({ isOpen, onClose, productPrice = 38499, emiConfig =
             }}
           >
             <Landmark size={15} />
-            <span>Bajaj & Kisan NBFC Loans</span>
+            <span>Bajaj & Cardless NBFC Plans</span>
           </button>
         </div>
 
@@ -199,7 +199,7 @@ const EMICalculatorModal = ({ isOpen, onClose, productPrice = 38499, emiConfig =
             <div style={{ background: '#fef3c7', padding: '0.85rem 1.25rem', borderRadius: '10px', border: '1px solid #fde68a', fontSize: '0.85rem', color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Sparkles size={18} color="#d97706" style={{ flexShrink: 0 }} />
               <span>
-                <strong>Zero Interest Subvention:</strong> The entire bank interest for 3 and 6 month tenures is subsidized by Siddhiva. You pay exactly the product price with ₹0 extra interest!
+                <strong>Zero Interest Subvention:</strong> The entire bank interest for 3 and 6 month tenures is subsidized by Eidula. You pay exactly the product price with ₹0 extra interest!
               </span>
             </div>
 
@@ -289,7 +289,7 @@ const EMICalculatorModal = ({ isOpen, onClose, productPrice = 38499, emiConfig =
         {activeTab === 'debit' && (
           <div className="flex flex-col gap-3">
             <div style={{ background: 'var(--primary-50)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #bbf7d0', fontSize: '0.8rem', color: '#166534' }}>
-              ✓ <strong>No Credit Card Required:</strong> Eligible account holders at HDFC, ICICI, Axis, and SBI (Kisan ATM debit cards) can avail pre-approved EMI directly through Razorpay.
+              ✓ <strong>No Credit Card Required:</strong> Eligible account holders at HDFC, ICICI, Axis, and SBI (debit cards) can avail pre-approved EMI directly through Razorpay.
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">

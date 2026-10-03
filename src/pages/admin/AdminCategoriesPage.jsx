@@ -11,7 +11,7 @@ import {
   XCircle,
   Sparkles,
   Layers,
-  Tractor,
+  Package,
   RefreshCw,
   Eye,
   EyeOff,
@@ -33,24 +33,7 @@ import { useLiveRefresh, useSync } from '../../context/SyncContext';
 import Modal from '../../components/common/Modal';
 import CategoryIcon from '../../components/common/CategoryIcon';
 
-// Preset icon suggestions grouped by industry
 const ICON_CATEGORIES = {
-  '🌾 Agri & Machinery': [
-    { icon: '🌱', label: 'Sprout' },
-    { icon: '🌾', label: 'Crops' },
-    { icon: 'Tractor', label: 'Tractor' },
-    { icon: 'Droplets', label: 'Irrigation' },
-    { icon: 'Sparkles', label: 'Sprayers' },
-    { icon: 'Scissors', label: 'Harvester' },
-    { icon: 'Layers', label: 'Thresher' },
-    { icon: 'Zap', label: 'Engines' },
-    { icon: '☀️', label: 'Solar' },
-    { icon: '⛏️', label: 'Auger' },
-    { icon: '🌲', label: 'Trees' },
-    { icon: '🍎', label: 'Orchard' },
-    { icon: '🌻', label: 'Sunflower' },
-    { icon: 'Axe', label: 'Axe/Tools' }
-  ],
   '🌶️ Spices & Groceries': [
     { icon: '🌶️', label: 'Chili' },
     { icon: '🧂', label: 'Masala' },
@@ -65,6 +48,18 @@ const ICON_CATEGORIES = {
     { icon: 'Boxes', label: 'Bulk Packs' },
     { icon: 'Fish', label: 'Fish/Meat' },
     { icon: 'Egg', label: 'Eggs' }
+  ],
+  '🏡 Home & Living': [
+    { icon: 'Home', label: 'Home' },
+    { icon: 'Lamp', label: 'Lamps' },
+    { icon: 'Sofa', label: 'Furniture' },
+    { icon: 'Bed', label: 'Bedroom' },
+    { icon: 'Sparkles', label: 'Decor' },
+    { icon: 'Sun', label: 'Lighting' },
+    { icon: 'Flower2', label: 'Vases' },
+    { icon: 'Palette', label: 'Art' },
+    { icon: 'Clock', label: 'Clocks' },
+    { icon: 'Flame', label: 'Candles' }
   ],
   '⚡ Electronics': [
     { icon: 'Cpu', label: 'Processor' },
@@ -94,7 +89,7 @@ const ICON_CATEGORIES = {
   '🛠️ Hardware & Tools': [
     { icon: 'Wrench', label: 'Wrench' },
     { icon: 'Hammer', label: 'Hammer' },
-    { icon: 'Cog', label: 'Machinery' },
+    { icon: 'Cog', label: 'Equipment' },
     { icon: 'ShieldCheck', label: 'Safety' },
     { icon: 'Package', label: 'Parts Box' },
     { icon: 'Truck', label: 'Logistics' }
@@ -114,9 +109,9 @@ const INITIAL_FORM = {
   slug: '',
   description: '',
   tagline: '',
-  categoryType: 'Agricultural Machinery',
+  categoryType: 'Spices & Groceries',
   unitType: 'general',
-  icon: '🌱',
+  icon: '🌶️',
   image: '',
   startingPrice: '',
   emiStarting: '',
@@ -147,7 +142,7 @@ const AdminCategoriesPage = () => {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState('BASIC'); // 'BASIC' | 'COMMERCIAL' | 'SUBCATEGORIES' | 'SEO'
-  const [iconCategoryTab, setIconCategoryTab] = useState('🌾 Agri & Machinery');
+  const [iconCategoryTab, setIconCategoryTab] = useState('🌶️ Spices & Groceries');
   const [editingCategory, setEditingCategory] = useState(null);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [autoSlug, setAutoSlug] = useState(true);
@@ -236,7 +231,7 @@ const AdminCategoriesPage = () => {
       slug: cat.slug || '',
       description: cat.description || '',
       tagline: cat.tagline || '',
-      categoryType: cat.categoryType || 'Agricultural Machinery',
+      categoryType: cat.categoryType || 'Spices & Groceries',
       unitType: cat.unitType || 'general',
       icon: cat.icon || '🌱',
       image: cat.image || '',
@@ -519,11 +514,11 @@ const AdminCategoriesPage = () => {
               <FolderTree size={20} />
             </div>
             <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--admin-text-main)', letterSpacing: '-0.02em', margin: 0 }}>
-              Machinery Categories Management
+              Product Categories Management
             </h1>
           </div>
           <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.875rem', margin: 0 }}>
-            Configure and publish agricultural equipment categories, multi-tier subcategories, mega menu badges, and SEO metadata.
+            Configure and publish store categories, multi-tier subcategories, mega menu badges, and SEO metadata.
           </p>
         </div>
 
@@ -604,7 +599,7 @@ const AdminCategoriesPage = () => {
             </div>
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--admin-text-main)' }}>{totalSubcategories}</div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: '0.2rem' }}>Granular machinery sub-types</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: '0.2rem' }}>Catalog subcategory classifications</div>
         </div>
 
         <div className="admin-card" style={{ padding: '1.25rem' }}>
@@ -613,11 +608,11 @@ const AdminCategoriesPage = () => {
               Mapped Products
             </span>
             <div style={{ background: 'rgba(168, 85, 247, 0.12)', color: '#a855f7', padding: '0.35rem', borderRadius: '8px' }}>
-              <Tractor size={18} />
+              <Package size={18} />
             </div>
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--admin-text-main)' }}>{totalMappedProducts}</div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: '0.2rem' }}>Live agricultural inventory items</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: '0.2rem' }}>Live mapped catalog items</div>
         </div>
       </div>
 
@@ -766,7 +761,7 @@ const AdminCategoriesPage = () => {
             No Categories Found
           </h3>
           <p style={{ fontSize: '0.875rem', maxWidth: '400px', margin: '0 auto 1.5rem auto' }}>
-            {searchQuery ? `No category matching "${searchQuery}". Try clearing search or add a new category.` : 'You have not added any categories yet. Create your first category to organize your machinery inventory.'}
+            {searchQuery ? `No category matching "${searchQuery}". Try clearing search or add a new category.` : 'You have not added any categories yet. Create your first category to organize your catalog inventory.'}
           </p>
           {hasPermission('PRODUCT_CREATE') && (
             <button onClick={handleOpenAdd} className="btn btn-primary btn-sm">
@@ -1032,9 +1027,9 @@ const AdminCategoriesPage = () => {
                       borderRadius: '6px',
                       border: '1px solid var(--admin-border)'
                     }}
-                    title="Filter machinery catalog for this category"
+                    title="Filter catalog for this category"
                   >
-                    <Tractor size={13} color="var(--admin-accent)" />
+                    <Package size={13} color="var(--admin-accent)" />
                     <span>{cat.productCount || 0} Products</span>
                   </Link>
 
@@ -1198,7 +1193,7 @@ const AdminCategoriesPage = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => !submitting && setIsModalOpen(false)}
-        title={editingCategory ? `Edit Category: ${editingCategory.name}` : 'Create New Machinery Category'}
+        title={editingCategory ? `Edit Category: ${editingCategory.name}` : 'Create New Category'}
         maxWidth="780px"
       >
         <form onSubmit={handleSaveCategory} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -1306,14 +1301,14 @@ const AdminCategoriesPage = () => {
                   <select
                     className="select-field"
                     style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                    value={formData.categoryType || 'Agricultural Machinery'}
+                    value={formData.categoryType || 'Spices & Groceries'}
                     onChange={(e) => setFormData((p) => ({ ...p, categoryType: e.target.value }))}
                   >
-                    <option value="Agricultural Machinery">🌾 Agricultural Machinery & Implements</option>
-                    <option value="Spices & Groceries">🌶️ Spices, Masala & Grocery Products</option>
-                    <option value="Electronics & Appliances">⚡ Electronics, Motors & Gadgets</option>
-                    <option value="Fashion & Apparel">👕 Fashion, Workwear & Uniforms</option>
-                    <option value="Hardware & Tools">🛠️ Hardware, Spare Parts & Workshop</option>
+                    <option value="Spices & Groceries">🌶️ Pure Spices, Masala & Grocery Products</option>
+                    <option value="Home & Living">🏺 Home Decor & Living</option>
+                    <option value="Kitchen & Appliances">🍳 Kitchen & Home Appliances</option>
+                    <option value="Electronics & Tech">⚡ Electronics, Smart Gadgets & Audio</option>
+                    <option value="Hardware & Tools">🛠️ Hardware, Tools & DIY</option>
                     <option value="General FMCG">📦 General FMCG & Retail</option>
                     <option value="Other">🏷️ Other Custom Category</option>
                   </select>
@@ -1330,9 +1325,9 @@ const AdminCategoriesPage = () => {
                     onChange={(e) => setFormData((p) => ({ ...p, unitType: e.target.value }))}
                   >
                     <option value="general">📦 General / Units (pcs, pack, set, box)</option>
-                    <option value="weight">⚖️ Weight based (gm, kg, mg - Spices, Crops, Seeds)</option>
-                    <option value="volume">💧 Volume based (ml, ltr - Oils, Sprays, Liquids)</option>
-                    <option value="power">⚡ Power / Capacity (HP, kW, Watt, cc)</option>
+                    <option value="weight">⚖️ Weight based (gm, kg, mg - Spices, Masale, Pulses)</option>
+                    <option value="volume">💧 Volume based (ml, ltr - Oils, Ghee, Liquids)</option>
+                    <option value="power">⚡ Power / Capacity (Watt, V, mAh)</option>
                     <option value="dimension">📏 Dimensions (meter, cm, feet, inch)</option>
                   </select>
                 </div>
@@ -1442,7 +1437,7 @@ const AdminCategoriesPage = () => {
                     type="text"
                     className="input-field"
                     style={{ flex: 1, background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                    placeholder="e.g. /images/machinery/power_weeder.jpg or https://..."
+                    placeholder="e.g. https://... or /images/..."
                     value={formData.image}
                     onChange={(e) => setFormData((p) => ({ ...p, image: e.target.value }))}
                   />
@@ -1473,7 +1468,7 @@ const AdminCategoriesPage = () => {
                   rows={3}
                   className="input-field"
                   style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="Explain the machinery usage, suitable soils, and farmer benefits..."
+                  placeholder="Explain the category highlights, quality features, and customer benefits..."
                   value={formData.description}
                   onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
                 />
@@ -1572,7 +1567,7 @@ const AdminCategoriesPage = () => {
                   <input
                     type="text"
                     className="input-field"
-                    placeholder="e.g. Lightweight weeders for vegetable farming & sugarcane"
+                    placeholder="e.g. Pure stone ground spices and whole condiments"
                     value={newSubDesc}
                     onChange={(e) => setNewSubDesc(e.target.value)}
                     style={{ background: 'var(--admin-bg-card)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
@@ -1759,7 +1754,7 @@ const AdminCategoriesPage = () => {
                   type="text"
                   className="input-field"
                   style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="e.g. Buy Best Products & Equipment in India | Siddhiva"
+                  placeholder="e.g. Buy Pure Spices & Lifestyle Products in India | Eidula"
                   value={formData.seo.seoTitle}
                   onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, seoTitle: e.target.value } }))}
                 />
@@ -1773,7 +1768,7 @@ const AdminCategoriesPage = () => {
                   rows={2}
                   className="input-field"
                   style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                  placeholder="e.g. Explore certified products and equipment on Siddhiva with warranty and fast delivery."
+                  placeholder="e.g. Explore certified pure spices and home essentials on Eidula with purity assurance and fast delivery."
                   value={formData.seo.metaDescription}
                   onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, metaDescription: e.target.value } }))}
                 />
@@ -1788,7 +1783,7 @@ const AdminCategoriesPage = () => {
                     type="text"
                     className="input-field"
                     style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                    placeholder="e.g. power tools price"
+                    placeholder="e.g. pure spices price"
                     value={formData.seo.focusKeyword}
                     onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, focusKeyword: e.target.value } }))}
                   />
@@ -1802,7 +1797,7 @@ const AdminCategoriesPage = () => {
                     type="text"
                     className="input-field"
                     style={{ background: 'var(--admin-bg-main)', borderColor: 'var(--admin-border)', color: 'var(--admin-text-main)' }}
-                    placeholder="e.g. https://siddhiva.in/products?category=tools"
+                    placeholder="e.g. https://eidula.in/products?category=spices"
                     value={formData.seo.canonicalUrl}
                     onChange={(e) => setFormData((p) => ({ ...p, seo: { ...p.seo, canonicalUrl: e.target.value } }))}
                   />
@@ -1957,7 +1952,7 @@ const AdminCategoriesPage = () => {
                 color: '#f59e0b'
               }}
             >
-              <strong>Notice:</strong> This category has <strong>{categoryToDelete.productCount} active machinery product(s)</strong> attached. If you delete this category, those products will automatically be reassigned to <em>General Machinery</em> to protect your store catalog.
+              <strong>Notice:</strong> This category has <strong>{categoryToDelete.productCount} active product(s)</strong> attached. If you delete this category, those products will automatically be reassigned to <em>General Retail</em> to protect your store catalog.
             </div>
           )}
 

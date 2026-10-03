@@ -53,11 +53,11 @@ const ChatHeader = ({
           </div>
           <div style={{ minWidth: 0, overflow: 'hidden' }}>
             <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#ffffff', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-              Kisan AI Specialist
+              Eidula AI Assistant
             </div>
             <div style={{ fontSize: '0.7rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.3rem', whiteSpace: 'nowrap' }}>
               <span style={{ width: '6px', height: '6px', minWidth: '6px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e' }} />
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>24×7 Multilingual Farm Assistant</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>24×7 Smart Shopping Assistant</span>
             </div>
           </div>
         </div>

@@ -204,7 +204,7 @@ const AdminUsersRolesPage = () => {
                   style={{ backgroundColor: 'var(--admin-input-bg)', borderColor: 'var(--admin-input-border)', color: 'var(--admin-text-main)' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="anand@agrimachinery.com"
+                  placeholder="anand@eidula.com"
                 />
               </div>
 
@@ -232,7 +232,7 @@ const AdminUsersRolesPage = () => {
                   <option value="CATALOG_MANAGER">CATALOG_MANAGER (Product Creation & Edits)</option>
                   <option value="INVENTORY_MANAGER">INVENTORY_MANAGER (Stock & Warehouses)</option>
                   <option value="ORDER_MANAGER">ORDER_MANAGER (Orders & Waybills)</option>
-                  <option value="REVIEW_MODERATOR">REVIEW_MODERATOR (Farmer Reviews)</option>
+                  <option value="REVIEW_MODERATOR">REVIEW_MODERATOR (Customer Reviews)</option>
                   <option value="SUPPORT_AGENT">SUPPORT_AGENT (Customer Read-only)</option>
                   <option value="SUPER_ADMIN">SUPER_ADMIN (Full System Privileges)</option>
                 </select>

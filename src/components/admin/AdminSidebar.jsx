@@ -18,7 +18,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import SiddhivaLogo from '../common/SiddhivaLogo';
+import EidulaLogo from '../common/EidulaLogo';
 
 const AdminSidebar = ({ isMobileOpen, closeMobileSidebar, pendingReviewsCount = 0, openSupportCount = 0 }) => {
   const { hasPermission, adminPanelPath } = useAdminAuth();
@@ -46,7 +46,7 @@ const AdminSidebar = ({ isMobileOpen, closeMobileSidebar, pendingReviewsCount = 
     <aside className="admin-sidebar">
       {/* Brand Header */}
       <div style={{ padding: '1.15rem 1.25rem', borderBottom: '1px solid var(--admin-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <SiddhivaLogo size="sm" light={true} />
+        <EidulaLogo size="sm" light={true} />
         {isMobileOpen && (
           <button
             type="button"

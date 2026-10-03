@@ -102,7 +102,7 @@ const FrequentlyBoughtTogether = ({ bundleData }) => {
                     }}
                   >
                     <img
-                      src={prod.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+                      src={prod.mainImage?.url || '/images/placeholder.svg'}
                       alt={prod.name}
                       style={{
                         maxWidth: '100%',

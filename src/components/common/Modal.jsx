@@ -27,7 +27,9 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = '650px' }) => {
           border: '1px solid var(--border-color)',
           color: 'var(--text-main)',
           borderRadius: '24px',
-          padding: '1.5rem',
+          padding: '1.25rem 1.5rem',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
           boxShadow: '0 25px 60px -15px rgba(6, 36, 22, 0.35), 0 0 0 1px rgba(22, 101, 52, 0.1)'
         }}
         onClick={(e) => e.stopPropagation()}

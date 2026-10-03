@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useCallback, useRef, useMe
 
 const SyncContext = createContext(null);
 
-const BROADCAST_CHANNEL_NAME = 'siddhiva_live_sync';
+const BROADCAST_CHANNEL_NAME = 'eidula_live_sync';
 
 export const SyncProvider = ({ children }) => {
   const listenersRef = useRef(new Set());

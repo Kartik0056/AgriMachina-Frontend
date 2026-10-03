@@ -1,10 +1,11 @@
-import SiddhivaLogo from './SiddhivaLogo';
+import React from 'react';
+import EidulaLogo from './EidulaLogo';
 
 /**
- * Backward compatibility alias for SiddhivaLogo
+ * Backward compatibility alias for EidulaLogo
  */
 const YuonLogo = (props) => {
-  return <SiddhivaLogo {...props} />;
+  return <EidulaLogo {...props} />;
 };
 
 export default YuonLogo;

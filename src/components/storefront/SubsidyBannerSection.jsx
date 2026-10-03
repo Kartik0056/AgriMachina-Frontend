@@ -20,49 +20,49 @@ const SubsidyBannerSection = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
               <span className="badge" style={{ background: '#f59e0b', color: '#ffffff', fontWeight: 800, fontSize: '0.75rem' }}>
-                🏛️ GOVT. SUBSIDY ASSISTANCE
+                🌟 MEGA SAVINGS & ASSURED PURITY
               </span>
               <span style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 700 }}>
-                SMAM & DBT Agriculture Portal Compliant
+                100% Certified Authentic Brands & Farm-Fresh Spices
               </span>
             </div>
 
             <h2 style={{ fontSize: '2.1rem', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, marginBottom: '0.85rem' }}>
-              Avail Up to 40% – 50% Subsidy on Agricultural Machinery
+              Save Big on Pure Spices, Smart Electronics & Home Essentials
             </h2>
 
             <p style={{ color: '#dcfce7', fontSize: '0.95rem', lineHeight: 1.55, marginBottom: '1.25rem' }}>
-              All our power weeders, solar pumps, and rotavators come with approved test certificates (FMTTI) and official GST invoices required for central and state agriculture mechanization subsidies.
+              Discover our curated range of authentic whole & ground spices, cutting-edge smart gadgets, handcrafted home decor, and high-performance appliances with verified brand warranties and 0% No-Cost EMI.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" style={{ marginBottom: '1.5rem' }}>
               <div className="flex items-center gap-2" style={{ fontSize: '0.825rem', color: '#fef08a' }}>
                 <CheckCircle2 size={16} color="#86efac" />
-                <span>Govt FMTTI Certified</span>
+                <span>100% Lab Tested & Pure</span>
               </div>
               <div className="flex items-center gap-2" style={{ fontSize: '0.825rem', color: '#fef08a' }}>
                 <CheckCircle2 size={16} color="#86efac" />
-                <span>GST Tax Invoice Included</span>
+                <span>Official GST Tax Invoice</span>
               </div>
               <div className="flex items-center gap-2" style={{ fontSize: '0.825rem', color: '#fef08a' }}>
                 <CheckCircle2 size={16} color="#86efac" />
-                <span>Free Paperwork Assistance</span>
+                <span>Fast Doorstep Delivery</span>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://wa.me/916395211953?text=Hello%20Siddhiva,%20I%20need%20product%20and%20order%20assistance"
+                href="https://wa.me/916395211953?text=Hello%20Eidula,%20I%20need%20product%20and%20order%20assistance"
                 target="_blank"
                 rel="noreferrer"
                 className="btn btn-accent btn-lg"
               >
                 <PhoneCall size={18} />
-                <span>Free Subsidy Guidance on WhatsApp</span>
+                <span>Order on WhatsApp Support</span>
               </a>
 
               <Link to="/products" className="btn btn-dark btn-lg" style={{ background: 'rgba(255, 255, 255, 0.15)', borderColor: 'rgba(255,255,255,0.3)', color: '#ffffff' }}>
-                <span>Browse Eligible Machinery</span>
+                <span>Explore All Categories</span>
                 <ArrowRight size={18} />
               </Link>
             </div>
@@ -82,16 +82,16 @@ const SubsidyBannerSection = () => {
             }}
           >
             <div>
-              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#fef08a' }}>₹12.4 Cr+</div>
-              <div style={{ fontSize: '0.8rem', color: '#dcfce7' }}>Subsidies Claimed by 8,500+ Farmers</div>
+              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#fef08a' }}>50,000+</div>
+              <div style={{ fontSize: '0.8rem', color: '#dcfce7' }}>Delighted Customers Nationwide</div>
             </div>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '1rem' }}>
               <div style={{ fontSize: '2rem', fontWeight: 900, color: '#86efac' }}>28 States</div>
-              <div style={{ fontSize: '0.8rem', color: '#dcfce7' }}>Pan-India DBT Registration Support</div>
+              <div style={{ fontSize: '0.8rem', color: '#dcfce7' }}>Express Pan-India Doorstep Delivery</div>
             </div>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '1rem' }}>
-              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#ffffff' }}>100% Online</div>
-              <div style={{ fontSize: '0.8rem', color: '#dcfce7' }}>Zero-Hassle Direct Account Transfer</div>
+              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#ffffff' }}>4.9 ★ Rating</div>
+              <div style={{ fontSize: '0.8rem', color: '#dcfce7' }}>Verified Authentic Product Reviews</div>
             </div>
           </div>
         </div>

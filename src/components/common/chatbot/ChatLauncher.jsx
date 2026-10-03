@@ -40,8 +40,8 @@ const ChatLauncher = ({ isOpen, setIsOpen, isLauncherHovered, setIsLauncherHover
           whiteSpace: 'nowrap'
         }}
       >
-        <span style={{ fontSize: '1rem' }}>🌱</span>
-        <span>Kisan AI • Ask in Any Language!</span>
+        <span style={{ fontSize: '1rem' }}>✨</span>
+        <span>Eidula AI • Pure Spices & Living!</span>
       </div>
 
       <button
@@ -63,7 +63,7 @@ const ChatLauncher = ({ isOpen, setIsOpen, isLauncherHovered, setIsLauncherHover
           transform: isLauncherHovered ? 'scale(1.08)' : 'scale(1)',
           transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
-        title="Open Free Kisan AI Chatbot"
+        title="Open Free Eidula AI Shopping Assistant"
       >
         <Bot size={28} color="#ffffff" />
         <span

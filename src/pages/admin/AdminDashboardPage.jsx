@@ -11,7 +11,7 @@ import {
   RefreshCw,
   ArrowUpRight,
   ShieldCheck,
-  Tractor
+  PackageCheck
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -150,11 +150,11 @@ const AdminDashboardPage = () => {
       {/* Top Banner */}
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', color: 'var(--admin-text-main)', fontWeight: 800 }}>
-            Agricultural Machinery Operations
+          <h1 style={{ fontSize: '1.75rem', color: 'var(--admin-text-main)', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
+            E-Commerce Store Operations
           </h1>
           <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-            Live MongoDB commerce telemetry, equipment inventory & verified farmer reviews
+            Live MongoDB commerce telemetry, multi-category inventory & verified customer reviews
           </p>
         </div>
 
@@ -208,14 +208,14 @@ const AdminDashboardPage = () => {
         {/* Total Products */}
         <div className="admin-card">
           <div className="flex justify-between items-center" style={{ color: 'var(--admin-text-muted)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>
-            <span>Catalog Machines</span>
-            <Tractor size={18} color="#f59e0b" />
+            <span>Catalog Products</span>
+            <PackageCheck size={18} color="#f59e0b" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--admin-text-main)', margin: '0.35rem 0' }}>
             {stats.totalProducts}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
-            Active Machinery Listings
+            Active Catalog Listings
           </div>
         </div>
 
@@ -240,8 +240,8 @@ const AdminDashboardPage = () => {
         <div className="admin-card lg:col-span-2">
           <div className="flex justify-between items-center" style={{ marginBottom: '1.25rem' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>7-Day Machinery Revenue Velocity</h3>
-              <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>Daily revenue calculated from confirmed agricultural orders</p>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>7-Day Revenue Velocity</h3>
+              <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>Daily revenue calculated from confirmed store orders</p>
             </div>
           </div>
           <div style={{ height: '260px' }}>
@@ -253,7 +253,7 @@ const AdminDashboardPage = () => {
         <div className="admin-card">
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Sales by Category</h3>
-            <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>Volume distribution across farm machine types</p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>Volume distribution across catalog categories</p>
           </div>
           <div style={{ height: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Doughnut data={categoryChartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: 'var(--admin-text-muted)', boxWidth: 12 } } } }} />
@@ -261,12 +261,12 @@ const AdminDashboardPage = () => {
         </div>
       </div>
 
-      {/* Tables Row: Top Selling Machinery & Stock Alerts */}
+      {/* Tables Row: Top Selling Products & Stock Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Machinery */}
+        {/* Top Products */}
         <div className="admin-card">
           <div className="flex justify-between items-center" style={{ marginBottom: '1rem' }}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Top Performing Machinery</h3>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--admin-text-main)', fontWeight: 700 }}>Top Performing Products</h3>
             <Link to={`${adminPanelPath}/products`} style={{ fontSize: '0.75rem', color: 'var(--admin-accent, #34d399)', fontWeight: 600 }}>View All Products →</Link>
           </div>
 
@@ -311,14 +311,14 @@ const AdminDashboardPage = () => {
 
           {criticalStockProducts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-              ✓ All machinery inventory levels are currently healthy!
+              ✓ All product inventory levels are currently healthy!
             </div>
           ) : (
             <div className="admin-table-container">
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Machine</th>
+                    <th>Product</th>
                     <th>SKU</th>
                     <th>Current Stock</th>
                     <th>Status</th>

@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-import { Sparkles, Tractor, Save, CheckCircle2, Sprout, ShieldCheck } from 'lucide-react';
+import { Sparkles, Package, Save, CheckCircle2, Flame, ShieldCheck } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
-const defaultCropWeights = [
-  { crop: 'Cotton', weight: 40, recommendedCategory: 'Power Weeder & Tiller', primaryAttachment: 'Inter-row Weeder & Ridger' },
-  { crop: 'Sugarcane', weight: 45, recommendedCategory: 'Power Weeder & Tiller', primaryAttachment: '32 Boron Steel Deep Tiller' },
-  { crop: 'Paddy & Rice', weight: 50, recommendedCategory: 'Harvesting Machinery', primaryAttachment: '80T Alloy Reaper Blade' },
-  { crop: 'Wheat & Grain', weight: 40, recommendedCategory: 'Post Harvesting', primaryAttachment: 'Multi-Crop Grain Thresher' },
-  { crop: 'Vegetables', weight: 35, recommendedCategory: 'Sprayers & Crop Protection', primaryAttachment: '16L Dual Motor Knapsack' },
-  { crop: 'Horticulture Orchards', weight: 30, recommendedCategory: 'Earth Auger', primaryAttachment: '8" Post Hole Drill Bit' }
+const defaultCategoryRules = [
+  { intent: 'Everyday Curries & Dal', weight: 45, recommendedCategory: 'Spices & Masale', primaryPairing: 'Organic Lakadong Turmeric + Kashmiri Mirch' },
+  { intent: 'Royal Biryani & Festive Dining', weight: 50, recommendedCategory: 'Spices & Masale', primaryPairing: 'Kashmiri Mogra Saffron + Tellicherry Pepper' },
+  { intent: 'Gourmet Kitchen Prep', weight: 40, recommendedCategory: 'Kitchen & Appliances', primaryPairing: '1000W Copper Mixer Grinder' },
+  { intent: 'Ambient Home Living', weight: 35, recommendedCategory: 'Home Decor & Living', primaryPairing: 'Nordic Minimalist Ceramic Vase' },
+  { intent: 'Wireless Work & Music', weight: 40, recommendedCategory: 'Electronics & Smart Tech', primaryPairing: 'Active Noise Cancelling Earbuds' },
+  { intent: 'Organic Wellness & Health', weight: 35, recommendedCategory: 'Organic Groceries & Oils', primaryPairing: 'Cold-Pressed Virgin Kachi Ghani Oil' }
 ];
 
 const AdminRecommendationsPage = () => {
   const { addToast } = useToast();
-  const [cropRules, setCropRules] = useState(defaultCropWeights);
+  const [recommendationRules, setRecommendationRules] = useState(defaultCategoryRules);
   const [globalAlgoConfig, setGlobalAlgoConfig] = useState({
     categoryMatchWeight: 40,
-    idealCropMatchWeight: 30,
+    lifestyleMatchWeight: 30,
     priceProximityWeight: 20,
     brandAffinityWeight: 10,
     maxCrossSellItems: 4
   });
 
   const handleSave = () => {
-    addToast('Recommendation & Cross-Sell Engine Rules Updated!', 'success');
+    addToast('Eidula AI Recommendation & Cross-Sell Engine Rules Updated!', 'success');
   };
 
   return (
@@ -36,7 +36,7 @@ const AdminRecommendationsPage = () => {
             <span>AI Recommendation & Cross-Sell Overrides</span>
           </h1>
           <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-            Configure scoring weights for "Frequently Bought Together" and agricultural cross-crop machine suggestions.
+            Configure scoring weights for "Frequently Bought Together" and lifestyle spice & kitchen cross-sell suggestions.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ const AdminRecommendationsPage = () => {
             1. Recommendation Scoring Weights (%)
           </h3>
           <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-            Determines how candidate agricultural machines are ranked on Product Detail Pages and Cart.
+            Determines how candidate products and spices are ranked on Product Detail Pages and Cart.
           </p>
         </div>
 
@@ -70,13 +70,13 @@ const AdminRecommendationsPage = () => {
           </div>
 
           <div className="input-group">
-            <label className="input-label" style={{ color: '#cbd5e1' }}>Crop / Farm Type Weight (%)</label>
+            <label className="input-label" style={{ color: '#cbd5e1' }}>Lifestyle & Cooking Weight (%)</label>
             <input
               type="number"
               className="input-field"
               style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
-              value={globalAlgoConfig.idealCropMatchWeight}
-              onChange={(e) => setGlobalAlgoConfig({ ...globalAlgoConfig, idealCropMatchWeight: Number(e.target.value) })}
+              value={globalAlgoConfig.lifestyleMatchWeight}
+              onChange={(e) => setGlobalAlgoConfig({ ...globalAlgoConfig, lifestyleMatchWeight: Number(e.target.value) })}
             />
           </div>
 
@@ -104,28 +104,28 @@ const AdminRecommendationsPage = () => {
         </div>
       </div>
 
-      {/* Crop Rules Table */}
+      {/* Rules Table */}
       <div className="admin-card">
         <h3 style={{ fontSize: '1.15rem', color: '#ffffff', fontWeight: 700, marginBottom: '1rem' }}>
-          2. Crop-Based Recommendation Rules
+          2. Category Pairing & Culinary Cross-Sell Rules
         </h3>
         <div className="admin-table-container">
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Crop Type</th>
+                <th>Customer Interest / Cooking Need</th>
                 <th>Boost Score</th>
-                <th>Primary Machinery Category</th>
-                <th>Frequently Bought Attachment</th>
+                <th>Primary Product Category</th>
+                <th>Frequently Bought Pairing</th>
               </tr>
             </thead>
             <tbody>
-              {cropRules.map((r, idx) => (
+              {recommendationRules.map((r, idx) => (
                 <tr key={idx}>
-                  <td style={{ fontWeight: 800, color: '#34d399' }}>🌾 {r.crop}</td>
+                  <td style={{ fontWeight: 800, color: '#34d399' }}>✨ {r.intent}</td>
                   <td><span className="badge badge-accent">+{r.weight} Pts</span></td>
                   <td style={{ color: '#ffffff' }}>{r.recommendedCategory}</td>
-                  <td style={{ color: '#fef08a' }}>{r.primaryAttachment}</td>
+                  <td style={{ color: '#fef08a' }}>{r.primaryPairing}</td>
                 </tr>
               ))}
             </tbody>

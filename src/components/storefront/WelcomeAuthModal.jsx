@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  Tractor,
   Lock,
   Mail,
   User as UserIcon,
@@ -18,15 +17,15 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useToast } from '../../context/ToastContext';
-import SiddhivaLogo from '../common/SiddhivaLogo';
+import EidulaLogo from '../common/EidulaLogo';
 
 const authTextByLang = {
   en: {
-    portalBadge: 'Siddhiva Customer Portal',
-    welcomeTitle: 'Welcome to Siddhiva',
-    registerTitle: 'Create Your Siddhiva Account',
+    portalBadge: 'Eidula Priority Portal',
+    welcomeTitle: 'Welcome to Eidula',
+    registerTitle: 'Create Your Eidula Account',
     welcomeSubtitle: 'Sign in to access your orders, track shipments & manage 0% EMI.',
-    registerSubtitle: 'Register to unlock special discounts, live GPS delivery tracking & brand warranties.',
+    registerSubtitle: 'Register to unlock pure spices, special discounts, live GPS delivery tracking & brand warranties.',
     benefitTracking: 'Live GPS Delivery Tracking',
     benefitSubsidy: '0% Interest No-Cost EMI',
     benefitInvoice: 'Official GST Tax Invoices',
@@ -48,26 +47,26 @@ const authTextByLang = {
     guestDismiss: 'Skip for now & Continue Browsing as Guest →',
     fillRequired: 'Please fill all required fields.',
     enterEmailPass: 'Please enter both email and password.',
-    welcomeBack: 'Welcome back to Siddhiva!',
-    welcomeNew: (name) => `Welcome to Siddhiva, ${name}! ✨`
+    welcomeBack: 'Welcome back to Eidula!',
+    welcomeNew: (name) => `Welcome to Eidula, ${name}! ✨`
   },
   hi: {
-    portalBadge: 'प्राथमिकता ग्राहक पोर्टल',
-    welcomeTitle: 'Siddhiva में आपका स्वागत है',
-    registerTitle: 'सत्यापित किसान खाता बनाएं',
-    welcomeSubtitle: 'अपने कृषि मशीन ऑर्डर्स, सरकारी सब्सिडी और 0% EMI के लिए लॉगिन करें।',
-    registerSubtitle: 'DBT सब्सिडी, लाइव GPS डिलीवरी और OEM वारंटी के लिए अभी रजिस्टर करें।',
-    benefitTracking: 'लाइव GPS डिलीवरी ट्रैकिंग',
-    benefitSubsidy: '0% ब्याज EMI व सरकारी सब्सिडी',
+    portalBadge: 'Eidula प्राथमिकता ग्राहक पोर्टल',
+    welcomeTitle: 'Eidula में आपका स्वागत है',
+    registerTitle: 'सत्यापित ग्राहक खाता बनाएं',
+    welcomeSubtitle: 'अपने शुद्ध मसाले, ऑर्डर्स और 0% EMI के लिए लॉगिन करें।',
+    registerSubtitle: 'प्योर मसाले, फास्ट डिलीवरी और ब्रांड वारंटी के लिए अभी रजिस्टर करें।',
+    benefitTracking: 'लाइव डिलीवरी ट्रैकिंग',
+    benefitSubsidy: '0% ब्याज नो-कॉस्ट EMI',
     benefitInvoice: 'पक्का GST टैक्स इनवॉइस',
     tabSignIn: 'लॉगिन करें',
-    tabRegister: 'नया किसान (रजिस्टर)',
-    nameLabel: 'किसान का पूरा नाम *',
-    namePlaceholder: 'उदा. रामपाल सिंह',
+    tabRegister: 'नया ग्राहक (रजिस्टर)',
+    nameLabel: 'पूरा नाम *',
+    namePlaceholder: 'उदा. राहुल शर्मा',
     phoneLabel: 'मोबाइल नंबर *',
     phonePlaceholder: 'उदा. 7823354321',
     emailLabel: 'ईमेल पता *',
-    emailPlaceholder: 'उदा. rampal@gmail.com',
+    emailPlaceholder: 'उदा. rahul@gmail.com',
     passwordLabel: 'पासवर्ड *',
     passwordPlaceholder: 'सुरक्षित पासवर्ड दर्ज करें',
     show: 'देखें',
@@ -78,21 +77,21 @@ const authTextByLang = {
     guestDismiss: 'अभी छोड़ें व अतिथि के रूप में ब्राउज़ करें →',
     fillRequired: 'कृपया सभी आवश्यक फ़ील्ड भरें।',
     enterEmailPass: 'कृपया ईमेल और पासवर्ड दोनों दर्ज करें।',
-    welcomeBack: 'Siddhiva में पुनः स्वागत है!',
-    welcomeNew: (name) => `Siddhiva में आपका स्वागत है, ${name}! ✨`
+    welcomeBack: 'Eidula में पुनः स्वागत है!',
+    welcomeNew: (name) => `Eidula में आपका स्वागत है, ${name}! ✨`
   },
   gu: {
-    portalBadge: 'પ્રાયોરિટી પોર્ટલ',
-    welcomeTitle: 'Siddhiva માં આપનું સ્વાગત છે',
-    registerTitle: 'ખેડૂત એકાઉન્ટ બનાવો',
-    welcomeSubtitle: 'તમારા મશીનરી ઓર્ડર, સબસિડી અને 0% EMI માટે લૉગિન કરો.',
-    registerSubtitle: 'DBT સબસિડી, લાઈવ GPS ટ્રેકિંગ અને વોરંટી મેળવવા રજીસ્ટ્રેશન કરો.',
-    benefitTracking: 'લાઈવ GPS ટ્રેકિંગ',
-    benefitSubsidy: '0% વ્યાજ EMI અને સબસિડી',
+    portalBadge: 'Eidula પ્રાયોરિટી પોર્ટલ',
+    welcomeTitle: 'Eidula માં આપનું સ્વાગત છે',
+    registerTitle: 'ગ્રાહક એકાઉન્ટ બનાવો',
+    welcomeSubtitle: 'તમારા ઓર્ડર, શુદ્ધ મસાલા અને 0% EMI માટે લૉગિન કરો.',
+    registerSubtitle: 'શુદ્ધ મસાલા, ફાસ્ટ ડિલિવરી અને વોરંટી મેળવવા રજીસ્ટ્રેશન કરો.',
+    benefitTracking: 'લાઈવ ટ્રેકિંગ',
+    benefitSubsidy: '0% વ્યાજ EMI સુવિધા',
     benefitInvoice: 'પાકું GST ટેક્સ બિલ',
     tabSignIn: 'લૉગિન કરો',
-    tabRegister: 'નવા ખેડૂત (રજીસ્ટર)',
-    nameLabel: 'ખેડૂતનું પૂરું નામ *',
+    tabRegister: 'નવા ગ્રાહક (રજીસ્ટર)',
+    nameLabel: 'પૂરું નામ *',
     namePlaceholder: 'દા.ત. રમેશભાઈ પટેલ',
     phoneLabel: 'મોબાઇલ નંબર *',
     phonePlaceholder: 'દા.ત. 9876543210',
@@ -108,21 +107,21 @@ const authTextByLang = {
     guestDismiss: 'હમણાં માટે છોડો અને મુલાકાત ચાલુ રાખો →',
     fillRequired: 'કૃપા કરીને બધી વિગતો ભરો.',
     enterEmailPass: 'કૃપા કરીને ઈમેલ અને પાસવર્ડ દાખલ કરો.',
-    welcomeBack: 'Siddhiva માં આપનું સ્વાગત છે!',
-    welcomeNew: (name) => `Siddhiva માં આપનું સ્વાગત છે, ${name}! ✨`
+    welcomeBack: 'Eidula માં આપનું સ્વાગત છે!',
+    welcomeNew: (name) => `Eidula માં આપનું સ્વાગત છે, ${name}! ✨`
   },
   pa: {
-    portalBadge: 'ਪ੍ਰਾਥਮਿਕਤਾ ਪੋਰਟਲ',
-    welcomeTitle: 'Siddhiva ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ',
-    registerTitle: 'ਕਿਸਾਨ ਖਾਤਾ ਬਣਾਓ',
-    welcomeSubtitle: 'ਆਪਣੇ ਖੇਤੀ ਮਸ਼ੀਨਰੀ ਆਰਡਰ, ਸਬਸਿਡੀ ਅਤੇ 0% ਕਿਸ਼ਤਾਂ ਲਈ ਲੌਗਇਨ ਕਰੋ।',
-    registerSubtitle: 'ਸਰਕਾਰੀ ਸਬਸਿਡੀ, ਲਾਈਵ GPS ਟਰੈਕਿੰਗ ਅਤੇ ਵਾਰੰਟੀ ਲਈ ਰਜਿਸਟਰ ਕਰੋ।',
-    benefitTracking: 'ਲਾਈਵ GPS ਟਰੈਕਿੰਗ',
-    benefitSubsidy: '0% ਵਿਆਜ ਕਿਸ਼ਤਾਂ ਤੇ ਸਬਸਿਡੀ',
+    portalBadge: 'Eidula ਪ੍ਰਾਥਮਿਕਤਾ ਪੋਰਟਲ',
+    welcomeTitle: 'Eidula ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ',
+    registerTitle: 'ਗਾਹਕ ਖਾਤਾ ਬਣਾਓ',
+    welcomeSubtitle: 'ਆਪਣੇ ਆਰਡਰ, ਸ਼ੁੱਧ ਮਸਾਲੇ ਅਤੇ 0% ਕਿਸ਼ਤਾਂ ਲਈ ਲੌਗਇਨ ਕਰੋ।',
+    registerSubtitle: 'ਲਾਈਵ ਟਰੈਕਿੰਗ ਅਤੇ ਬ੍ਰਾਂਡ ਵਾਰੰਟੀ ਲਈ ਰਜਿਸਟਰ ਕਰੋ।',
+    benefitTracking: 'ਲਾਈਵ ਟਰੈਕਿੰਗ',
+    benefitSubsidy: '0% ਵਿਆਜ ਕਿਸ਼ਤਾਂ',
     benefitInvoice: 'ਪੱਕਾ GST ਟੈਕਸ ਬਿੱਲ',
     tabSignIn: 'ਲੌਗਇਨ',
-    tabRegister: 'ਨਵਾਂ ਕਿਸਾਨ (ਰਜਿਸਟਰ)',
-    nameLabel: 'ਕਿਸਾਨ ਦਾ ਪੂਰਾ ਨਾਮ *',
+    tabRegister: 'ਨਵਾਂ ਗਾਹਕ (ਰਜਿਸਟਰ)',
+    nameLabel: 'ਪੂਰਾ ਨਾਮ *',
     namePlaceholder: 'ਜਿਵੇਂ ਕਿ ਗੁਰਪ੍ਰੀਤ ਸਿੰਘ',
     phoneLabel: 'ਮੋਬਾਈਲ ਨੰਬਰ *',
     phonePlaceholder: 'ਜਿਵੇਂ ਕਿ 9876543210',
@@ -138,21 +137,21 @@ const authTextByLang = {
     guestDismiss: 'ਹੁਣੇ ਛੱਡੋ ਤੇ ਮਹਿਮਾਨ ਵਜੋਂ ਵੇਖੋ →',
     fillRequired: 'ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਖਾਨੇ ਭਰੋ।',
     enterEmailPass: 'ਕਿਰਪਾ ਕਰਕੇ ਈਮੇਲ ਅਤੇ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ।',
-    welcomeBack: 'Siddhiva ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ!',
-    welcomeNew: (name) => `Siddhiva ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ, ${name}! ✨`
+    welcomeBack: 'Eidula ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ!',
+    welcomeNew: (name) => `Eidula ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ, ${name}! ✨`
   },
   mr: {
-    portalBadge: 'प्राधान्य पोर्टल',
-    welcomeTitle: 'Siddhiva मध्ये आपले स्वागत आहे',
-    registerTitle: 'शेतकरी खाते तयार करा',
-    welcomeSubtitle: 'आपल्या यंत्रसामग्री ऑर्डर्स, सबसिडी आणि 0% हप्त्यांसाठी लॉगिन करा.',
-    registerSubtitle: 'शासकीय सबसिडी, थेट GPS ट्रॅकिंग आणि वॉरंटीसाठी नोंदणी करा.',
-    benefitTracking: 'थेट GPS ट्रॅकिंग',
-    benefitSubsidy: '0% व्याज हप्ते व सबसिडी',
+    portalBadge: 'Eidula प्राधान्य पोर्टल',
+    welcomeTitle: 'Eidula मध्ये आपले स्वागत आहे',
+    registerTitle: 'ग्राहक खाते तयार करा',
+    welcomeSubtitle: 'आपल्या ऑर्डर्स, शुद्ध मसाले आणि 0% हप्त्यांसाठी लॉगिन करा.',
+    registerSubtitle: 'थेट ट्रॅकिंग आणि वॉरंटीसाठी नोंदणी करा.',
+    benefitTracking: 'थेट ट्रॅकिंग',
+    benefitSubsidy: '0% व्याज हप्ते',
     benefitInvoice: 'पक्के GST कर बीजक',
     tabSignIn: 'लॉगिन करा',
-    tabRegister: 'नवीन शेतकरी (नोंदणी)',
-    nameLabel: 'शेतकऱ्याचे पूर्ण नाव *',
+    tabRegister: 'नवीन ग्राहक (नोंदणी)',
+    nameLabel: 'पूर्ण नाव *',
     namePlaceholder: 'उदा. विलास पाटील',
     phoneLabel: 'मोबाईल क्रमांक *',
     phonePlaceholder: 'उदा. 9876543210',
@@ -168,21 +167,21 @@ const authTextByLang = {
     guestDismiss: 'सध्या वगळा आणि पाहुणे म्हणून पहा →',
     fillRequired: 'कृपया सर्व माहिती भरा.',
     enterEmailPass: 'कृपया ईमेल आणि पासवर्ड दोन्ही भरा.',
-    welcomeBack: 'Siddhiva मध्ये पुन्हा स्वागत आहे!',
-    welcomeNew: (name) => `Siddhiva मध्ये स्वागत आहे, ${name}! ✨`
+    welcomeBack: 'Eidula मध्ये पुन्हा स्वागत आहे!',
+    welcomeNew: (name) => `Eidula मध्ये स्वागत आहे, ${name}! ✨`
   },
   te: {
-    portalBadge: 'ప్రాధాన్యత పోర్టల్',
-    welcomeTitle: 'Siddhiva కు స్వాగతం',
-    registerTitle: 'రైతు ఖాతా సృష్టించండి',
-    welcomeSubtitle: 'మీ వ్యవసాయ యంత్ర ఆర్డర్లు, సబ్సిడీ మరియు 0% EMI కోసం లాగిన్ అవ్వండి.',
-    registerSubtitle: 'ప్రభుత్వ సబ్సిడీ, లైవ్ GPS ట్రాకింగ్ మరియు వారంటీ కోసం రిజిస్టర్ అవ్వండి.',
-    benefitTracking: 'లైవ్ GPS ట్రాకింగ్',
-    benefitSubsidy: '0% వడ్డీ EMI & సబ్సిడీ',
+    portalBadge: 'Eidula ప్రాధాన్యత పోర్టల్',
+    welcomeTitle: 'Eidula కు స్వాగతం',
+    registerTitle: 'ఖాతా సృష్టించండి',
+    welcomeSubtitle: 'మీ ఆర్డర్లు, స్వచ్ఛమైన మసాలాలు మరియు 0% EMI కోసం లాగిన్ అవ్వండి.',
+    registerSubtitle: 'లైవ్ ట్రాకింగ్ మరియు బ్రాండ్ వారంటీ కోసం రిజిస్టర్ అవ్వండి.',
+    benefitTracking: 'లైవ్ ట్రాకింగ్',
+    benefitSubsidy: '0% వడ్డీ EMI',
     benefitInvoice: 'GST టాక్స్ ఇన్వాయిస్',
     tabSignIn: 'లాగిన్',
-    tabRegister: 'కొత్త రైతు (రిజిస్టర్)',
-    nameLabel: 'రైతు పూర్తి పేరు *',
+    tabRegister: 'కొత్త ఖాతాదారు (రిజిస్టర్)',
+    nameLabel: 'పూర్తి పేరు *',
     namePlaceholder: 'ఉదా. రమణ రావు',
     phoneLabel: 'మొబైల్ నంబర్ *',
     phonePlaceholder: 'ఉదా. 9876543210',
@@ -198,8 +197,8 @@ const authTextByLang = {
     guestDismiss: 'ఇప్పుడు దాటవేసి చూడండి →',
     fillRequired: 'దయచేసి అన్ని వివరాలు పూరించండి.',
     enterEmailPass: 'దయచేసి ఈమెయిల్ మరియు పాస్‌వర్డ్ నమోదు చేయండి.',
-    welcomeBack: 'Siddhiva కు తిరిగి స్వాగతం!',
-    welcomeNew: (name) => `Siddhiva కు స్వాగతం, ${name}! ✨`
+    welcomeBack: 'Eidula కు తిరిగి స్వాగతం!',
+    welcomeNew: (name) => `Eidula కు స్వాగతం, ${name}! ✨`
   }
 };
 
@@ -219,7 +218,6 @@ const WelcomeAuthModal = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [farmType, setFarmType] = useState('Cotton & Sugarcane');
   const [loading, setLoading] = useState(false);
 
   const txt = authTextByLang[language] || authTextByLang.en;
@@ -234,7 +232,7 @@ const WelcomeAuthModal = () => {
     }
 
     // Check if already authenticated or already dismissed in this session
-    const hasDismissed = sessionStorage.getItem('agri_welcome_auth_dismissed');
+    const hasDismissed = sessionStorage.getItem('eidula_welcome_auth_dismissed');
 
     if (!isAuthenticated && !authLoading && !hasDismissed) {
       // ⏳ Exact 10 seconds delay as requested by user
@@ -247,7 +245,7 @@ const WelcomeAuthModal = () => {
   }, [isAuthenticated, authLoading, location.pathname]);
 
   const handleClose = () => {
-    sessionStorage.setItem('agri_welcome_auth_dismissed', 'true');
+    sessionStorage.setItem('eidula_welcome_auth_dismissed', 'true');
     setIsOpen(false);
   };
 
@@ -267,12 +265,7 @@ const WelcomeAuthModal = () => {
           name,
           email,
           phone,
-          password,
-          farmDetails: {
-            farmType,
-            farmSizeAcres: 5,
-            state: 'Uttar Pradesh'
-          }
+          password
         });
         addToast(txt.welcomeNew(name), 'success');
       } else {
@@ -286,7 +279,7 @@ const WelcomeAuthModal = () => {
         addToast(txt.welcomeBack, 'success');
       }
 
-      sessionStorage.setItem('agri_welcome_auth_dismissed', 'true');
+      sessionStorage.setItem('eidula_welcome_auth_dismissed', 'true');
       setIsOpen(false);
     } catch (error) {
       addToast(error.message || 'Authentication error. Please check your credentials.', 'error');
@@ -302,10 +295,12 @@ const WelcomeAuthModal = () => {
       <div
         className="modal-content auth-modal-content"
         style={{
-          maxWidth: '560px',
+          maxWidth: '520px',
           width: '100%',
           borderRadius: '24px',
-          padding: '2rem 1.75rem',
+          padding: '1.5rem 1.5rem',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
           boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.45)',
           position: 'relative'
         }}
@@ -341,7 +336,7 @@ const WelcomeAuthModal = () => {
         {/* Welcome Header & Branding */}
         <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
           <div style={{ marginBottom: '0.85rem' }}>
-            <SiddhivaLogo size="lg" />
+            <EidulaLogo size="lg" />
           </div>
 
           <div className="flex items-center justify-center gap-1.5" style={{ marginBottom: '0.25rem' }}>

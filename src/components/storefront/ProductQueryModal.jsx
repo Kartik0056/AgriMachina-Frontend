@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, Phone, Send, CheckCircle2, ShieldCheck, Tractor, User, MapPin, Sprout, Sparkles, Clock, RefreshCw } from 'lucide-react';
+import { Phone, Send, CheckCircle2, User, MapPin, RefreshCw, MessageSquare } from 'lucide-react';
 import Modal from '../common/Modal';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -11,11 +11,7 @@ const ProductQueryModal = ({ isOpen, onClose, product }) => {
 
   const [fullName, setFullName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [state, setState] = useState(user?.addresses && user.addresses[0] ? user.addresses[0].state : 'Gujarat');
-  const [district, setDistrict] = useState(user?.addresses && user.addresses[0] ? user.addresses[0].district : '');
-  const [cropGrown, setCropGrown] = useState('');
-  const [inquiryType, setInquiryType] = useState('Product Query');
+  const [city, setCity] = useState(user?.addresses && user.addresses[0] ? user.addresses[0].city || '' : '');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -24,31 +20,26 @@ const ProductQueryModal = ({ isOpen, onClose, product }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!fullName || !phone) {
-      addToast('Please enter your name and contact mobile number.', 'warning');
+    if (!fullName.trim() || !phone.trim()) {
+      addToast('Please enter your name and mobile number.', 'warning');
       return;
     }
 
     setLoading(true);
     try {
       const res = await api.post('/contact', {
-        name: fullName,
-        phone,
-        email,
+        name: fullName.trim(),
+        phone: phone.trim(),
         productId: product._id,
         productTitle: product.name,
         productSku: product.sku,
-        machineryInterest: product.name,
-        inquiryType,
-        farmType: cropGrown,
-        state,
-        district,
-        message: message || `Farmer inquiry regarding ${product.name} (SKU: ${product.sku}). Topic: ${inquiryType}`
+        cityState: city.trim(),
+        message: message.trim() || `Inquiry for ${product.name} (SKU: ${product.sku || 'N/A'})`
       });
 
       if (res.data.success) {
         setSubmitted(true);
-        addToast('Your machinery inquiry has been registered with our agricultural technical team!', 'success');
+        addToast('Your inquiry has been submitted!', 'success');
       }
     } catch (error) {
       addToast(error.response?.data?.message || 'Failed to submit inquiry.', 'error');
@@ -67,265 +58,178 @@ const ProductQueryModal = ({ isOpen, onClose, product }) => {
     <Modal
       isOpen={isOpen}
       onClose={handleResetAndClose}
-      title="Ask Machine Specialist • Free Technical Consultation"
-      maxWidth="680px"
+      title="Product Inquiry"
+      maxWidth="440px"
     >
       {submitted ? (
-        <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+        <div style={{ textAlign: 'center', padding: '1.25rem 0.5rem' }}>
           <div style={{
-            width: '68px',
-            height: '68px',
+            width: '52px',
+            height: '52px',
             borderRadius: '50%',
             background: 'var(--primary-50, #f0fdf4)',
-            border: '2px solid #86efac',
-            color: '#16a34a',
+            border: '2px solid var(--primary-400, #86efac)',
+            color: 'var(--primary-600, #16a34a)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 1.25rem auto',
-            boxShadow: '0 8px 20px rgba(34, 197, 94, 0.2)'
+            margin: '0 auto 0.85rem auto'
           }}>
-            <CheckCircle2 size={38} color="#16a34a" />
+            <CheckCircle2 size={30} color="var(--primary-600, #16a34a)" />
           </div>
 
-          <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', fontWeight: 900, marginBottom: '0.5rem' }}>
-            Inquiry Submitted Successfully!
+          <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.35rem' }}>
+            Inquiry Submitted!
           </h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', maxWidth: '480px', margin: '0 auto 1.5rem auto', lineHeight: 1.5 }}>
-            Our certified agricultural engineer for <strong>{product.name}</strong> will call you on <strong style={{ color: 'var(--primary-600)' }}>{phone}</strong> within 2 hours with live performance specs, field video links, and eligible subsidy benefits.
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', maxWidth: '340px', margin: '0 auto 1.25rem auto', lineHeight: 1.45 }}>
+            Our team will connect with you on <strong style={{ color: 'var(--primary-600)' }}>{phone}</strong> regarding <strong>{product.name}</strong> shortly.
           </p>
 
           <button
             type="button"
             onClick={handleResetAndClose}
             className="btn btn-primary btn-md"
-            style={{ minWidth: '180px' }}
+            style={{ minWidth: '140px' }}
           >
-            Close & Back to Product
+            Done
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-          {/* Target Product Summary Strip */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', overflow: 'hidden' }}>
+          {/* Compact Product Snippet */}
           <div style={{
             background: 'var(--bg-surface-alt)',
             border: '1px solid var(--border-color)',
-            borderRadius: '12px',
-            padding: '0.65rem 0.9rem',
+            borderRadius: '10px',
+            padding: '0.45rem 0.65rem',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.85rem'
+            gap: '0.65rem'
           }}>
             <img
-              src={product.mainImage?.url || '/images/machinery/power_weeder.jpg'}
+              src={product.mainImage?.url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80'}
               alt={product.name}
               style={{
-                width: '46px',
-                height: '46px',
+                width: '36px',
+                height: '36px',
                 objectFit: 'contain',
                 background: 'var(--bg-surface)',
-                borderRadius: '8px',
-                padding: '2px',
+                borderRadius: '6px',
                 border: '1px solid var(--border-color)',
                 flexShrink: 0
               }}
             />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div className="flex items-center gap-2" style={{ marginBottom: '0.15rem' }}>
-                <span className="badge badge-primary" style={{ fontSize: '0.65rem', padding: '0.1rem 0.45rem' }}>
-                  SKU: {product.sku || 'AG-MACH'}
-                </span>
-                <span style={{ fontSize: '0.7rem', color: 'var(--primary-600)', fontWeight: 700 }}>
-                  Certified OEM Equipment
-                </span>
-              </div>
               <div style={{
-                fontWeight: 800,
+                fontWeight: 700,
                 color: 'var(--text-main)',
-                fontSize: '0.875rem',
+                fontSize: '0.825rem',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
               }}>
                 {product.name}
               </div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                {product.brand ? `${product.brand} • ` : ''}{product.sku ? `SKU: ${product.sku}` : 'Verified'}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Full Name */}
+          {/* Full Name & Mobile Number (2 columns) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div className="input-group">
-              <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                <User size={13} color="var(--primary-600)" />
-                <span>Farmer Full Name *</span>
+              <label className="input-label flex items-center gap-1" style={{ fontSize: '0.76rem', fontWeight: 700, marginBottom: '0.2rem' }}>
+                <User size={12} color="var(--primary-600)" />
+                <span>Full Name *</span>
               </label>
               <input
                 type="text"
                 required
                 className="input-field"
-                style={{ padding: '0.55rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
+                style={{ padding: '0.45rem 0.65rem', fontSize: '0.85rem', borderRadius: '8px' }}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="e.g. Rampal Singh"
+                placeholder="e.g. Ramesh Patel"
               />
             </div>
 
-            {/* Mobile Number */}
             <div className="input-group">
-              <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                <Phone size={13} color="var(--primary-600)" />
+              <label className="input-label flex items-center gap-1" style={{ fontSize: '0.76rem', fontWeight: 700, marginBottom: '0.2rem' }}>
+                <Phone size={12} color="var(--primary-600)" />
                 <span>Mobile Number *</span>
               </label>
               <input
                 type="tel"
                 required
                 className="input-field"
-                style={{ padding: '0.55rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
+                style={{ padding: '0.45rem 0.65rem', fontSize: '0.85rem', borderRadius: '8px' }}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="e.g. 7823354321"
-              />
-            </div>
-
-            {/* Inquiry Topic */}
-            <div className="input-group">
-              <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                <HelpCircle size={13} color="var(--primary-600)" />
-                <span>Inquiry Topic *</span>
-              </label>
-              <select
-                className="select-field"
-                style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px' }}
-                value={inquiryType}
-                onChange={(e) => setInquiryType(e.target.value)}
-              >
-                <option value="Product Query">Technical Specifications & Soil Suitability</option>
-                <option value="Govt Subsidy Assistance">DBT / SMAM Govt. Subsidy Process</option>
-                <option value="0% EMI Financing">0% No-Cost EMI & Bank Loan Options</option>
-                <option value="Field Demo Request">Live Video / Field Demonstration</option>
-                <option value="Bulk Purchase / Dealer">Bulk Order / Cooperative Society Discount</option>
-              </select>
-            </div>
-
-            {/* Crops Grown */}
-            <div className="input-group">
-              <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                <Sprout size={13} color="var(--primary-600)" />
-                <span>Crops Cultivated on Farm</span>
-              </label>
-              <input
-                type="text"
-                className="input-field"
-                style={{ padding: '0.55rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
-                value={cropGrown}
-                onChange={(e) => setCropGrown(e.target.value)}
-                placeholder="e.g. Cotton, Sugarcane, Paddy, Wheat"
-              />
-            </div>
-
-            {/* State */}
-            <div className="input-group">
-              <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                <MapPin size={13} color="var(--primary-600)" />
-                <span>State</span>
-              </label>
-              <select
-                className="select-field"
-                style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px' }}
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-              >
-                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Punjab">Punjab</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                <option value="Telangana">Telangana</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Bihar">Bihar</option>
-              </select>
-            </div>
-
-            {/* District */}
-            <div className="input-group">
-              <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-                <MapPin size={13} color="var(--primary-600)" />
-                <span>District / City</span>
-              </label>
-              <input
-                type="text"
-                className="input-field"
-                style={{ padding: '0.55rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                placeholder="e.g. Saharanpur"
+                placeholder="e.g. 9876543210"
               />
             </div>
           </div>
 
-          {/* Specific Query Question */}
+          {/* City / Locality (Optional) */}
           <div className="input-group">
-            <label className="input-label flex items-center gap-1.5" style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-              <HelpCircle size={13} color="var(--primary-600)" />
-              <span>What question or detail would you like to ask our specialist?</span>
+            <label className="input-label flex items-center gap-1" style={{ fontSize: '0.76rem', fontWeight: 700, marginBottom: '0.2rem' }}>
+              <MapPin size={12} color="var(--primary-600)" />
+              <span>City / Locality (Optional)</span>
+            </label>
+            <input
+              type="text"
+              className="input-field"
+              style={{ padding: '0.45rem 0.65rem', fontSize: '0.85rem', borderRadius: '8px' }}
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="e.g. Ahmedabad, Gujarat"
+            />
+          </div>
+
+          {/* Short Note or Question */}
+          <div className="input-group">
+            <label className="input-label flex items-center gap-1" style={{ fontSize: '0.76rem', fontWeight: 700, marginBottom: '0.2rem' }}>
+              <MessageSquare size={12} color="var(--primary-600)" />
+              <span>Note / Question (Optional)</span>
             </label>
             <textarea
               className="textarea-field"
               rows="2"
-              style={{ padding: '0.55rem 0.85rem', fontSize: '0.85rem', borderRadius: '10px', minHeight: '65px', resize: 'vertical' }}
+              style={{ padding: '0.45rem 0.65rem', fontSize: '0.85rem', borderRadius: '8px', minHeight: '50px', maxHeight: '70px', resize: 'none' }}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="e.g. Will this power weeder work in heavy clay soil? Can I attach a water pump to it?"
+              placeholder="e.g. Details regarding delivery timeline, bulk inquiry, etc."
             />
           </div>
 
-          {/* Security Guarantee Strip */}
-          <div style={{
-            background: 'var(--primary-50, #f0fdf4)',
-            border: '1px solid var(--primary-100, #dcfce7)',
-            padding: '0.55rem 0.85rem',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.785rem',
-            color: 'var(--primary-700, #15803d)'
-          }}>
-            <ShieldCheck size={16} color="#16a34a" style={{ flexShrink: 0 }} />
-            <span><strong>100% Free Consultation:</strong> Direct guidance from certified agronomists with 0 sales pressure.</span>
-          </div>
-
-          {/* Submit Button */}
+          {/* Submit Action */}
           <button
             type="submit"
             disabled={loading}
-            className="btn btn-primary btn-lg"
+            className="btn btn-primary"
             style={{
               width: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem',
-              borderRadius: '12px',
-              padding: '0.8rem',
-              fontSize: '0.95rem',
+              gap: '0.4rem',
+              borderRadius: '9px',
+              padding: '0.65rem',
+              fontSize: '0.875rem',
               fontWeight: 800,
-              boxShadow: '0 4px 14px rgba(22, 101, 52, 0.3)'
+              marginTop: '0.2rem'
             }}
           >
             {loading ? (
               <>
-                <RefreshCw size={16} className="animate-spin" />
-                <span>Submitting Your Inquiry...</span>
+                <RefreshCw size={14} className="animate-spin" />
+                <span>Submitting...</span>
               </>
             ) : (
               <>
-                <Send size={16} />
-                <span>Submit Inquiry for Free Expert Callback</span>
+                <Send size={14} />
+                <span>Submit Inquiry</span>
               </>
             )}
           </button>
@@ -336,4 +240,3 @@ const ProductQueryModal = ({ isOpen, onClose, product }) => {
 };
 
 export default ProductQueryModal;
-

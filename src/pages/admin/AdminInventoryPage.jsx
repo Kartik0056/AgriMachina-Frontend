@@ -65,10 +65,10 @@ const AdminInventoryPage = () => {
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', color: 'var(--admin-text-main)', fontWeight: 800 }}>
-            Machinery Inventory & Warehouse Management
+            Catalog Inventory & Warehouse Management
           </h1>
           <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-            Real-time equipment stock telemetry, automated threshold alerts, and audit logging
+            Real-time catalog stock telemetry, automated threshold alerts, and audit logging
           </p>
         </div>
 

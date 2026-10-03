@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Sprout } from 'lucide-react';
+import { Plus, Trash2, Sparkles } from 'lucide-react';
 
 const presetApplications = [
-  'Weeding & Inter-Cultivation',
-  'Soil Loosening & Aeration',
-  'Bed & Furrow Preparation',
-  'Drip & Flood Irrigation',
-  'Pesticide & Fertilizer Spraying',
-  'Crop Harvesting & Cutting',
-  'Post-Harvest Fodder Cutting'
+  'Curry & Dal Tempering (Tadka)',
+  'Royal Dum Biryani Preparation',
+  'Morning Golden Turmeric Milk (Haldi Doodh)',
+  'Warm Ambient Night Illumination',
+  'Living Room Ceramic Accentuation',
+  'Tough Spice & Herb Dry Grinding',
+  'Baking & Hot Air Frying',
+  'Heavy-Duty Home Wall Drilling & Assembly',
+  'Car & Patio High-Pressure Jet Washing'
 ];
 
 const TabApplications = ({ formData, updateField }) => {
@@ -19,7 +21,7 @@ const TabApplications = ({ formData, updateField }) => {
 
   const addApplication = () => {
     if (!name) return;
-    const updated = [...applications, { name, description, image, icon: 'Sprout' }];
+    const updated = [...applications, { name, description, image, icon: 'Sparkles' }];
     updateField('applications', updated);
     setName('');
     setDescription('');
@@ -36,7 +38,7 @@ const TabApplications = ({ formData, updateField }) => {
       {/* Quick Add Presets */}
       <div style={{ background: 'var(--admin-bg-sidebar)', border: '1px solid #1e2e4f', borderRadius: '12px', padding: '1rem' }}>
         <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 600 }}>
-          🌾 Click to Quickly Add Standard Farm Applications:
+          ✨ Click to Quickly Add Standard Product Applications:
         </div>
         <div className="flex flex-wrap gap-2">
           {presetApplications.map((app, idx) => (
@@ -44,7 +46,7 @@ const TabApplications = ({ formData, updateField }) => {
               key={idx}
               type="button"
               onClick={() => {
-                const updated = [...applications, { name: app, description: `High efficiency ${app.toLowerCase()}`, icon: 'Sprout' }];
+                const updated = [...applications, { name: app, description: `High efficiency ${app.toLowerCase()}`, icon: 'Sparkles' }];
                 updateField('applications', updated);
               }}
               className="btn btn-secondary btn-sm"

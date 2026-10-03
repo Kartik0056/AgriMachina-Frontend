@@ -18,14 +18,20 @@ const CategoryMegaMenu = ({
       style={{
         display: 'flex',
         minHeight: '430px',
-        maxHeight: '520px'
+        maxHeight: '520px',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '16px',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+        overflow: 'hidden'
       }}
     >
+      {/* Categories Left Sidebar */}
       <div
         style={{
           width: '270px',
           background: 'var(--bg-surface-alt)',
-          borderRight: '1px solid #e2e8f0',
+          borderRight: '1px solid var(--border-color)',
           padding: '0.75rem',
           overflowY: 'auto'
         }}
@@ -61,10 +67,10 @@ const CategoryMegaMenu = ({
                   padding: '0.55rem 0.75rem',
                   borderRadius: '8px',
                   cursor: 'pointer',
-                  background: isSelected ? '#166534' : 'transparent',
-                  color: isSelected ? '#ffffff' : '#1e293b',
-                  border: isSelected ? '1px solid #16a34a' : '1px solid transparent',
-                  boxShadow: isSelected ? '0 2px 8px rgba(22, 101, 52, 0.12)' : 'none',
+                  background: isSelected ? 'var(--primary-600, #166534)' : 'transparent',
+                  color: isSelected ? '#ffffff' : 'var(--text-main)',
+                  border: isSelected ? '1px solid var(--primary-500, #16a34a)' : '1px solid transparent',
+                  boxShadow: isSelected ? '0 2px 8px rgba(22, 101, 52, 0.2)' : 'none',
                   transition: 'all 0.15s ease'
                 }}
               >
@@ -77,18 +83,18 @@ const CategoryMegaMenu = ({
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0,
-                      background: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)',
+                      background: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(128,128,128,0.1)',
                       borderRadius: '6px'
                     }}
                   >
-                    <CategoryIcon icon={cat.icon} size={17} color={isSelected ? '#ffffff' : '#166534'} />
+                    <CategoryIcon icon={cat.icon} size={17} color={isSelected ? '#ffffff' : 'var(--primary-600, #16a34a)'} />
                   </div>
                   <div style={{ minWidth: 0, overflow: 'hidden' }}>
                     <div
                       style={{
                         fontSize: '0.825rem',
                         fontWeight: isSelected ? 800 : 600,
-                        color: isSelected ? '#ffffff' : '#1e293b',
+                        color: isSelected ? '#ffffff' : 'var(--text-main)',
                         lineHeight: 1.2,
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -97,18 +103,19 @@ const CategoryMegaMenu = ({
                     >
                       {cat.name}
                     </div>
-                    <div style={{ fontSize: '0.675rem', color: isSelected ? '#bbf7d0' : '#64748b', marginTop: '2px' }}>
+                    <div style={{ fontSize: '0.675rem', color: isSelected ? 'rgba(255,255,255,0.8)' : 'var(--text-muted)', marginTop: '2px' }}>
                       {cat.startingPrice}
                     </div>
                   </div>
                 </div>
-                <ChevronRight size={14} color={isSelected ? '#86efac' : '#94a3b8'} style={{ flexShrink: 0 }} />
+                <ChevronRight size={14} color={isSelected ? '#ffffff' : 'var(--text-muted)'} style={{ flexShrink: 0 }} />
               </div>
             );
           })}
         </div>
       </div>
 
+      {/* Subcategories & Details Right Panel */}
       <div
         style={{
           flex: 1,
@@ -120,10 +127,10 @@ const CategoryMegaMenu = ({
         }}
       >
         <div>
-          <div className="flex items-center justify-between" style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem', marginBottom: '0.85rem' }}>
+          <div className="flex items-center justify-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.85rem' }}>
             <div className="flex items-center gap-2.5">
-              <div style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#dcfce7', borderRadius: '8px', flexShrink: 0 }}>
-                <CategoryIcon icon={activeCategory.icon} size={22} color="#166534" />
+              <div style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-surface-alt)', border: '1px solid var(--border-color)', borderRadius: '8px', flexShrink: 0 }}>
+                <CategoryIcon icon={activeCategory.icon} size={22} color="var(--primary-600, #16a34a)" />
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-main)' }}>
@@ -136,8 +143,8 @@ const CategoryMegaMenu = ({
             </div>
           </div>
 
-          <div style={{ fontSize: '0.725rem', fontWeight: 800, color: '#166534', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
-            Popular Variants & Implements
+          <div style={{ fontSize: '0.725rem', fontWeight: 800, color: 'var(--primary-600, #16a34a)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
+            Featured Subcategories & Collections
           </div>
 
           <div className="grid grid-cols-2 gap-2" style={{ marginBottom: '1rem' }}>
@@ -156,14 +163,14 @@ const CategoryMegaMenu = ({
                   borderRadius: '6px',
                   fontSize: '0.775rem',
                   fontWeight: 600,
-                  color: '#334155',
+                  color: 'var(--text-main)',
                   textDecoration: 'none',
                   transition: 'all 0.15s ease'
                 }}
-                className="hover:border-green-500 hover:text-green-800 hover:bg-green-50"
+                className="hover:border-green-500"
               >
-                <Zap size={13} color="#16a34a" />
-                <span>{sub.name}</span>
+                <Zap size={13} color="var(--primary-500, #16a34a)" />
+                <span style={{ color: 'var(--text-main)' }}>{sub.name}</span>
               </Link>
             ))}
           </div>
@@ -174,11 +181,11 @@ const CategoryMegaMenu = ({
                 key={idx}
                 style={{
                   fontSize: '0.7rem',
-                  color: '#166534',
-                  background: '#f0fdf4',
-                  border: '1px solid #bbf7d0',
-                  borderRadius: '4px',
-                  padding: '0.2rem 0.5rem',
+                  color: 'var(--primary-600, #16a34a)',
+                  background: 'var(--bg-surface-alt)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '6px',
+                  padding: '0.2rem 0.55rem',
                   fontWeight: 600
                 }}
               >
@@ -188,11 +195,12 @@ const CategoryMegaMenu = ({
           </div>
         </div>
 
+        {/* Bottom Banner */}
         <div
           style={{
             marginTop: '1rem',
             padding: '0.75rem 1rem',
-            background: 'linear-gradient(135deg, #14532d, #166534)',
+            background: 'linear-gradient(135deg, var(--primary-800, #0c3e27), var(--primary-600, #166534))',
             borderRadius: '10px',
             display: 'flex',
             alignItems: 'center',
@@ -200,48 +208,37 @@ const CategoryMegaMenu = ({
             color: '#ffffff'
           }}
         >
-          <div className="flex items-center gap-3">
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                background: 'var(--bg-surface)',
-                borderRadius: '6px',
-                overflow: 'hidden',
-                padding: '2px',
-                flexShrink: 0
-              }}
-            >
-              <img
-                src={activeCategory.image}
-                alt={activeCategory.name}
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              />
+          <div>
+            <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#ffffff' }}>
+              Shop Genuine {activeCategory.name}
             </div>
-            <div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ffffff' }}>
-                {activeCategory.name}
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span style={{ fontSize: '0.95rem', fontWeight: 900, color: '#fef08a' }}>
-                  From {activeCategory.startingPrice}
-                </span>
-                <span style={{ fontSize: '0.7rem', color: '#86efac' }}>
-                  • {activeCategory.emiStarting}
-                </span>
-              </div>
+            <div style={{ fontSize: '0.72rem', color: '#dcfce7' }}>
+              Direct brand warranty & easy 0% No-Cost EMI
             </div>
           </div>
-
-          <Link
-            to={`/products?category=${encodeURIComponent(activeCategory.param || activeCategory.name)}`}
-            onClick={() => setIsMegaMenuOpen(false)}
-            className="btn btn-accent btn-sm"
-            style={{ background: '#f59e0b', color: '#ffffff', fontWeight: 800, padding: '0.35rem 0.75rem', fontSize: '0.775rem' }}
+          <button
+            type="button"
+            onClick={() => {
+              setIsMegaMenuOpen(false);
+              navigate(`/products?category=${encodeURIComponent(activeCategory.param || activeCategory.name)}`);
+            }}
+            style={{
+              background: '#ffffff',
+              color: '#0f172a',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '0.35rem 0.75rem',
+              fontWeight: 800,
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem'
+            }}
           >
-            <span>Explore</span>
+            <span>View All</span>
             <ArrowRight size={13} />
-          </Link>
+          </button>
         </div>
       </div>
     </div>

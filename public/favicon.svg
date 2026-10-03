@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="emeraldBg" cx="30%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#0d3824"/>
+      <stop offset="70%" stop-color="#041a12"/>
+      <stop offset="100%" stop-color="#010a06"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff2a8"/>
+      <stop offset="35%" stop-color="#d4af37"/>
+      <stop offset="75%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#9a6c0c"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Obsidian Emerald Rounded Shield -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#emeraldBg)" stroke="url(#gold)" stroke-width="4.5"/>
+
+  <!-- Top Diamond Jewel -->
+  <path d="M64 24 L72 34 L64 44 L56 34 Z" fill="url(#gold)"/>
+
+  <!-- Stylized Royal 'E' Monogram with Spice Leaf Accents -->
+  <!-- Vertical Spine -->
+  <path d="M42 34 H52 C54.2 34 56 35.8 56 38 V90 C56 92.2 54.2 94 52 94 H42 C39.8 94 38 92.2 38 90 V38 C38 35.8 39.8 34 42 34 Z" fill="url(#gold)"/>
+  
+  <!-- Top Bar -->
+  <path d="M52 34 H84 C86.2 34 88 35.8 88 38 V44 C88 46.2 86.2 48 84 48 H56 V34 Z" fill="url(#gold)"/>
+  
+  <!-- Middle Bar with Diamond flourish -->
+  <path d="M52 58 H76 C78.2 58 80 59.8 80 62 V66 C80 68.2 78.2 70 76 70 H56 V58 Z" fill="url(#gold)"/>
+  <circle cx="84" cy="64" r="3.5" fill="url(#accent)"/>
+
+  <!-- Bottom Bar -->
+  <path d="M52 80 H86 C88.2 80 90 81.8 90 84 V90 C90 92.2 88.2 94 86 94 H52 Z" fill="url(#gold)"/>
+</svg>

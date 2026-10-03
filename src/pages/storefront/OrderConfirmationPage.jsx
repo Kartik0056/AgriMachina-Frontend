@@ -66,7 +66,7 @@ const OrderConfirmationPage = () => {
           Your Order is Confirmed!
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '1.5rem' }}>
-          Thank you for choosing Siddhiva. Your order has been confirmed and registered for priority warehouse dispatch.
+          Thank you for choosing Eidula. Your order has been confirmed and registered for priority warehouse dispatch.
         </p>
 
         {/* Order Details Card */}

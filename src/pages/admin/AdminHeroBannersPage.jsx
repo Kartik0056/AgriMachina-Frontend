@@ -28,14 +28,13 @@ import { useSync } from '../../context/SyncContext';
 import { formatINR } from '../../services/emiHelper';
 import { getYouTubeEmbedUrl, isDirectVideoUrl } from '../../services/videoHelper';
 
-const PRESET_MACHINERY_IMAGES = [
-  { label: 'Power Weeder 7HP', url: '/images/machinery/power_weeder.jpg' },
-  { label: 'Solar Submersible Pump', url: '/images/machinery/solar_pump.jpg' },
-  { label: 'Heavy Duty Rotavator', url: '/images/machinery/rotavator.jpg' },
-  { label: 'Brush Cutter Harvester', url: '/images/machinery/brush_cutter.jpg' },
-  { label: 'Battery Knapsack Sprayer', url: '/images/machinery/sprayer.jpg' },
-  { label: 'Lawn Mower Petrol', url: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=1200&q=80' },
-  { label: 'Tractor Farm Field', url: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&q=80' }
+const PRESET_CATALOG_IMAGES = [
+  { label: 'Royal Mogra Saffron', url: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1200&q=80' },
+  { label: 'Pure Turmeric Lakadong', url: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=1200&q=80' },
+  { label: 'Whole Black Pepper Bold', url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80' },
+  { label: 'Royal Biryani Masala', url: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=1200&q=80' },
+  { label: 'Nordic Ceramic Pottery', url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1200&q=80' },
+  { label: 'Wireless Audio Earbuds', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&q=80' }
 ];
 
 const AdminHeroBannersPage = () => {
@@ -55,19 +54,19 @@ const AdminHeroBannersPage = () => {
     title: '',
     tagline: '',
     badge: '🔥 DEAL OF THE DAY • 20% OFF',
-    category: 'Power Weeder & Tiller',
-    bgImage: '/images/machinery/power_weeder.jpg',
-    productImage: '/images/machinery/power_weeder.jpg',
+    category: 'Spices & Masale',
+    bgImage: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80',
+    productImage: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80',
     videoUrl: '',
     isVideoBackground: false,
-    specs: ['High-Torque Engine', 'Heavy Duty Gearbox'],
-    price: 38499,
-    mrp: 48500,
-    discountPercent: 20,
-    monthlyEmi: 1171,
+    specs: ['100% Pure & Untouched', 'Aroma-Lock Fresh Sealed Pouch'],
+    price: 349,
+    mrp: 499,
+    discountPercent: 30,
+    monthlyEmi: 119,
     productId: '',
     productSlug: '',
-    ctaText: 'Explore Full Machine Details',
+    ctaText: 'Explore Product Details',
     ctaLink: '',
     isActive: true,
     countdownHours: 5
@@ -109,19 +108,19 @@ const AdminHeroBannersPage = () => {
       title: '',
       tagline: '',
       badge: '🔥 DEAL OF THE DAY • 20% OFF',
-      category: 'Power Weeder & Tiller',
-      bgImage: '/images/machinery/power_weeder.jpg',
-      productImage: '/images/machinery/power_weeder.jpg',
+      category: 'Spices & Masale',
+      bgImage: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80',
+      productImage: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80',
       videoUrl: '',
       isVideoBackground: false,
-      specs: ['High-Torque Engine', 'Heavy Duty Gearbox'],
+      specs: ['100% Authentic Quality', 'Fresh Aroma-Lock Packaging'],
       price: 0,
       mrp: 0,
       discountPercent: 0,
       monthlyEmi: 0,
       productId: '',
       productSlug: '',
-      ctaText: 'Explore Full Machine Details',
+      ctaText: 'Explore Product Details',
       ctaLink: '',
       isActive: true,
       countdownHours: 5
@@ -169,7 +168,7 @@ const AdminHeroBannersPage = () => {
       : (found.discountPercent || 0);
 
     const emi = found.sellingPrice ? Math.round((found.sellingPrice * 1.135) / 36) : 0;
-    const imgUrl = found.mainImage?.url || found.gallery?.[0]?.url || '/images/machinery/power_weeder.jpg';
+    const imgUrl = found.mainImage?.url || found.gallery?.[0]?.url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80';
 
     setFormData(prev => ({
       ...prev,
@@ -186,8 +185,8 @@ const AdminHeroBannersPage = () => {
       productImage: imgUrl,
       ctaLink: `/product/${found.slug}`,
       specs: prev.specs.length > 0 ? prev.specs : [
-        `${found.brand || 'OEM Heavy'} Machinery`,
-        found.modelNumber ? `Model: ${found.modelNumber}` : 'High-Torque Performance'
+        `${found.brand || 'Eidula Signature'} Collection`,
+        found.modelNumber ? `SKU: ${found.modelNumber}` : '100% Pure & Authentic'
       ]
     }));
   };
@@ -301,7 +300,7 @@ const AdminHeroBannersPage = () => {
               Home Page Hero Slides & Banner Manager
             </h1>
             <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem', maxWidth: '650px', marginTop: '0.35rem' }}>
-              Select which agricultural machines are featured on the home page slider, embed field demonstration videos, configure special offer badges, and adjust display order.
+              Select which products and categories are featured on the home page slider, embed video showcases, configure promotional offer badges, and adjust display order.
             </p>
           </div>
 
@@ -410,7 +409,7 @@ const AdminHeroBannersPage = () => {
                     <td>
                       <div style={{ width: '80px', height: '52px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #1e293b', position: 'relative' }}>
                         <img
-                          src={s.bgImage || s.productImage || '/images/machinery/power_weeder.jpg'}
+                          src={s.bgImage || s.productImage || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=80'}
                           alt=""
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
@@ -573,7 +572,7 @@ const AdminHeroBannersPage = () => {
               <div style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)', padding: '1rem', borderRadius: '12px' }}>
                 <label className="input-label" style={{ color: '#86efac', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <Tag size={15} />
-                  <span>Choose Product from Machinery Catalog (Autofills Details):</span>
+                  <span>Choose Product from Catalog (Autofills Details):</span>
                 </label>
                 <select
                   value={formData.productId}
@@ -581,7 +580,7 @@ const AdminHeroBannersPage = () => {
                   className="select-field"
                   style={{ background: 'var(--admin-bg-sidebar)', borderColor: '#166534', color: '#ffffff', marginTop: '0.35rem' }}
                 >
-                  <option value="">-- Or enter custom machinery details below --</option>
+                  <option value="">-- Or enter custom product details below --</option>
                   {products.map((p) => (
                     <option key={p._id} value={p._id}>
                       {p.name} ({formatINR(p.sellingPrice)}) [{p.category}]
@@ -606,14 +605,14 @@ const AdminHeroBannersPage = () => {
                 </div>
 
                 <div className="input-group md:col-span-2">
-                  <label className="input-label" style={{ color: '#cbd5e1' }}>Short Tagline / Farm Benefit Summary</label>
+                  <label className="input-label" style={{ color: '#cbd5e1' }}>Short Tagline / Key Benefit Summary</label>
                   <textarea
                     rows="2"
                     className="textarea-field"
                     style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.tagline}
                     onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                    placeholder="e.g. High-torque 208cc power weeder engineered for deep inter-row soil cultivation..."
+                    placeholder="e.g. Handcrafted pure grade-1 spices with natural essential oils and aroma-lock packaging..."
                   />
                 </div>
 
@@ -630,14 +629,14 @@ const AdminHeroBannersPage = () => {
                 </div>
 
                 <div className="input-group">
-                  <label className="input-label" style={{ color: '#cbd5e1' }}>Machinery Category</label>
+                  <label className="input-label" style={{ color: '#cbd5e1' }}>Product Category</label>
                   <input
                     type="text"
                     className="input-field"
                     style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    placeholder="e.g. Power Weeder & Tiller"
+                    placeholder="e.g. Spices & Masale"
                   />
                 </div>
               </div>
@@ -705,12 +704,12 @@ const AdminHeroBannersPage = () => {
                       style={{ background: 'var(--admin-bg-sidebar)', borderColor: 'var(--admin-border)', color: '#ffffff' }}
                       value={formData.bgImage}
                       onChange={(e) => setFormData({ ...formData, bgImage: e.target.value, productImage: e.target.value })}
-                      placeholder="/images/machinery/power_weeder.jpg or https://..."
+                      placeholder="https://images.unsplash.com/... or /images/..."
                     />
                     {/* Preset Picker */}
                     <div className="flex flex-wrap gap-1.5" style={{ marginTop: '0.35rem' }}>
                       <span style={{ fontSize: '0.7rem', color: '#64748b', alignSelf: 'center' }}>Presets:</span>
-                      {PRESET_MACHINERY_IMAGES.map((p, idx) => (
+                      {PRESET_CATALOG_IMAGES.map((p, idx) => (
                         <button
                           key={idx}
                           type="button"

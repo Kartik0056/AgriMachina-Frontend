@@ -66,7 +66,7 @@ const AdminProductsPage = () => {
         setTotalPages(res.data.totalPages || 1);
       }
     } catch (err) {
-      addToast('Failed to load machinery catalog', 'error');
+      addToast('Failed to load product catalog', 'error');
     } finally {
       setLoading(false);
     }
@@ -180,10 +180,10 @@ const AdminProductsPage = () => {
       <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', color: 'var(--admin-text-main)', fontWeight: 800 }}>
-            Agricultural Machinery Listings
+            Product Catalog Listings
           </h1>
           <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-            Manage commercial equipment specifications, pricing, inventory, and publication workflows
+            Manage catalog items, pure spices, specifications, pricing, inventory, and publication workflows
           </p>
         </div>
 
@@ -202,7 +202,7 @@ const AdminProductsPage = () => {
             className="btn btn-primary btn-sm"
           >
             <Plus size={16} />
-            <span>Add New Machinery</span>
+            <span>Add New Product</span>
           </Link>
         </div>
       </div>
@@ -326,13 +326,13 @@ const AdminProductsPage = () => {
               {loading ? (
                 <tr>
                   <td colSpan="11" style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                    Loading machinery records from MongoDB...
+                    Loading product records from database...
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
                   <td colSpan="11" style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                    No machinery matches your filter criteria.
+                    No products match your filter criteria.
                   </td>
                 </tr>
               ) : (

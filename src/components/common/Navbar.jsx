@@ -5,7 +5,6 @@ import {
   Search,
   User,
   PhoneCall,
-  Tractor,
   ChevronDown,
   Menu,
   Sun,
@@ -23,7 +22,7 @@ import api from '../../services/api';
 
 import { categoriesData } from './navbar/categoriesData';
 import AnnouncementStrip from './navbar/AnnouncementStrip';
-import SiddhivaLogo from './SiddhivaLogo';
+import EidulaLogo from './EidulaLogo';
 import UserDropdown from './navbar/UserDropdown';
 import CategoryMegaMenu from './navbar/CategoryMegaMenu';
 import MobileDrawer from './navbar/MobileDrawer';
@@ -42,7 +41,7 @@ const Navbar = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const [categoriesList, setCategoriesList] = useState(categoriesData);
-  const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id || 'power-weeder-tiller');
+  const [selectedCatId, setSelectedCatId] = useState(categoriesData[0]?.id || 'spices-masale');
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
 
   const navigate = useNavigate();
@@ -56,15 +55,15 @@ const Navbar = () => {
           _id: c._id,
           name: c.name,
           param: c.name,
-          icon: c.icon || '🌱',
-          image: c.image || '/images/machinery/power_weeder.jpg',
+          icon: c.icon || '🛍️',
+          image: c.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80',
           tagline: c.tagline || c.description || '',
-          startingPrice: c.startingPrice || 'From ₹9,999',
-          emiStarting: c.emiStarting || '₹499/mo',
+          startingPrice: c.startingPrice || 'From ₹99',
+          emiStarting: c.emiStarting || '₹149/mo',
           subcategories: Array.isArray(c.subcategories) ? c.subcategories : [],
           features: Array.isArray(c.features) && c.features.length > 0
             ? c.features
-            : ['OEM Certified Warranty', 'SMAM DBT Subsidy Approved', 'Free Doorstep Delivery']
+            : ['100% Genuine Certified Quality', 'Pan-India Express Delivery', 'Easy 0% No-Cost EMI Available']
         }));
         setCategoriesList(mapped);
       }
@@ -151,33 +150,76 @@ const Navbar = () => {
                 width: '38px',
                 height: '38px',
                 cursor: 'pointer',
-                color: '#166534',
+                color: 'var(--primary-600, #166534)',
                 flexShrink: 0
               }}
               title="Open Navigation Menu"
               aria-label="Open Navigation Menu"
             >
-              <Menu size={20} color="#166534" />
+              <Menu size={20} color="var(--primary-600, #166534)" />
             </button>
 
             <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none', flexShrink: 0 }}>
-              <SiddhivaLogo size="md" />
+              <EidulaLogo size="md" />
             </Link>
           </div>
 
-          <form onSubmit={handleSearchSubmit} className="store-header-search-wrap flex-1" style={{ maxWidth: '560px', display: 'flex' }}>
-            <div style={{ position: 'relative', width: '100%' }}>
+          <form
+            onSubmit={handleSearchSubmit}
+            className="store-header-search-wrap flex-1"
+            style={{
+              maxWidth: '560px',
+              display: 'flex',
+              alignItems: 'center',
+              background: 'var(--bg-surface-alt, #f8fafc)',
+              borderRadius: '999px',
+              border: '1.5px solid var(--border-color, #e2e8f0)',
+              padding: '2px 3px 2px 0',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+              <Search
+                size={16}
+                color="var(--text-muted, #64748b)"
+                style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+              />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('search_placeholder', 'Search Spices, Groceries, Electronics, Machinery, Brands (e.g. Everest, Honda, AgriPro)...')}
+                placeholder={t('search_placeholder', 'Search pure spices, gadgets, luxury home decor, appliances...')}
                 className="input-field"
-                style={{ paddingLeft: '2.5rem', borderRadius: '8px 0 0 8px', borderRight: 'none', fontSize: '0.85rem' }}
+                style={{
+                  paddingLeft: '2.65rem',
+                  paddingRight: '0.75rem',
+                  borderRadius: '999px',
+                  border: 'none',
+                  background: 'transparent',
+                  fontSize: '0.825rem',
+                  height: '38px',
+                  outline: 'none',
+                  color: 'var(--text-main)',
+                  boxShadow: 'none'
+                }}
               />
-              <Search size={16} color="#64748b" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
             </div>
-            <button type="submit" className="btn btn-primary" style={{ borderRadius: '0 8px 8px 0', padding: '0 1.1rem', fontWeight: 800, fontSize: '0.85rem' }}>
+            <button
+              type="submit"
+              className="btn btn-sm"
+              style={{
+                borderRadius: '999px',
+                padding: '0.45rem 1.2rem',
+                fontWeight: 700,
+                fontSize: '0.8rem',
+                background: 'linear-gradient(135deg, #051c14 0%, #166534 100%)',
+                color: '#ffffff',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                boxShadow: '0 2px 8px rgba(22, 101, 52, 0.25)',
+                flexShrink: 0
+              }}
+            >
               {t('search', 'Search')}
             </button>
           </form>
@@ -205,12 +247,12 @@ const Navbar = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#166534',
+                  color: 'var(--primary-600, #166534)',
                   textDecoration: 'none'
                 }}
-                title={t('login', 'Farmer Login')}
+                title={t('login', 'Customer Login')}
               >
-                <User size={18} color="#166534" />
+                <User size={18} color="var(--primary-600, #166534)" />
               </Link>
             )}
 
@@ -221,17 +263,17 @@ const Navbar = () => {
                 width: '38px',
                 height: '38px',
                 borderRadius: '50%',
-                background: wishlistCount > 0 ? '#fff1f2' : '#ffffff',
-                border: wishlistCount > 0 ? '1px solid #fecdd3' : '1px solid #e2e8f0',
+                background: wishlistCount > 0 ? 'rgba(225, 29, 72, 0.12)' : 'var(--bg-surface-alt, #ffffff)',
+                border: wishlistCount > 0 ? '1px solid rgba(225, 29, 72, 0.3)' : '1px solid var(--border-color, #e2e8f0)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+                boxShadow: 'var(--shadow-sm)'
               }}
               title="Saved Wishlist"
             >
-              <Heart size={18} color={wishlistCount > 0 ? '#e11d48' : '#64748b'} fill={wishlistCount > 0 ? '#e11d48' : 'none'} />
+              <Heart size={18} color={wishlistCount > 0 ? '#e11d48' : 'var(--text-muted, #64748b)'} fill={wishlistCount > 0 ? '#e11d48' : 'none'} />
               {wishlistCount > 0 && (
                 <span
                   style={{
@@ -264,17 +306,17 @@ const Navbar = () => {
                   width: '38px',
                   height: '38px',
                   borderRadius: '50%',
-                  background: unreadSupportCount > 0 ? '#f0fdf4' : '#ffffff',
-                  border: unreadSupportCount > 0 ? '1px solid #86efac' : '1px solid #e2e8f0',
+                  background: unreadSupportCount > 0 ? 'rgba(22, 163, 74, 0.15)' : 'var(--bg-surface-alt, #ffffff)',
+                  border: unreadSupportCount > 0 ? '1px solid var(--primary-400, #86efac)' : '1px solid var(--border-color, #e2e8f0)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   textDecoration: 'none',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+                  boxShadow: 'var(--shadow-sm)'
                 }}
                 title="Support Messages & Advisory"
               >
-                <MessageSquare size={18} color="#166534" />
+                <MessageSquare size={18} color="var(--primary-600, #166534)" />
                 {unreadSupportCount > 0 && (
                   <span
                     style={{
@@ -308,14 +350,14 @@ const Navbar = () => {
                 width: '38px',
                 height: '38px',
                 borderRadius: '50%',
-                background: '#166534',
+                background: 'var(--primary-600, #166534)',
                 border: 'none',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#ffffff',
                 textDecoration: 'none',
-                boxShadow: '0 2px 5px rgba(22, 101, 52, 0.3)'
+                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
               }}
               title="View Cart"
             >
@@ -347,33 +389,56 @@ const Navbar = () => {
         </div>
       </div>
 
-      <nav className="hidden md:block" style={{ background: '#0a3d24', color: '#ffffff', borderTop: '1px solid #14532d', position: 'relative' }}>
-        <div className="container flex items-center justify-between" style={{ padding: '0.35rem 1.25rem' }}>
-          <div className="flex items-center gap-4">
+      <nav
+        className="hidden md:block store-nav-subbar"
+        style={{
+          background: 'var(--primary-800, #0a3d24)',
+          color: '#ffffff',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          position: 'relative',
+          overflowX: 'auto',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none'
+        }}
+      >
+        <div
+          className="container flex items-center justify-between"
+          style={{
+            padding: '0.35rem 1.25rem',
+            flexWrap: 'nowrap',
+            gap: '1.25rem',
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
+          <div className="flex items-center gap-3.5" style={{ flexWrap: 'nowrap', flexShrink: 0 }}>
             <div
               onMouseEnter={() => setIsMegaMenuOpen(true)}
               onMouseLeave={() => setIsMegaMenuOpen(false)}
-              style={{ position: 'relative' }}
+              style={{ position: 'relative', flexShrink: 0 }}
             >
               <button
                 type="button"
                 onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
                 className="flex items-center gap-2"
                 style={{
-                  background: isMegaMenuOpen ? '#166534' : 'rgba(255, 255, 255, 0.12)',
-                  color: '#fef08a',
-                  border: isMegaMenuOpen ? '1px solid #86efac' : '1px solid rgba(255, 255, 255, 0.2)',
+                  background: isMegaMenuOpen ? 'var(--primary-600, #166534)' : 'rgba(255, 255, 255, 0.12)',
+                  color: '#ffffff',
+                  border: isMegaMenuOpen ? '1px solid var(--primary-400, #86efac)' : '1px solid rgba(255, 255, 255, 0.2)',
                   borderRadius: '8px',
-                  padding: '0.45rem 1rem',
-                  fontSize: '0.875rem',
+                  padding: '0.45rem 0.95rem',
+                  fontSize: '0.85rem',
                   fontWeight: 800,
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}
               >
-                <Menu size={18} />
+                <Menu size={17} />
                 <span>{t('categories', 'Categories')}</span>
-                <ChevronDown size={15} style={{ transform: isMegaMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }} />
+                <ChevronDown size={14} style={{ transform: isMegaMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }} />
               </button>
 
               {isMegaMenuOpen && (
@@ -391,40 +456,82 @@ const Navbar = () => {
 
             <Link
               to="/products"
-              style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ffffff', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                color: '#ffffff',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                whiteSpace: 'nowrap',
+                flexShrink: 0
+              }}
               className="hover:text-green-300"
             >
-              🌾 {t('all_machinery_catalog', 'All Machinery Catalog')}
+              <span>🛍️</span>
+              <span>{t('all_products_catalog', 'All Products Catalog')}</span>
             </Link>
 
             <Link
-              to="/products?category=Pumps+%26+Irrigation"
-              style={{ fontSize: '0.85rem', fontWeight: 600, color: '#dcfce7', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+              to="/products?category=Spices+%26+Masale"
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#dcfce7',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                whiteSpace: 'nowrap',
+                flexShrink: 0
+              }}
               className="hover:text-yellow-300"
             >
-              <Sun size={15} color="#f59e0b" />
-              <span>{t('solar_irrigation', 'Solar Irrigation')}</span>
+              <span>🌶️</span>
+              <span>{t('spices_masale', 'Pure Spices & Masale')}</span>
             </Link>
 
             <Link
-              to="/products?category=Power+Weeder+%26+Tiller"
-              style={{ fontSize: '0.85rem', fontWeight: 600, color: '#dcfce7', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+              to="/products?category=Electronics+%26+Smart+Tech"
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#dcfce7',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                whiteSpace: 'nowrap',
+                flexShrink: 0
+              }}
               className="hover:text-yellow-300"
             >
-              <Tractor size={15} color="#86efac" />
-              <span>{t('power_weeders', 'Power Weeders')}</span>
+              <span>⚡</span>
+              <span>{t('electronics', 'Electronics & Gadgets')}</span>
             </Link>
 
             <Link
-              to="/products?category=Sprayers+%26+Crop+Protection"
-              style={{ fontSize: '0.85rem', fontWeight: 600, color: '#dcfce7', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+              to="/products?category=Home+Decor+%26+Living"
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#dcfce7',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                whiteSpace: 'nowrap',
+                flexShrink: 0
+              }}
               className="hover:text-yellow-300"
             >
-              <span>{t('crop_sprayers', 'Crop Sprayers')}</span>
+              <span>🏺</span>
+              <span>{t('home_decor', 'Home Decor & Living')}</span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" style={{ flexWrap: 'nowrap', flexShrink: 0 }}>
             <Link
               to="/contact"
               style={{
@@ -432,12 +539,14 @@ const Navbar = () => {
                 fontWeight: 700,
                 color: '#ffffff',
                 textDecoration: 'none',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
                 background: 'rgba(255, 255, 255, 0.12)',
                 padding: '0.25rem 0.65rem',
-                borderRadius: '6px'
+                borderRadius: '6px',
+                whiteSpace: 'nowrap',
+                flexShrink: 0
               }}
               className="hover:bg-green-800"
             >
@@ -445,9 +554,9 @@ const Navbar = () => {
               <span>{t('helpline_faqs', 'Helpline & FAQs')}</span>
             </Link>
 
-            <span style={{ fontSize: '0.75rem', color: '#86efac', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.75rem', color: '#86efac', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap', flexShrink: 0 }}>
               <Award size={13} color="#f59e0b" />
-              <span>{t('govt_subsidy', 'Govt. SMAM Subsidy')}</span>
+              <span>{t('pan_india_delivery', 'Pan-India Express Delivery')}</span>
             </span>
           </div>
         </div>

@@ -151,10 +151,10 @@ const AdminCouponsPage = () => {
         <div>
           <h1 style={{ fontSize: '1.6rem', color: '#ffffff', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Tag size={24} color="#34d399" />
-            <span>Coupons & Farmer Promotional Codes</span>
+            <span>Coupons & Store Promotional Codes</span>
           </h1>
           <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-            Manage machinery discounts, subsidy vouchers, and seasonal promotional coupon campaigns (MongoDB Synced).
+            Manage category discounts, welcome vouchers, and seasonal promotional coupon campaigns (MongoDB Synced).
           </p>
         </div>
 
@@ -181,7 +181,7 @@ const AdminCouponsPage = () => {
           <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#94a3b8' }}>
             <Tag size={42} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
             <h3 style={{ color: '#ffffff', fontSize: '1.1rem', marginBottom: '0.5rem' }}>No Coupons Found in Database</h3>
-            <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>Create your first seasonal farmer discount coupon code.</p>
+            <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>Create your first seasonal store discount coupon code.</p>
             <button onClick={handleOpenAdd} className="btn btn-primary btn-sm">
               <Plus size={16} />
               <span>Create First Coupon</span>
@@ -210,7 +210,7 @@ const AdminCouponsPage = () => {
                     </span>
                   </td>
                   <td style={{ maxWidth: '240px', fontSize: '0.8rem', color: '#cbd5e1' }}>
-                    {c.description || 'Agricultural machinery promotional discount'}
+                    {c.description || 'Eidula promotional discount'}
                   </td>
                   <td style={{ fontWeight: 800, color: '#fef08a' }}>
                     {c.discountType === 'PERCENT' || c.discountType === 'percentage'
@@ -279,7 +279,7 @@ const AdminCouponsPage = () => {
                 className="input-field"
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                placeholder="e.g. KISAN1000"
+                placeholder="e.g. WELCOME1000"
               />
             </div>
 
@@ -373,7 +373,7 @@ const AdminCouponsPage = () => {
               checked={form.isActive}
               onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
             />
-            <span style={{ fontWeight: 600, color: '#0f172a' }}>Active Coupon (Available for farmer checkout)</span>
+            <span style={{ fontWeight: 600, color: '#0f172a' }}>Active Coupon (Available for customer checkout)</span>
           </label>
 
           <div className="flex justify-end gap-2" style={{ marginTop: '1rem' }}>

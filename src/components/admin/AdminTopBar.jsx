@@ -115,8 +115,8 @@ const AdminTopBar = () => {
       if (event.type === 'NEW_SUPPORT_QUERY') {
         playChime();
         const payload = event.payload || {};
-        const name = payload.userName || 'A farmer';
-        const subj = payload.subject || 'Equipment inquiry';
+        const name = payload.userName || 'A customer';
+        const subj = payload.subject || 'Product inquiry';
         addToast(`🚨 New Live Inquiry from ${name}: "${subj}"`, 'info');
         loadNotifications();
       } else if (event.type === 'TICKET_UPDATED') {
@@ -341,7 +341,7 @@ const AdminTopBar = () => {
               justifyContent: 'center',
               transition: 'all 0.15s ease'
             }}
-            title="Live Farmer Inquiries & Support Alerts"
+            title="Live Customer Inquiries & Support Alerts"
           >
             <Bell size={17} color={unreadCount > 0 ? '#fef08a' : 'var(--admin-text-muted, #94a3b8)'} />
             {unreadCount > 0 && (
@@ -389,7 +389,7 @@ const AdminTopBar = () => {
               <div style={{ padding: '0.75rem 1rem', background: 'var(--admin-bg-card-alt)', borderBottom: '1px solid var(--admin-border, #334155)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div className="flex items-center gap-2">
                   <MessageSquare size={15} color="var(--admin-accent, #34d399)" />
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--admin-text-main)' }}>Live Farmer Inquiries</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--admin-text-main)' }}>Live Customer Inquiries</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (

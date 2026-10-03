@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldCheck, Lock, User, Tractor, AlertCircle, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Lock, User, AlertCircle, ArrowRight } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -71,7 +71,7 @@ const AdminLoginPage = () => {
             Secure Operations Portal
           </h2>
           <p style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '0.25rem' }}>
-            Authorized Agricultural Machinery Operations & CMS Access
+            Authorized Eidula Operations & CMS Access
           </p>
         </div>
 
@@ -109,7 +109,7 @@ const AdminLoginPage = () => {
                 }}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="admin@agrimachinery.com"
+                placeholder="admin@eidula.com"
                 autoComplete="username"
               />
               <User size={16} color="#64748b" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />

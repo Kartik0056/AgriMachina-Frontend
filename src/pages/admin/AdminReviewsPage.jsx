@@ -66,7 +66,7 @@ const AdminReviewsPage = () => {
             Customer Reviews Moderation Center
           </h1>
           <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
-            Moderate verified buyer feedback, ratings, and farmer field testimonials
+            Moderate verified buyer feedback, ratings, and customer testimonials
           </p>
         </div>
 
@@ -139,7 +139,7 @@ const AdminReviewsPage = () => {
                       {rev.userName} <span style={{ color: 'var(--admin-text-muted)', fontWeight: 400, fontSize: '0.8rem' }}>({rev.userEmail})</span>
                     </div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
-                      Product: <strong style={{ color: '#38bdf8' }}>{rev.product?.name || rev.productName || 'Machinery Item'}</strong>
+                      Product: <strong style={{ color: '#38bdf8' }}>{rev.product?.name || rev.productName || 'Product Item'}</strong>
                     </div>
                   </div>
                 </div>

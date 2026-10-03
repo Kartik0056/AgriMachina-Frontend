@@ -15,7 +15,7 @@ import {
   MapPin,
   FileText,
   HelpCircle,
-  Tractor,
+  ShoppingBag,
   Sparkles,
   ArrowRight,
   RefreshCw
@@ -166,12 +166,12 @@ const UserOrdersPage = () => {
     const productData = {
       _id: item.product?._id || item.product || item.id || item._id,
       id: item.product?._id || item.product || item.id || item._id,
-      name: item.name || item.product?.name || 'Agricultural Machine',
+      name: item.name || item.product?.name || 'Eidula Product',
       slug: item.product?.slug || item.slug || (item.product?._id || item.product),
       sellingPrice: item.price || item.product?.sellingPrice || 0,
       price: item.price || item.product?.sellingPrice || 0,
       mrp: item.mrp || item.price || item.product?.mrp || 0,
-      mainImage: { url: item.image || item.product?.mainImage?.url || '/images/machinery/power_weeder.jpg' }
+      mainImage: { url: item.image || item.product?.mainImage?.url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80' }
     };
 
     addToCart(productData, item.quantity || 1);
@@ -183,7 +183,7 @@ const UserOrdersPage = () => {
     order.items.forEach(item => {
       if (item) handleBuyAgain(item);
     });
-    addToast(`All ${order.items.length} machines added to cart!`, 'success');
+    addToast(`All ${order.items.length} items added to cart!`, 'success');
     navigate('/cart');
   };
 
@@ -191,7 +191,7 @@ const UserOrdersPage = () => {
     setReviewModalState({
       isOpen: true,
       productId,
-      productName: productName || 'Machinery'
+      productName: productName || 'Product'
     });
   };
 
@@ -220,19 +220,19 @@ const UserOrdersPage = () => {
           }}>
             <Package size={34} color="var(--primary-600)" />
           </div>
-          <h2 style={{ fontSize: '1.75rem', color: 'var(--text-main)', fontWeight: 900, marginBottom: '0.5rem' }}>
-            Farmer Account Required
+          <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.4rem' }}>
+            Customer Account Required
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', marginBottom: '2rem', lineHeight: 1.5 }}>
-            Please sign in to your verified farmer account to track your machinery dispatches, download GST tax invoices, and access product warranties.
+            Please sign in to your verified customer account to track your orders, download GST tax invoices, and access product warranties.
           </p>
           <div className="flex flex-col gap-3">
             <Link to="/login?redirect=/orders" className="btn btn-primary btn-lg" style={{ width: '100%' }}>
-              <span>Sign In / Create Farmer Account</span>
+              <span>Sign In / Create Account</span>
               <ArrowRight size={18} />
             </Link>
             <Link to="/products" className="btn btn-secondary btn-md" style={{ width: '100%' }}>
-              <span>Browse Farm Machinery Catalog</span>
+              <span>Browse Products Catalog</span>
             </Link>
           </div>
         </div>
@@ -242,7 +242,7 @@ const UserOrdersPage = () => {
 
   return (
     <div className="container" style={{ padding: '2.5rem 1.25rem 4rem 1.25rem' }}>
-      {/* Farmer Account Header Banner */}
+      {/* Customer Account Header Banner */}
       {user && (
         <div style={{
           background: 'var(--primary-50)',
@@ -258,10 +258,10 @@ const UserOrdersPage = () => {
         }}>
           <div className="flex items-center gap-2" style={{ fontSize: '0.875rem', color: 'var(--primary-600)' }}>
             <ShieldCheck size={18} color="var(--primary-500)" />
-            <span>Orders for verified farmer: <strong>{user.name}</strong> ({user.email})</span>
+            <span>Orders for verified customer: <strong>{user.name}</strong> ({user.email})</span>
           </div>
           <Link to="/profile" style={{ fontSize: '0.8rem', color: 'var(--primary-500)', fontWeight: 700, textDecoration: 'underline' }}>
-            Farmer Profile & Addresses →
+            Customer Profile & Addresses →
           </Link>
         </div>
       )}
@@ -270,12 +270,12 @@ const UserOrdersPage = () => {
       <div className="flex justify-between items-center" style={{ marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <span className="badge badge-primary" style={{ marginBottom: '0.4rem' }}>
-            🚜 Farm Equipment History
+            🛍️ Order & Purchase History
           </span>
-          <h1 style={{ fontSize: '2rem', color: 'var(--text-main)', fontWeight: 900 }}>
+          <h1 style={{ fontSize: '1.25rem', color: 'var(--text-main)', fontWeight: 800, letterSpacing: '-0.015em' }}>
             My Orders & Live Shipment Tracking
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.825rem' }}>
             Live step-by-step GPS logistics tracking, GST invoice downloads, and verified farm reviews.
           </p>
         </div>
@@ -294,8 +294,8 @@ const UserOrdersPage = () => {
           </button>
 
           <Link to="/products" className="btn btn-secondary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Tractor size={16} color="var(--primary-600)" />
-            <span>Browse Machinery Catalog</span>
+            <ShoppingBag size={16} color="var(--primary-600)" />
+            <span>Browse All Products</span>
           </Link>
         </div>
       </div>
@@ -303,19 +303,19 @@ const UserOrdersPage = () => {
       {loading ? (
         <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
           <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 0.75rem auto', color: 'var(--primary-600)' }} />
-          <div>Loading your farm equipment orders...</div>
+          <div>Loading your orders...</div>
         </div>
       ) : orders.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '4rem', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
           <Package size={52} color="var(--text-light)" style={{ margin: '0 auto 1rem auto' }} />
-          <h3 style={{ fontSize: '1.35rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem' }}>
-            No Farm Equipment Orders Placed Yet for {user?.name || 'Your Account'}
+          <h3 style={{ fontSize: '1.35rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem', fontFamily: 'var(--font-heading)' }}>
+            No Orders Placed Yet for {user?.name || 'Your Account'}
           </h3>
           <p style={{ color: 'var(--text-muted)', maxWidth: '460px', margin: '0 auto 1.5rem auto' }}>
-            You haven't placed any machinery orders with <strong>{user?.email}</strong> yet. Browse our catalog with 0% No-Cost EMI & DBT Subsidies.
+            You haven't placed any orders with <strong>{user?.email}</strong> yet. Browse our curated multi-category collections with 0% No-Cost EMI and Pan-India delivery.
           </p>
           <Link to="/products" className="btn btn-primary btn-lg">
-            Explore Machinery Catalog
+            Explore All Products
           </Link>
         </div>
       ) : (
@@ -377,10 +377,10 @@ const UserOrdersPage = () => {
                       type="button"
                       onClick={() => setInvoiceModalState({ isOpen: true, order })}
                       className="btn btn-secondary btn-sm"
-                      style={{ background: '#ffffff', borderColor: '#cbd5e1', color: '#166534', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                      style={{ background: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--primary-600)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
                       title="Download or print official GST Tax Invoice"
                     >
-                      <FileText size={14} color="#166534" />
+                      <FileText size={14} color="var(--primary-600)" />
                       <span>Invoice</span>
                     </button>
 
@@ -500,11 +500,11 @@ const UserOrdersPage = () => {
                     }}>
                       <div className="flex justify-between items-center" style={{ marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-main)' }}>
                         <div>
-                          Carrier Partner: <strong>{order.tracking?.courierName || 'AgriLogistics Heavy Freight'}</strong>
+                          Carrier Partner: <strong>{order.tracking?.courierName || 'Express Logistics Partner'}</strong>
                         </div>
                         <div>
                           Waybill / LR No: <strong style={{ color: 'var(--primary-600)' }}>
-                            {order.tracking?.trackingNumber || (order.orderNumber ? `AGX-${String(order.orderNumber).replace(/[^0-9]/g, '')}` : `AGX-${String(order._id || '').slice(-6)}`)}
+                            {order.tracking?.trackingNumber || (order.orderNumber ? `EID-${String(order.orderNumber).replace(/[^0-9]/g, '')}` : `EID-${String(order._id || '').slice(-6)}`)}
                           </strong>
                         </div>
                         <div>
@@ -543,11 +543,11 @@ const UserOrdersPage = () => {
                     const productId = item.product?._id || item.product || item.id || item._id;
                     const productSlug = item.product?.slug || item.slug || productId;
                     const isAlreadyReviewed = Array.isArray(order.reviewedProductIds) && productId && order.reviewedProductIds.includes(productId);
-                    const itemName = item.name || item.product?.name || 'Machinery Product';
-                    const itemSku = item.sku || item.product?.sku || 'AG-PROD';
+                    const itemName = item.name || item.product?.name || 'Product';
+                    const itemSku = item.sku || item.product?.sku || 'EID-PROD';
                     const itemQty = item.quantity || 1;
                     const itemPrice = item.price || item.product?.sellingPrice || 0;
-                    const itemImage = item.image || item.product?.mainImage?.url || '/images/machinery/power_weeder.jpg';
+                    const itemImage = item.image || item.product?.mainImage?.url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80';
 
                     return (
                       <div
@@ -609,7 +609,7 @@ const UserOrdersPage = () => {
                             onClick={() => handleBuyAgain(item)}
                             className="btn btn-secondary btn-sm"
                             style={{ fontWeight: 700 }}
-                            title="Add this machinery again to Cart"
+                            title="Add this item again to Cart"
                           >
                             <RotateCcw size={14} color="var(--primary-600)" />
                             <span>Buy Again</span>
@@ -658,8 +658,8 @@ const UserOrdersPage = () => {
                   <div className="flex items-center gap-1.5">
                     <MapPin size={14} color="var(--primary-600)" />
                     <span>
-                      Farm Delivery: <strong>
-                        {order.shippingAddress?.fullName || order.customerName || user?.name || 'Farmer'}
+                      Delivery to: <strong>
+                        {order.shippingAddress?.fullName || order.customerName || user?.name || 'Customer'}
                         {order.shippingAddress?.villageCity || order.shippingAddress?.city ? `, ${order.shippingAddress.villageCity || order.shippingAddress.city}` : ''}
                         {order.shippingAddress?.district ? `, ${order.shippingAddress.district}` : ''}
                         {order.shippingAddress?.state ? `, ${order.shippingAddress.state}` : ''}
@@ -730,7 +730,7 @@ class OrdersErrorBoundary extends React.Component {
             boxShadow: 'var(--shadow-lg)'
           }}>
             <Package size={48} color="var(--primary-600)" style={{ margin: '0 auto 1rem auto' }} />
-            <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800, marginBottom: '0.4rem' }}>
               My Orders & Live Logistics
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
@@ -749,7 +749,7 @@ class OrdersErrorBoundary extends React.Component {
                 <span>Reload Orders</span>
               </button>
               <Link to="/products" className="btn btn-secondary btn-md">
-                Browse Machinery
+                Browse All Products
               </Link>
             </div>
           </div>

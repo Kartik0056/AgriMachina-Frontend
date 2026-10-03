@@ -71,7 +71,7 @@ const ChatMessages = ({ messages, isTyping, setIsOpen, messagesEndRef }) => {
               <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                 <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#166534', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                   <Sparkles size={12} color="#16a34a" />
-                  <span>Recommended Machinery from Store:</span>
+                  <span>Recommended Products from Store:</span>
                 </div>
                 {m.products.map((prod) => (
                   <Link
@@ -92,11 +92,11 @@ const ChatMessages = ({ messages, isTyping, setIsOpen, messagesEndRef }) => {
                     className="hover:border-green-600 hover:bg-green-50/50"
                   >
                     <img
-                      src={prod.image || '/images/machinery/power_weeder.jpg'}
+                      src={prod.image || '/images/placeholder.svg'}
                       alt={prod.title}
                       style={{ width: '38px', height: '38px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #cbd5e1' }}
                       onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=200&q=80';
+                        e.target.src = '/images/placeholder.svg';
                       }}
                     />
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -249,7 +249,7 @@ const ChatMessages = ({ messages, isTyping, setIsOpen, messagesEndRef }) => {
       {isTyping && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#166534', fontSize: '0.75rem', background: 'var(--bg-surface)', border: '1px solid #bbf7d0', padding: '0.45rem 0.75rem', borderRadius: '12px', width: 'fit-content', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' }}>
           <Bot size={14} className="animate-spin" />
-          <span>Analyzing Siddhiva catalog & policies...</span>
+          <span>Analyzing Eidula catalog & policies...</span>
         </div>
       )}
 

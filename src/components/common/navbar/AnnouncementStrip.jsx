@@ -15,7 +15,7 @@ import { tickerAnnouncements } from './categoriesData';
 
 const AnnouncementStrip = () => {
   const { theme, isDark, toggleTheme, setTheme } = useTheme();
-  const { language, setLanguage, currentLangMeta } = useLanguage();
+  const { language, setLanguage, currentLangMeta, t } = useLanguage();
 
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
@@ -40,53 +40,78 @@ const AnnouncementStrip = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setTickerIndex((prev) => (prev + 1) % tickerAnnouncements.length);
-    }, 3800);
+    }, 4200);
     return () => clearInterval(timer);
   }, []);
 
-  const curTicker = tickerAnnouncements[tickerIndex];
+  const curTicker = tickerAnnouncements[tickerIndex] || tickerAnnouncements[0];
 
   return (
     <div
       className="top-announcement-strip"
       style={{
-        background: 'linear-gradient(90deg, #05190e, #0c3e27, #05190e)',
-        color: '#ffffff',
-        fontSize: '0.825rem',
-        padding: '0.4rem 1rem',
-        borderBottom: '1px solid #14532d',
         position: 'relative',
-        zIndex: 1100
+        zIndex: 1100,
+        fontSize: '0.8rem',
+        padding: '0 1rem',
+        minHeight: '36px',
+        display: 'flex',
+        alignItems: 'center',
+        background: 'var(--primary-900, #062416)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+        overflow: 'visible'
       }}
     >
-      <div className="container flex items-center justify-between" style={{ minHeight: '26px', gap: '0.5rem' }}>
+      <div
+        className="container flex items-center justify-between"
+        style={{
+          width: '100%',
+          gap: '0.6rem',
+          position: 'relative',
+          overflow: 'visible'
+        }}
+      >
+        {/* Left Branding Tag */}
         <div className="hidden lg:flex items-center gap-1.5" style={{ fontSize: '0.75rem', color: '#86efac', fontWeight: 700, flexShrink: 0 }}>
-          <Sparkles size={14} color="#f59e0b" />
-          <span>Kisan Priority Desk</span>
+          <Sparkles size={13} color="#f59e0b" />
+          <span>{t ? t('eidula_assured', 'Eidula Assured') : 'Eidula Assured'}</span>
         </div>
 
+        {/* Center Ticker (Strict single line, no vertical scrollbar) */}
         <div
           key={tickerIndex}
           className="top-ticker-text flex items-center justify-center gap-1.5 flex-1 text-center"
           style={{
-            animation: 'fadeInUp 0.45s ease-out forwards',
-            padding: '0 0.25rem'
+            animation: 'fadeInUp 0.35s ease-out forwards',
+            padding: '0 0.5rem',
+            overflow: 'hidden',
+            minWidth: 0,
+            whiteSpace: 'nowrap'
           }}
         >
-          <span style={{ fontSize: '0.9rem' }}>{curTicker.icon}</span>
-          <span style={{ fontWeight: 600, color: '#f8fafc', letterSpacing: '0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: '0.85rem', flexShrink: 0 }}>{curTicker.icon}</span>
+          <span
+            style={{
+              fontWeight: 600,
+              color: '#f8fafc',
+              fontSize: '0.78rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
             {curTicker.text}
           </span>
           <span
             className="badge hide-on-mobile"
             style={{
-              fontSize: '0.65rem',
+              fontSize: '0.625rem',
               fontWeight: 800,
               background: '#15803d',
               color: '#fef08a',
               border: '1px solid #86efac',
-              padding: '0.1rem 0.45rem',
-              borderRadius: '12px',
+              padding: '0.05rem 0.45rem',
+              borderRadius: '999px',
               flexShrink: 0
             }}
           >
@@ -94,19 +119,25 @@ const AnnouncementStrip = () => {
           </span>
         </div>
 
+        {/* Right Actions: Language, Theme, Dark Toggle, Helpline */}
         <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
+          {/* Language Selector */}
           <div style={{ position: 'relative' }} ref={langDropdownRef}>
             <button
               type="button"
-              onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setLangDropdownOpen(prev => !prev);
+                setThemeDropdownOpen(false);
+              }}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.25rem',
-                background: 'rgba(255,255,255,0.12)',
+                background: langDropdownOpen ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.25)',
                 color: '#ffffff',
-                padding: '0.2rem 0.5rem',
+                padding: '0.2rem 0.55rem',
                 borderRadius: '7px',
                 fontSize: '0.75rem',
                 fontWeight: 700,
@@ -118,7 +149,7 @@ const AnnouncementStrip = () => {
             >
               <Globe size={13} color="#86efac" />
               <span>{currentLangMeta.native}</span>
-              <ChevronDown size={10} />
+              <ChevronDown size={10} style={{ transform: langDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </button>
 
             {langDropdownOpen && (
@@ -131,62 +162,70 @@ const AnnouncementStrip = () => {
                   background: 'var(--bg-surface, #ffffff)',
                   border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '10px',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
-                  zIndex: 1200,
-                  minWidth: '165px',
-                  overflow: 'hidden',
+                  boxShadow: '0 16px 36px rgba(0,0,0,0.5)',
+                  zIndex: 99999,
+                  minWidth: '170px',
                   padding: '5px'
                 }}
               >
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    type="button"
-                    onClick={() => {
-                      setLanguage(lang.code);
-                      setLangDropdownOpen(false);
-                    }}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '0.5rem 0.75rem',
-                      border: 'none',
-                      background: language === lang.code ? 'var(--primary-50, #f0fdf4)' : 'transparent',
-                      color: language === lang.code ? '#166534' : 'var(--text-main, #1e293b)',
-                      fontWeight: language === lang.code ? 800 : 600,
-                      fontSize: '0.8rem',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      transition: 'background 0.12s ease'
-                    }}
-                    className="hover:bg-green-50 dark:hover:bg-slate-800"
-                  >
-                    <span className="flex items-center gap-2" style={{ color: language === lang.code ? '#166534' : 'var(--text-main, #1e293b)' }}>
-                      <span>{lang.flag}</span>
-                      <span style={{ color: language === lang.code ? '#166534' : 'var(--text-main, #1e293b)' }}>{lang.native}</span>
-                    </span>
-                    {language === lang.code && <CheckCircle2 size={14} color="#166534" />}
-                  </button>
-                ))}
+                {LANGUAGES.map((lang) => {
+                  const isCurLang = language === lang.code;
+                  return (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLanguage(lang.code);
+                        setLangDropdownOpen(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.5rem 0.75rem',
+                        border: 'none',
+                        background: isCurLang ? 'var(--bg-surface-alt, #f1f5f9)' : 'transparent',
+                        color: isCurLang ? 'var(--primary-600, #16a34a)' : 'var(--text-main, #0f172a)',
+                        fontWeight: isCurLang ? 800 : 600,
+                        fontSize: '0.8rem',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'background 0.12s ease'
+                      }}
+                      className="hover:bg-slate-100 dark:hover:bg-slate-800"
+                    >
+                      <span className="flex items-center gap-2" style={{ color: isCurLang ? 'var(--primary-600, #16a34a)' : 'var(--text-main, #0f172a)' }}>
+                        <span>{lang.flag}</span>
+                        <span>{lang.native}</span>
+                      </span>
+                      {isCurLang && <CheckCircle2 size={14} color="var(--primary-600, #16a34a)" />}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
 
+          {/* Theme Selector Dropdown */}
           <div style={{ position: 'relative' }} ref={themeDropdownRef}>
             <button
               type="button"
-              onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setThemeDropdownOpen(prev => !prev);
+                setLangDropdownOpen(false);
+              }}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.3rem',
-                background: 'rgba(255,255,255,0.12)',
+                background: themeDropdownOpen ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.25)',
                 color: '#ffffff',
-                padding: '0.2rem 0.5rem',
+                padding: '0.2rem 0.55rem',
                 borderRadius: '7px',
                 fontSize: '0.75rem',
                 fontWeight: 700,
@@ -198,7 +237,7 @@ const AnnouncementStrip = () => {
             >
               <span>{THEMES.find((t) => t.id === theme)?.icon || '🎨'}</span>
               <span className="hide-on-mobile">{THEMES.find((t) => t.id === theme)?.name.split(' ')[0] || 'Theme'}</span>
-              <ChevronDown size={10} />
+              <ChevronDown size={10} style={{ transform: themeDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </button>
 
             {themeDropdownOpen && (
@@ -211,10 +250,9 @@ const AnnouncementStrip = () => {
                   background: 'var(--bg-surface, #ffffff)',
                   border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '12px',
-                  boxShadow: '0 16px 36px rgba(0,0,0,0.35)',
-                  zIndex: 1200,
-                  minWidth: '220px',
-                  overflow: 'hidden',
+                  boxShadow: '0 16px 36px rgba(0,0,0,0.5)',
+                  zIndex: 99999,
+                  minWidth: '225px',
                   padding: '6px'
                 }}
               >
@@ -237,7 +275,8 @@ const AnnouncementStrip = () => {
                     <button
                       key={thm.id}
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setTheme(thm.id);
                         setThemeDropdownOpen(false);
                       }}
@@ -248,8 +287,8 @@ const AnnouncementStrip = () => {
                         justifyContent: 'space-between',
                         padding: '0.5rem 0.75rem',
                         border: 'none',
-                        background: isCur ? 'var(--primary-50, rgba(22, 101, 52, 0.15))' : 'transparent',
-                        color: isCur ? 'var(--primary-600, #166534)' : 'var(--text-main, #1e293b)',
+                        background: isCur ? 'var(--bg-surface-alt, rgba(255, 255, 255, 0.1))' : 'transparent',
+                        color: isCur ? 'var(--primary-600, #16a34a)' : 'var(--text-main, #0f172a)',
                         fontWeight: isCur ? 800 : 600,
                         fontSize: '0.8rem',
                         borderRadius: '8px',
@@ -276,9 +315,11 @@ const AnnouncementStrip = () => {
                         >
                           {thm.icon}
                         </span>
-                        <span style={{ color: isCur ? 'var(--primary-600, #166534)' : 'var(--text-main, #1e293b)' }}>{thm.name}</span>
+                        <span style={{ color: isCur ? 'var(--primary-600, #16a34a)' : 'var(--text-main, #0f172a)' }}>
+                          {thm.name}
+                        </span>
                       </div>
-                      {isCur && <Check size={14} color={thm.primaryColor} />}
+                      {isCur && <Check size={14} color="var(--primary-600, #16a34a)" />}
                     </button>
                   );
                 })}
@@ -286,6 +327,7 @@ const AnnouncementStrip = () => {
             )}
           </div>
 
+          {/* Quick Day / Night Toggle Icon */}
           <button
             type="button"
             onClick={toggleTheme}
@@ -303,31 +345,31 @@ const AnnouncementStrip = () => {
               transition: 'transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s ease'
             }}
             className="hover:scale-110 active:scale-95"
-            title={isDark ? 'Switch to Day Light Mode' : 'Switch to Dark Farm Mode'}
+            title={isDark ? 'Switch to Day Light Mode' : 'Switch to Dark Mode'}
           >
             {isDark ? <Sun size={14} color="#fef08a" /> : <Moon size={14} color="#86efac" />}
           </button>
 
+          {/* Customer Helpline */}
           <a
             href="tel:6395211953"
-            className="hide-on-mobile"
+            className="hidden sm:flex items-center gap-1.5"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
               color: '#fef08a',
               textDecoration: 'none',
-              fontWeight: 800,
-              fontSize: '0.775rem',
+              fontWeight: 700,
+              fontSize: '0.72rem',
               background: 'rgba(255,255,255,0.1)',
-              padding: '0.15rem 0.5rem',
+              padding: '0.15rem 0.45rem',
               borderRadius: '6px',
-              border: '1px solid rgba(254,240,138,0.3)',
-              flexShrink: 0
+              border: '1px solid rgba(254,240,138,0.25)',
+              flexShrink: 0,
+              whiteSpace: 'nowrap'
             }}
+            title="Customer Helpline: +91 63952 11953"
           >
-            <PhoneCall size={12} color="#f59e0b" />
-            <span>+91 63952 11953</span>
+            <PhoneCall size={11} color="#f59e0b" />
+            <span>63952 11953</span>
           </a>
         </div>
       </div>

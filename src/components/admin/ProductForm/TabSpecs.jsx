@@ -25,15 +25,19 @@ const PRESET_INDUSTRY_SPECS = {
     { group: 'CERTIFICATIONS', name: 'FSSAI License', value: '10014011002233', unit: '' },
     { group: 'CERTIFICATIONS', name: 'Dietary Preference', value: 'Vegetarian (100% Natural)', unit: '' }
   ],
-  '🌾 Agricultural Machinery': [
-    { group: 'ENGINE & POWER', name: 'Engine Power', value: '7 HP (5.2 kW)', unit: 'HP' },
-    { group: 'ENGINE & POWER', name: 'Displacement', value: '208', unit: 'cc' },
-    { group: 'ENGINE & POWER', name: 'Fuel Type', value: 'Petrol', unit: '' },
-    { group: 'ENGINE & POWER', name: 'Starting Mechanism', value: 'Recoil Pull Starter', unit: '' },
-    { group: 'ENGINE & POWER', name: 'Fuel Tank Capacity', value: '3.6', unit: 'Liters' },
-    { group: 'PERFORMANCE', name: 'Working Width', value: '600 - 900', unit: 'mm' },
-    { group: 'PERFORMANCE', name: 'Working Depth', value: '100 - 150', unit: 'mm' },
-    { group: 'DIMENSIONS & WEIGHT', name: 'Machine Weight', value: '85', unit: 'kg' }
+  '🏺 Home Decor & Living': [
+    { group: 'GENERAL', name: 'Craft / Material', value: 'Artisan Ceramic & Bohemian Terracotta', unit: '' },
+    { group: 'SPECIFICATIONS', name: 'Surface Texture', value: 'Hand-Glazed Matte Finish', unit: '' },
+    { group: 'DIMENSIONS & WEIGHT', name: 'Product Dimensions', value: '24 x 14 x 14', unit: 'cm' },
+    { group: 'DIMENSIONS & WEIGHT', name: 'Net Weight', value: '1.1', unit: 'kg' },
+    { group: 'STORAGE & SHELF LIFE', name: 'Care Instructions', value: 'Wipe gently with dry microfiber cloth', unit: '' }
+  ],
+  '🍳 Kitchen & Appliances': [
+    { group: 'ELECTRICAL', name: 'Motor Rating', value: '1000', unit: 'Watts' },
+    { group: 'ELECTRICAL', name: 'Winding Material', value: '100% Pure Heavy-Duty Copper', unit: '' },
+    { group: 'SPECIFICATIONS', name: 'Blade Material', value: '304-Grade Stainless Steel', unit: '' },
+    { group: 'SPECIFICATIONS', name: 'Capacity / Jars', value: '3 Leak-Proof Stainless Steel Jars', unit: '' },
+    { group: 'CERTIFICATIONS', name: 'Food Safety', value: 'BPA-Free Food-Grade Certified', unit: '' }
   ],
   '⚡ Electronics & Appliances': [
     { group: 'ELECTRICAL', name: 'Power Rating', value: '1500', unit: 'Watts' },
