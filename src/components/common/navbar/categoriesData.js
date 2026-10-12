@@ -128,7 +128,7 @@ export const categoriesData = [
 ];
 
 export const tickerAnnouncements = [
-  { icon: '✨', text: 'Welcome to Eidula • Pure Spices, Premium Home Living & 100% Genuine Quality', highlight: 'Eidula Assured' },
+  { icon: '✨', text: 'Welcome to Eidula • Everything You Need, All In One Place', highlight: 'Eidula Assured' },
   { icon: '🚚', text: 'Fast Express Doorstep Delivery Across India • Dispatched in 24h', highlight: 'Fast Dispatch' },
   { icon: '💳', text: '0% No-Cost EMI Available on Leading Cards • Instant Approval', highlight: 'Zero Cost EMI' },
   { icon: '🛡️', text: 'Safe & Secure Shopping • Easy 7-Day Returns & Brand Warranty', highlight: 'Buyer Protection' },

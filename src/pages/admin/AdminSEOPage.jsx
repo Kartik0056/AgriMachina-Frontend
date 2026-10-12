@@ -6,8 +6,8 @@ const AdminSEOPage = () => {
   const { addToast } = useToast();
 
   const [seoConfig, setSeoConfig] = useState({
-    siteTitle: 'Eidula | Pure Spices, Electronics, Home Decor & Lifestyle Online Store',
-    metaDescription: "Shop authentic pure spices & masale, smart electronics, luxury home decor, kitchen appliances, and hardware on Eidula with verified purity, easy No-Cost EMI, and fast pan-India delivery.",
+    siteTitle: 'Eidula | Everything You Need, All In One Place',
+    metaDescription: "Eidula - Everything you need, all in one place. Shop verified spices & masale, smart electronics, luxury home decor, kitchen appliances, and hardware with easy No-Cost EMI and fast pan-India delivery.",
     canonicalBase: 'https://eidula.in',
     ogImageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1200&q=85',
     googleAnalyticsId: 'G-EIDULA2026IN',

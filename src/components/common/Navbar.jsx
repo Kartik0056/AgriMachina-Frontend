@@ -142,17 +142,7 @@ const Navbar = () => {
             <button
               type="button"
               onClick={() => setMobileDrawerOpen(true)}
-              className="md:hidden flex items-center justify-center"
-              style={{
-                background: 'var(--bg-surface-alt, #f1f5f9)',
-                border: '1px solid var(--border-color, #cbd5e1)',
-                borderRadius: '8px',
-                width: '38px',
-                height: '38px',
-                cursor: 'pointer',
-                color: 'var(--primary-600, #166534)',
-                flexShrink: 0
-              }}
+              className="nav-mobile-menu-btn"
               title="Open Navigation Menu"
               aria-label="Open Navigation Menu"
             >

@@ -133,7 +133,7 @@ const ShareProductModal = ({ isOpen, onClose, product }) => {
   const mailtoUrl = `mailto:?subject=${encodeURIComponent(
     `Recommended on Eidula: ${product.name}`
   )}&body=${encodeURIComponent(
-    `Hello,\n\nI thought you might be interested in this product on Eidula:\n\nProduct: ${product.name}\nBrand: ${product.brand || 'Eidula'}\nPrice: ${priceFormatted}\n\nView details and order here:\n${productUrl}\n\nEidula - Pure Spices & Living`
+    `Hello,\n\nI thought you might be interested in this product on Eidula:\n\nProduct: ${product.name}\nBrand: ${product.brand || 'Eidula'}\nPrice: ${priceFormatted}\n\nView details and order here:\n${productUrl}\n\nEidula - Everything You Need, All In One Place`
   )}`;
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=${encodeURIComponent(productUrl)}`;

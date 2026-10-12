@@ -105,7 +105,7 @@ const Footer = () => {
               <EidulaLogo size="md" light={true} />
             </div>
             <p style={{ fontSize: '0.825rem', lineHeight: 1.6, color: '#cbd5e1', marginBottom: '1.25rem' }}>
-              Eidula is India's premier lifestyle & pure spices marketplace. Offering authentic handcrafted masale, smart electronics, artisan home decor, and high-performance appliances with 100% verified quality and transparent pricing.
+              Eidula — Everything you need, all in one place. Offering authentic handcrafted masale, smart electronics, artisan home decor, and high-performance appliances with 100% verified quality and transparent pricing.
             </p>
             <div style={{ fontSize: '0.78rem', color: '#86efac', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <div>📞 Helpline: <a href="tel:6395211953" style={{ color: '#86efac', textDecoration: 'none', fontWeight: 700 }}>+91 63952 11953</a></div>

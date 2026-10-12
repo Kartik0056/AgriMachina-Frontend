@@ -786,17 +786,13 @@ footer div[style*="color"] {
   color: #fffbeb !important;
 }
 
-/* Custom Gradient Paper Plane Cursor */
-html, body, div, p, span, h1, h2, h3, h4, h5, h6, table, tr, td, th, section, header, footer, nav, aside {
-  cursor: url('/cursors/streamline-cursor.svg') 3 3, auto;
-}
-
-a, button, input[type="submit"], input[type="button"], select, [role="button"], .btn, .clickable, label, [onClick], .badge, summary {
-  cursor: url('/cursors/streamline-pointer.svg') 3 3, pointer !important;
+/* Standard Simple System Cursor */
+a, button, input[type="submit"], input[type="button"], select, [role="button"], .btn, .clickable, label, [onClick], summary {
+  cursor: pointer;
 }
 
 input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"], textarea {
-  cursor: text !important;
+  cursor: text;
 }
 
 * {
@@ -2239,8 +2235,41 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
 
+/* Mobile-only Navigation Drawer Toggle: strictly hidden on desktop */
+.nav-mobile-menu-btn {
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface-alt, #f1f5f9);
+  border: 1px solid var(--border-color, #cbd5e1);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  color: var(--primary-600, #166534);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.nav-mobile-menu-btn:hover {
+  background: var(--primary-50, #f0fdf4);
+  border-color: var(--primary-300, #86efac);
+}
+
+[data-theme="dark"] .nav-mobile-menu-btn,
+[data-theme="forest"] .nav-mobile-menu-btn,
+[data-theme="amber"] .nav-mobile-menu-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #34d399;
+}
+
 /* Mobile Responsiveness Improvements */
 @media (max-width: 868px) {
+  .nav-mobile-menu-btn {
+    display: inline-flex !important;
+  }
+
   .hero-slider-grid {
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
@@ -2690,5 +2719,27 @@ input[type="range"]::-webkit-slider-thumb:hover {
     0 2px 8px -1px rgba(0, 0, 0, 0.4),
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
+
+/* ==========================================================================
+   OFFICIAL EIDULA BRAND LOGO DYNAMIC THEME SUPPORT
+   ========================================================================== */
+[data-theme="dark"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-wordmark-navy,
+[data-theme="forest"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-wordmark-navy,
+[data-theme="amber"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-wordmark-navy {
+  display: none !important;
+}
+
+[data-theme="dark"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-wordmark-white,
+[data-theme="forest"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-wordmark-white,
+[data-theme="amber"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-wordmark-white {
+  display: block !important;
+}
+
+[data-theme="dark"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-tagline,
+[data-theme="forest"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-tagline,
+[data-theme="amber"] .eidula-brand-logo:not(.eidula-logo-light) .eidula-tagline {
+  color: #cbd5e1 !important;
+}
+
 
 

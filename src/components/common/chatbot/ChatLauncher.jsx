@@ -41,7 +41,7 @@ const ChatLauncher = ({ isOpen, setIsOpen, isLauncherHovered, setIsLauncherHover
         }}
       >
         <span style={{ fontSize: '1rem' }}>✨</span>
-        <span>Eidula AI • Pure Spices & Living!</span>
+        <span>Eidula AI • Everything You Need, All In One Place</span>
       </div>
 
       <button
