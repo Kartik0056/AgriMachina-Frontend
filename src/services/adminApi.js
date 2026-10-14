@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const adminBaseURL = import.meta.env.PROD && import.meta.env.VITE_BACKEND_URL
+  ? `${import.meta.env.VITE_BACKEND_URL}/api/admin`
+  : '/api/admin';
+
 const adminApi = axios.create({
-  baseURL: '/api/admin',
+  baseURL: adminBaseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'

@@ -18,6 +18,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useToast } from '../../context/ToastContext';
 import EidulaLogo from '../common/EidulaLogo';
+import emblemImg from '../../assets/eidula-emblem.png';
 
 const authTextByLang = {
   en: {
@@ -295,85 +296,134 @@ const WelcomeAuthModal = () => {
       <div
         className="modal-content auth-modal-content"
         style={{
-          maxWidth: '520px',
+          maxWidth: '460px',
           width: '100%',
-          borderRadius: '24px',
-          padding: '1.5rem 1.5rem',
+          borderRadius: '20px',
+          padding: '1.1rem 1.25rem 0.95rem 1.25rem',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
-          boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.45)',
-          position: 'relative'
+          boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.5)',
+          position: 'relative',
+          overflow: 'hidden'
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Floating Top Close Button */}
-        <button
-          type="button"
-          onClick={handleClose}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'var(--bg-surface-alt, #f1f5f9)',
-            border: '1px solid var(--border-color, #e2e8f0)',
-            borderRadius: '50%',
-            width: '36px',
-            height: '36px',
-            cursor: 'pointer',
-            color: 'var(--text-main, #64748b)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease',
-            zIndex: 10
-          }}
-          className="hover:bg-red-50 hover:text-red-600 hover:scale-105 active:scale-95"
-          title="Close (कट करें)"
-        >
-          <X size={18} />
-        </button>
-
-        {/* Welcome Header & Branding */}
-        <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-          <div style={{ marginBottom: '0.85rem' }}>
-            <EidulaLogo size="lg" />
+        {/* Top Header: Logo Emblem + Brand Name on Left, Close Button on Right */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', textAlign: 'left' }}>
+            <img
+              src={emblemImg}
+              alt="Eidula Logo"
+              style={{
+                height: '34px',
+                width: 'auto',
+                objectFit: 'contain',
+                flexShrink: 0,
+                filter: 'drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35))'
+              }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1 }}>
+              <span
+                style={{
+                  fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+                  fontSize: '1.22rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  color: 'var(--text-main, #ffffff)',
+                  lineHeight: 1
+                }}
+              >
+                EIDULA
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif",
+                  fontSize: '0.45rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.12em',
+                  color: 'var(--text-muted, #94a3b8)',
+                  textTransform: 'uppercase',
+                  marginTop: '2px',
+                  lineHeight: 1
+                }}
+              >
+                EVERYTHING YOU NEED, ALL IN ONE PLACE
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center justify-center gap-1.5" style={{ marginBottom: '0.25rem' }}>
-            <Sparkles size={15} color="#f59e0b" />
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-400, #22c55e)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {/* Close Button X */}
+          <button
+            type="button"
+            onClick={handleClose}
+            style={{
+              background: 'var(--bg-surface-alt, rgba(255, 255, 255, 0.08))',
+              border: '1px solid var(--border-color, rgba(255, 255, 255, 0.15))',
+              borderRadius: '50%',
+              width: '30px',
+              height: '30px',
+              cursor: 'pointer',
+              color: 'var(--text-muted, #94a3b8)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              flexShrink: 0
+            }}
+            className="hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95"
+            title="Close"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        {/* Sub-Header: Portal Badge & Compact Title */}
+        <div style={{ textAlign: 'left', marginBottom: '0.55rem' }}>
+          <div className="flex items-center gap-1.5" style={{ marginBottom: '2px' }}>
+            <Sparkles size={12} color="#f59e0b" />
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--primary-400, #22c55e)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {txt.portalBadge}
             </span>
           </div>
 
-          <h2 style={{ fontSize: '1.45rem', color: 'var(--text-main)', fontWeight: 900, letterSpacing: '-0.02em', margin: '0 0 0.35rem 0' }}>
+          <h2 style={{ fontSize: '1.15rem', color: 'var(--text-main)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 2px 0' }}>
             {isRegister ? txt.registerTitle : txt.welcomeTitle}
           </h2>
 
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.835rem', margin: 0 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', margin: 0, lineHeight: 1.3 }}>
             {isRegister ? txt.registerSubtitle : txt.welcomeSubtitle}
           </p>
         </div>
 
-        {/* Benefits Ribbon */}
-        <div className="auth-benefits-ribbon">
-          <span className="flex items-center gap-1.5">
-            <Truck size={14} color="#22c55e" /> {txt.benefitTracking}
+        {/* Benefits Ribbon (Slim Single-Line) */}
+        <div
+          className="auth-benefits-ribbon"
+          style={{
+            padding: '0.35rem 0.6rem',
+            marginBottom: '0.55rem',
+            gap: '0.35rem',
+            fontSize: '0.72rem',
+            borderRadius: '9px'
+          }}
+        >
+          <span className="flex items-center gap-1">
+            <Truck size={12} color="#22c55e" /> {txt.benefitTracking}
           </span>
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck size={14} color="#22c55e" /> {txt.benefitSubsidy}
+          <span className="flex items-center gap-1">
+            <ShieldCheck size={12} color="#22c55e" /> {txt.benefitSubsidy}
           </span>
-          <span className="flex items-center gap-1.5">
-            <Gift size={14} color="#22c55e" /> {txt.benefitInvoice}
+          <span className="flex items-center gap-1">
+            <Gift size={12} color="#22c55e" /> {txt.benefitInvoice}
           </span>
         </div>
 
         {/* Tab Switcher (Sign In vs Register) */}
-        <div className="auth-tab-switcher">
+        <div className="auth-tab-switcher" style={{ padding: '3px', marginBottom: '0.55rem', borderRadius: '9px' }}>
           <button
             type="button"
             onClick={() => setIsRegister(false)}
             className={`auth-tab-btn ${!isRegister ? 'active' : ''}`}
+            style={{ padding: '0.36rem 0.5rem', fontSize: '0.78rem', fontWeight: 800 }}
           >
             {txt.tabSignIn}
           </button>
@@ -381,19 +431,20 @@ const WelcomeAuthModal = () => {
             type="button"
             onClick={() => setIsRegister(true)}
             className={`auth-tab-btn ${isRegister ? 'active' : ''}`}
+            style={{ padding: '0.36rem 0.5rem', fontSize: '0.78rem', fontWeight: 800 }}
           >
             {txt.tabRegister}
           </button>
         </div>
 
-        {/* Auth Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        {/* Auth Form (Compact, Zero-Scroll) */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           {isRegister && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div className="input-group">
-                <label className="auth-input-label">
+                <label className="auth-input-label" style={{ fontSize: '0.75rem', marginBottom: '0.15rem' }}>
                   <span className="flex items-center gap-1">
-                    <UserIcon size={13} color="var(--primary-400, #22c55e)" />
+                    <UserIcon size={12} color="var(--primary-400, #22c55e)" />
                     <span>{txt.nameLabel}</span>
                   </span>
                 </label>
@@ -401,7 +452,7 @@ const WelcomeAuthModal = () => {
                   type="text"
                   required={isRegister}
                   className="input-field"
-                  style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
+                  style={{ padding: '0.42rem 0.65rem', fontSize: '0.8rem', borderRadius: '8px' }}
                   placeholder={txt.namePlaceholder}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -409,9 +460,9 @@ const WelcomeAuthModal = () => {
               </div>
 
               <div className="input-group">
-                <label className="auth-input-label">
+                <label className="auth-input-label" style={{ fontSize: '0.75rem', marginBottom: '0.15rem' }}>
                   <span className="flex items-center gap-1">
-                    <Phone size={13} color="var(--primary-400, #22c55e)" />
+                    <Phone size={12} color="var(--primary-400, #22c55e)" />
                     <span>{txt.phoneLabel}</span>
                   </span>
                 </label>
@@ -419,7 +470,7 @@ const WelcomeAuthModal = () => {
                   type="tel"
                   required={isRegister}
                   className="input-field"
-                  style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
+                  style={{ padding: '0.42rem 0.65rem', fontSize: '0.8rem', borderRadius: '8px' }}
                   placeholder={txt.phonePlaceholder}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -429,9 +480,9 @@ const WelcomeAuthModal = () => {
           )}
 
           <div className="input-group">
-            <label className="auth-input-label">
+            <label className="auth-input-label" style={{ fontSize: '0.75rem', marginBottom: '0.15rem' }}>
               <span className="flex items-center gap-1">
-                <Mail size={13} color="var(--primary-400, #22c55e)" />
+                <Mail size={12} color="var(--primary-400, #22c55e)" />
                 <span>{txt.emailLabel}</span>
               </span>
             </label>
@@ -439,7 +490,7 @@ const WelcomeAuthModal = () => {
               type="email"
               required
               className="input-field"
-              style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
+              style={{ padding: '0.45rem 0.65rem', fontSize: '0.8rem', borderRadius: '8px' }}
               placeholder={txt.emailPlaceholder}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -447,17 +498,18 @@ const WelcomeAuthModal = () => {
           </div>
 
           <div className="input-group">
-            <label className="auth-input-label">
+            <label className="auth-input-label" style={{ fontSize: '0.75rem', marginBottom: '0.15rem' }}>
               <span className="flex items-center gap-1">
-                <Lock size={13} color="var(--primary-400, #22c55e)" />
+                <Lock size={12} color="var(--primary-400, #22c55e)" />
                 <span>{txt.passwordLabel}</span>
               </span>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="auth-show-btn"
+                style={{ fontSize: '0.7rem' }}
               >
-                {showPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                {showPassword ? <EyeOff size={11} /> : <Eye size={11} />}
                 <span>{showPassword ? txt.hide : txt.show}</span>
               </button>
             </label>
@@ -465,7 +517,7 @@ const WelcomeAuthModal = () => {
               type={showPassword ? 'text' : 'password'}
               required
               className="input-field"
-              style={{ padding: '0.65rem 0.85rem', fontSize: '0.875rem', borderRadius: '10px' }}
+              style={{ padding: '0.45rem 0.65rem', fontSize: '0.8rem', borderRadius: '8px' }}
               placeholder={txt.passwordPlaceholder}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -479,11 +531,11 @@ const WelcomeAuthModal = () => {
             className="btn btn-primary btn-lg"
             style={{
               width: '100%',
-              borderRadius: '12px',
-              padding: '0.75rem',
-              fontSize: '0.95rem',
+              borderRadius: '9px',
+              padding: '0.55rem 1rem',
+              fontSize: '0.86rem',
               fontWeight: 800,
-              marginTop: '0.35rem',
+              marginTop: '0.2rem',
               boxShadow: '0 4px 14px rgba(22, 101, 52, 0.3)',
               display: 'flex',
               alignItems: 'center',
@@ -492,16 +544,17 @@ const WelcomeAuthModal = () => {
             }}
           >
             <span>{loading ? txt.btnLoading : isRegister ? txt.btnRegister : txt.btnSignIn}</span>
-            <ArrowRight size={16} />
+            <ArrowRight size={14} />
           </button>
         </form>
 
         {/* Bottom Guest Dismiss Option */}
-        <div style={{ textAlign: 'center', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.85rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '0.45rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.35rem' }}>
           <button
             type="button"
             onClick={handleClose}
             className="auth-guest-link"
+            style={{ fontSize: '0.73rem', padding: '0.15rem' }}
           >
             {txt.guestDismiss}
           </button>

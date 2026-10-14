@@ -25,7 +25,7 @@ const EidulaLogo = ({
       wordmarkHeight: 18,
       tagSize: '0.40rem',
       letterSpacing: '0.08em',
-      gap: '0.5rem',
+      gap: '0.35rem',
       tagMarginTop: '2px'
     },
     md: {
@@ -33,24 +33,24 @@ const EidulaLogo = ({
       wordmarkHeight: 22,
       tagSize: '0.46rem',
       letterSpacing: '0.09em',
-      gap: '0.6rem',
+      gap: '0.45rem',
       tagMarginTop: '2.5px'
     },
     lg: {
-      emblemHeight: 52,
-      wordmarkHeight: 30,
-      tagSize: '0.56rem',
+      emblemHeight: 46,
+      wordmarkHeight: 28,
+      tagSize: '0.54rem',
       letterSpacing: '0.10em',
-      gap: '0.75rem',
-      tagMarginTop: '3.5px'
+      gap: '0.5rem',
+      tagMarginTop: '3px'
     },
     xl: {
-      emblemHeight: 68,
-      wordmarkHeight: 40,
-      tagSize: '0.68rem',
+      emblemHeight: 64,
+      wordmarkHeight: 38,
+      tagSize: '0.65rem',
       letterSpacing: '0.11em',
-      gap: '0.9rem',
-      tagMarginTop: '4.5px'
+      gap: '0.65rem',
+      tagMarginTop: '4px'
     }
   };
 
@@ -169,7 +169,7 @@ const EidulaLogo = ({
       />
 
       {/* Brand Typography & Tagline */}
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, justifyContent: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, justifyContent: 'center', alignItems: 'flex-start', textAlign: 'left' }}>
         {/* Navy Wordmark (displayed on light backgrounds) */}
         <img
           src={wordmarkNavyImg}
@@ -209,7 +209,8 @@ const EidulaLogo = ({
               textTransform: 'uppercase',
               marginTop: current.tagMarginTop,
               whiteSpace: 'nowrap',
-              lineHeight: 1.15
+              lineHeight: 1.15,
+              textAlign: 'left'
             }}
           >
             {tagline}
