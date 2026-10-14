@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const adminBaseURL = import.meta.env.PROD && import.meta.env.VITE_BACKEND_URL
+const adminBaseURL = import.meta.env.VITE_BACKEND_URL
   ? `${import.meta.env.VITE_BACKEND_URL}/api/admin`
-  : '/api/admin';
+  : (import.meta.env.PROD ? 'https://agrimachina-backend.onrender.com/api/admin' : '/api/admin');
 
 const adminApi = axios.create({
   baseURL: adminBaseURL,

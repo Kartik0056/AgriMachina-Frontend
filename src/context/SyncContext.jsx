@@ -75,8 +75,9 @@ export const SyncProvider = ({ children }) => {
     window.addEventListener('storage', handleStorage);
 
     // 3. Setup Server-Sent Events (SSE) for server-initiated updates
-    const apiBase = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || '';
-    const sseUrl = `${apiBase}/api/sync/stream`;
+    const backendBase = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_URL)
+      || (typeof import.meta !== 'undefined' && import.meta.env?.PROD ? 'https://agrimachina-backend.onrender.com' : '');
+    const sseUrl = `${backendBase}/api/sync/stream`;
 
     let reconnectTimer = null;
 
